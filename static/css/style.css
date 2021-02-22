@@ -1,0 +1,232 @@
+body {
+    height: 95vh;
+    overflow: scroll;
+}
+
+canvas {
+    /*background-color: #000000;*/
+    width: 100%;
+    height: auto;
+
+}
+
+svg {
+    /*background-color: antiquewhite;*/
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.container-fluid {
+    height: 100%;
+    overflow: hidden;
+}
+
+.dot {
+    stroke: #000;
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    /*width: 60px;*/
+    /*height: 28px;*/
+    padding: 5px;
+    font: 12px sans-serif;
+    background: #20b2aa;
+    border: 0;
+    border-radius: 8px;
+}
+
+.cross-button {
+    cursor: pointer;
+}
+
+.shaker {
+    animation: shake 1s cubic-bezier(.36, .07, .19, .97) both infinite;
+    /*transform: translate3d(0, 0, 0);*/
+    /*backface-visibility: hidden;*/
+    /*perspective: 1000px;*/
+}
+
+.translucent {
+    opacity: 0.2;
+}
+
+.fobj {
+    overflow: visible;
+}
+
+.btn-separator:after {
+    content: '';
+    display: block;
+    float: left;
+    background: #fffcfc;
+    margin: 0 1px;
+    /*height: 34px;*/
+    width: 1px;
+}
+
+.axis {
+    color: #6c757d;
+}
+
+.axis line {
+    stroke: #6c757d;
+}
+
+.axis path {
+    stroke: #6c757d;
+    padding-right: 1em;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(1px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-2px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(2px, 0, 0);
+    }
+}
+
+.class-label {
+    opacity: 0.8;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.point {
+    opacity: 0.8;
+}
+
+.bg-dark-red {
+    background-color: #2844a7;
+}
+
+.text-slightly-muted {
+    color: #717171;
+    font-weight: 450;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}
+
+.custom-control-input:focus ~
+.custom-control-label::before {
+    /* when the button is toggled off
+       it is still in focus and a violet border will appear */
+    border-color: #28a745 !important;
+    /* box shadow is blue by default
+       but we do not want any shadow hence we have set
+       all the values as 0 */
+    box-shadow: 0 0 0 0rem rgba(0, 0, 0, 0) !important;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    border-color: #28a745 !important;
+    background-color: #28a745 !important;
+}
+
+.custom-control-input:active ~
+.custom-control-label::before {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+
+@keyframes flickerAnimation {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes flickerAnimation {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes flickerAnimation {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes flickerAnimation {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes spinner {
+    from {
+        -moz-transform: scale(1.0);
+        -ms-transform: scale(1.0);
+        transform: scale(1.0);
+    }
+    to {
+        -moz-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        transform: scale(1.2);
+    }
+}
+
+.animate-flicker {
+    -webkit-animation: flickerAnimation 2s infinite;
+    -moz-animation: flickerAnimation 2s infinite;
+    -o-animation: flickerAnimation 2s infinite;
+    animation: flickerAnimation 2s infinite;
+}
+
+rect {
+    cursor: move;
+}
+
+.overlay {
+    background: #000000;
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+}

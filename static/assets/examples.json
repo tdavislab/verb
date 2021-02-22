@@ -1,0 +1,127 @@
+{
+  "data": [
+    {
+      "name": "Linear projection: Simple example",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he, him",
+      "seedwords-2": "she, her",
+      "subspace": "Two means",
+      "evalset": "engineer, banker, nurse, receptionist",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Lipstick on a Pig: Hard debiasing",
+      "algorithm": "Hard debiasing",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "subspace": "Two means",
+      "equalize": "john-amy, paul-joan, mike-lisa, kevin-sarah, steve-diana, greg-kate, jeff-ann, bill-donna",
+      "evalset": "engineer, lawyer, receptionist, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Lipstick on a Pig: Linear projection",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "subspace": "Two means",
+      "evalset": "engineer, lawyer, receptionist, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Lipstick on a Pig: INLP",
+      "algorithm": "Iterative Null Space Projection",
+      "seedwords-1": "he,engineer,banker",
+      "seedwords-2": "she,nurse, receptionist",
+      "subspace": "Classification",
+      "evalset": "doctor, maid",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Example from paper: OSCaR",
+      "algorithm": "OSCaR",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "subspace": "Two means",
+      "oscar-c2-seedwords": "scientist, doctor, nurse, secretary, maid, dancer, cleaner, advocate, player, banker",
+      "evalset": "receptionist, homemaker",
+      "concept1": "Gender",
+      "concept2": "Occupations"
+    },
+    {
+      "name": "INLP: gender",
+      "algorithm": "Iterative Null Space Projection",
+      "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
+      "seedwords-2": "woman, she, her, girl, grandma, aunt, jill",
+      "subspace": "Classification",
+      "evalset": "engineer, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Adjectives: Linear Projection",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he, him",
+      "seedwords-2": "she, her",
+      "subspace": "Two means",
+      "evalset": "beautiful, shy,  important, strong, ugly",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Adjectives: Hard Debiasing",
+      "algorithm": "Hard debiasing",
+      "seedwords-1": "he, him",
+      "seedwords-2": "she, her",
+      "subspace": "Two means",
+      "equalize": "man-woman,he-him,she-her",
+      "evalset": "beautiful, shy,  important, strong, ugly",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Nationality (Case1): Linear Projection",
+      "algorithm": "Linear projection",
+      "seedwords-1": "syrian, persian",
+      "seedwords-2": "american, canadian",
+      "subspace": "Two means",
+      "evalset": "good, bad, evil, smart, cunning, greedy, nice",
+      "concept1": "Nationality"
+    },
+    {
+      "name": "Nationality (Case 2): Linear Projection",
+      "algorithm": "Linear projection",
+      "seedwords-1": "persian, american, canadian, chinese, indian, british, syrian",
+      "subspace": "PCA",
+      "evalset": "good, evil, smart,  greedy, nice",
+      "concept1": "Nationality"
+    },
+    {
+      "name": "INLP: gender",
+      "algorithm": "Iterative Null Space Projection",
+      "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
+      "seedwords-2": "woman, she, her, girl, grandma, aunt, jill",
+      "subspace": "Classification",
+      "evalset": "engineer, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "OSCaR: gender-occupations",
+      "algorithm": "OSCaR",
+      "seedwords-1": "he, man, boy, him, she, woman, girl, her",
+      "oscar-c2-seedwords": "scientist, doctor, nurse, secretary",
+      "subspace": "PCA",
+      "evalset": "engineer, tiger, tigress",
+      "concept1": "Gender",
+      "concept2": "Occupations"
+    },
+    {
+      "name": "OSCaR: gender-names",
+      "algorithm": "OSCaR",
+      "seedwords-1": "he, man, boy, him, she, woman, girl, her",
+      "oscar-c2-seedwords": "jim, tom, mike, steve, mary, jane, sue, kim",
+      "subspace": "PCA",
+      "evalset": "tiger, tigress",
+      "concept1": "Gender",
+      "concept2": "Names"
+    }
+  ]
+}
+

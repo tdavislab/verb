@@ -1,0 +1,28 @@
+{
+  "Linear": [
+    "The points show the PCA projection of the original word vector embeddings.",
+    "Points reoriented to a new view where the concept direction is aligned with the x-axis.",
+    "From each word's embedding vector, the component along the concept direction is removed.",
+    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
+  ],
+  "Hard": [
+    "The points show the PCA projection of the original word vector embeddings.",
+    "Points reoriented to a new view where the concept direction is aligned with the x-axis.",
+    "The gender component is removed from all but a set of pre-specified, unpaired gender-specific words using linear projection.",
+    "Word pairs (e.g., 'man-woman', 'he-she') equalized such that they are equidistant from the origin along the concept axis.",
+    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
+  ],
+  "OSCaR": [
+    "The points show the PCA projection of the original word vector embeddings.",
+    "Points reoriented to a new view where the direction of concept 1 is aligned with the x-axis and concept 2 is aligned with the component of y-axis that is orthogonal to concept 1.",
+    "Orthogonalize the direction of concept 2 to that of concept 1 and move all points accordingly.",
+    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
+  ],
+  "INLP": [
+    "The points show the PCA projection of the original word vector embeddings.",
+    "Fit a classifier to the subspace defining words and show the normal to the classifier's hyperplane",
+    "Points are reoriented to a new view where the hyperplan's normal direction is aligned with the x-axis.",
+    "The gender component is removed from all but a set of pre-specified gender-specific words using nullspace projection.",
+    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
+  ]
+}
