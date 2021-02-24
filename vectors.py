@@ -569,7 +569,7 @@ class INLPDebiaser(Debiaser):
 
         for iter_idx in range(num_iters):
             x_projected = self.debiased_emb.get_vecs(seedwords1 + seedwords2).copy()
-            x_eval = self.debiased_emb.get_vecs(set(evalwords + self.app_instance.weat_A + self.app_instance.weat_B)).copy()
+            x_eval = self.debiased_emb.get_vecs(evalwords).copy()
 
             classifier_i = SVC(kernel='linear').fit(x_projected, y)
             weights = np.expand_dims(classifier_i.coef_[0], 0)
