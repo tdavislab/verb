@@ -6,14 +6,14 @@ import json
 
 app = Flask(__name__)
 
-app.base_embedding = load('data/embedding.pkl')
-app.debiased_embedding = load('data/embedding.pkl')
+app.base_embedding = load('data/bayarea_la.pkl')
+app.debiased_embedding = load('data/bayarea_la.pkl')
 
 with open('static/assets/explanations.json', 'r') as explanation_json:
     app.explanations = json.load(explanation_json)
 
-app.weat_A = ['doctor', 'engineer', 'lawyer', 'mathematician', 'banker']
-app.weat_B = ['receptionist', 'homemaker', 'nurse', 'dancer', 'maid']
+# app.weat_A = ['doctor', 'engineer', 'lawyer', 'mathematician', 'banker']
+# app.weat_B = ['receptionist', 'homemaker', 'nurse', 'dancer', 'maid']
 
 # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
@@ -33,8 +33,8 @@ SUBSPACE_METHODS = {
 
 
 def reload_embeddings():
-    app.base_embedding = load('data/embedding.pkl')
-    app.debiased_embedding = load('data/embedding.pkl')  # Embedding(None)
+    app.base_embedding = load('data/bayarea_la.pkl')
+    app.debiased_embedding = load('data/bayarea_la.pkl')  # Embedding(None)
     # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
 
@@ -67,7 +67,7 @@ def get_seedwords2():
         seedwords1 = utils.process_seedwords(seedwords1)
         seedwords2 = utils.process_seedwords(seedwords2)
         evalwords = utils.process_seedwords(evalwords)
-        equalize_set = [list(map(lambda x: x.lower(), word.split('-'))) for word in utils.process_seedwords(equalize_set)][:5]
+        equalize_set = [list(map(lambda x: x, word.split('-'))) for word in utils.process_seedwords(equalize_set)][:5]
 
         orth_subspace_words = utils.process_seedwords(orth_subspace_words)
 
@@ -81,8 +81,8 @@ def get_seedwords2():
         bias_direction = get_bias_direction(app.base_embedding, seedwords1, seedwords2, subspace_method)
 
         explanations = app.explanations
-        weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B)
-        weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B)
+        # weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B)
+        # weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B)
 
         if algorithm == 'Linear':
             debiaser = LinearDebiaser(app.base_embedding, app.debiased_embedding, app)
@@ -112,11 +112,12 @@ def get_seedwords2():
                         'bounds': debiaser.animator.get_bounds(),
                         'explanations': explanations[algorithm],
                         'camera_steps': debiaser.animator.get_camera_steps(),
-                        'weat_scores': {'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased}
+                        # 'weat_scores': {'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased}
                         }
 
         return jsonify(data_payload)
     except KeyError as e:
+        print(e)
         raise InvalidUsage(f'Something went wrong! Could not find the word {str(e).strip()}', 404)
 
 

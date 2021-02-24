@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.neighbors import kneighbors_graph
 from sklearn.svm import SVC
@@ -10,28 +11,28 @@ from dynamicProj import generateFullDynamicProjPath, generateDynamicProjPath
 
 
 class WordVector:
-    def __init__(self, index, word, vector):
-        self.index = index
+    def __init__(self, word, vector, group):
         self.word = word
         self.vector = vector
+        self.group = group
 
     def __str__(self):
-        return f'Index={self.index}, Word="{self.word}"'
+        return f'Group={self.group}, Word="{self.word}"'
 
     def __repr__(self):
-        return f'WordVector({self.index}, {self.word}, {self.vector})'
+        return f'WordVector({self.word}, {self.vector}, {self.group})'
 
 
 # Embedding class
 # ----------------------------------------------------
 class Embedding:
-    def __init__(self, path, limit=100000):
+    def __init__(self, path, metadata, group, limit=20000):
         # either create an empty embedding (useful for creating debiased embeddings)
         if path is None:
             self.word_vectors = []
         # or read embeddings from disk
         else:
-            self.word_vectors = read_embeddings(path, limit=limit)
+            self.word_vectors = read_merchant_embedding(path, metadata, group, limit=limit)
 
     def get(self, word, color=''):
         """
@@ -69,6 +70,9 @@ class Embedding:
         else:
             normed_vectors = vectors / np.linalg.norm(vectors)
         self.update_vectors(self.words(), normed_vectors)
+
+    def merge(self, other_embedding):
+        self.word_vectors = {**self.word_vectors, **other_embedding.word_vectors}
 
 
 # Debiaser base class
@@ -831,7 +835,6 @@ class Animator:
 
         return payload
 
-
     def get_camera_steps(self):
         camera_steps = []
         for step in self.anim_steps:
@@ -923,6 +926,29 @@ def read_embeddings(path, limit=100000):
     return word_vectors
 
 
+def read_merchant_embedding(emb_path, metadata_path, group, limit=20000, normalize=True):
+    word_vectors = {}
+    metadata = pd.read_csv(metadata_path, delimiter='\t', names=['merch_id', 'merch_name', 2, 3, 4, 5, 6], index_col='merch_id', header=None)
+
+    with open(emb_path, 'r') as vec_file:
+        for idx, line in tqdm(enumerate(vec_file)):
+            if idx == 0:
+                continue
+
+            line = line.rstrip().split()
+            merch_name = metadata.loc[int(line[0])].merch_name
+            vector = np.array(line[1:]).astype('float')
+            if normalize:
+                vector = vector / np.linalg.norm(vector)
+
+            word_vectors[merch_name] = WordVector(merch_name, vector, group)
+
+            if idx >= limit - 1:
+                break
+
+    return word_vectors
+
+
 def save(savepath, obj):
     with open(savepath, 'wb') as savefile:
         pickle.dump(obj, savefile)
@@ -940,17 +966,6 @@ def basis(vec):
     v2_prime = second_component - first_component * float(np.matmul(first_component, second_component.T))
     v2_prime = v2_prime / np.linalg.norm(v2_prime)
     return v2_prime
-
-
-# Legacy code fragments
-# -----------------------------------------------------
-# def knn_graph(embedding, word_list):
-#     vectors = embedding.get_many(word_list)
-#     adjacency_matrix = kneighbors_graph(vectors, n_neighbors=3)
-#     graph = nx.from_scipy_sparse_matrix(adjacency_matrix)
-#     mapping = dict([(x, word_list[x]) for x in range(len(word_list))])
-#     graph = nx.relabel.relabel_nodes(graph, mapping)
-#     return nx.readwrite.json_graph.node_link_data(graph)
 
 
 def two_means(embedding, word_list1, word_list2):
@@ -1007,8 +1022,16 @@ if __name__ == '__main__':
     # noinspection PyUnresolvedReferences
     from vectors import Embedding
 
-    datapath = 'data/glove.6B.50d.txt'
-    emb = Embedding(datapath)
-    save('data/glove.6B.50d.pkl', emb)
+    datapath = './data/Embedding_Restaurant/bay_filter.emb'
+    metadata_path = './data/Embedding_Restaurant/bay_filter'
+    emb_bay = Embedding(datapath, metadata_path, 0)
+
+    datapath = './data/Embedding_Restaurant/la_filter.emb'
+    metadata_path = './data/Embedding_Restaurant/la_filter'
+    emb_la = Embedding(datapath, metadata_path, 1)
+
+    emb_bay.merge(emb_la)
+
+    save('data/bayarea_la.pkl', emb_bay)
     # emb = Embedding('data/glove.42B.300d.txt', limit=100000)
     # save('data/glove.42B.300d.pkl', emb)

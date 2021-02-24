@@ -17,7 +17,7 @@ let INTERPOLATION = d3.easeLinear;
 let DYNAMIC_PROJ = false;
 
 if (TESTING) {
-  ANIMATION_DURATION = 100;
+  ANIMATION_DURATION = 2000;
 }
 
 let ALGO_MAP = {
@@ -924,9 +924,9 @@ $('#preloaded-examples').on('click', function () {
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
     // $('#seedword-text-2').val('lisa, emma, sophia, emily, chloe, hannah, lily, claire, anna');
-    // $('#seedword-text-1').val('john, william, george, liam, andrew, michael, louis, tony, scott, jackson');
-    // $('#seedword-text-2').val('mary, victoria, carolina, maria, anne, kelly, marie, anna, sarah, jane');
-    // $('#evaluation-list').val('engineer, lawyer, mathematician, receptionist, homemaker, nurse, doctor');
+    $('#seedword-text-1').val('WATERDOGTAVERN1');
+    $('#seedword-text-2').val('LOSANGELESAIRPORT');
+    $('#evaluation-list').val('CSMCCAFETERIA, UNIVOFSOUTHERNCAL, SUNRICECAFE, EPICUREANATNOTREDAME');
     // $('#equalize-list').val('monastery-convent, spokesman-spokeswoman, dad-mom, men-women, councilman-councilwoman,' +
     //   ' grandpa-grandma, grandsons-granddaughters, testosterone-estrogen, uncle-aunt, wives-husbands, father-mother,' +
     //   ' grandpa-grandma, he-she, boy-girl, boys-girls, brother-sister, brothers-sisters, businessman-businesswoman,' +
@@ -935,10 +935,10 @@ if (TESTING) {
     //   ' grandfather-grandmother, grandson-granddaughter, he-she, himself-herself, his-her, king-queen, kings-queens,' +
     //   ' male-female, males-females, man-woman, men-women, nephew-niece, prince-princess, schoolboy-schoolgirl, son-daughter, sons-daughters')
     // $('#oscar-seedword-text-1').val('scientist, doctor, nurse, secretary, maid, dancer, cleaner, advocate, player, banker')
-    // $('#algorithm-dropdown').children()[4].click();
-    // $('#subspace-dropdown-items').children()[1].click();
+    $('#algorithm-dropdown').children()[1].click();
+    $('#subspace-dropdown-items').children()[1].click();
     // $('#seedword-form-submit').click();
-    $('#example-selection-button').click();
+    // $('#example-selection-button').click();
     // $('#example-dropdown').children()[3].click();
   } catch (e) {
     console.log(e);

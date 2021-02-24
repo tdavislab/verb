@@ -3,7 +3,7 @@ from vectors import compute_weat_score
 
 
 def process_seedwords(seedword_string):
-    return [seedword.strip().lower() for seedword in seedword_string.split(',')]
+    return [seedword.strip() for seedword in seedword_string.split(',')]
 
 
 def make_projector(method='PCA'):
