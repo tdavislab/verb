@@ -921,6 +921,15 @@ $('#preloaded-examples').on('click', function () {
   })
 })
 
+$('#control-collapser').on('click', function () {
+  console.log(this.innerHTML)
+  if (this.innerHTML === 'Hide controls') {
+    this.innerHTML = 'Show controls';
+  } else if (this.innerHTML === 'Show controls') {
+    this.innerHTML = 'Hide controls';
+  }
+})
+
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
     // $('#seedword-text-2').val('lisa, emma, sophia, emily, chloe, hannah, lily, claire, anna');

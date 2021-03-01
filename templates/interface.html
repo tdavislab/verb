@@ -1,192 +1,213 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-  <meta charset="UTF-8">
-  <title>Visualizing Word Vector Biases</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../static/css/style.css">
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8">
+    <title>Visualizing Word Vector Biases</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <h1 class="navbar-brand">Visualizing Word Vector Biases</h1>
+    <h1 class="navbar-brand">Visualizing Word Vector Biases</h1>
+    <div class="row col-md-10">
+        <div class="col-md-10"></div>
+        <button id="control-collapser" class="col-md-2 btn btn-light align navbar-right" class="card" data-toggle="collapse" data-target="#controls">
+            Hide controls
+        </button>
+    </div>
 </nav>
 
 
 <div class="container-fluid p-4">
-  <div id="examples-and-algo" class="row">
-    <div id="algorithm-selection" class="dropdown col-4">
-      <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
-              data-toggle="dropdown">
-        Select Algorithm
-      </button>
-      <div id="algorithm-dropdown" class="dropdown-menu w-100">
-        <h6 class="dropdown-header">Select Algorithm</h6>
-        <a class="dropdown-item active">Linear projection</a>
-        <a class="dropdown-item">Hard debiasing</a>
-        <a class="dropdown-item">OSCaR</a>
-        <a class="dropdown-item">Iterative Null Space Projection</a>
-      </div>
-    </div>
-    <div id="preloaded-examples" class="dropdown col-8">
-      <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="example-selection-button" data-toggle="dropdown">
-        Choose an example or provide seedword sets below
-      </button>
-      <div id="example-dropdown" class="dropdown-menu w-100"></div>
-    </div>
-  </div>
+    <div id="controls" class="collapse show">
+        <div>
+            <div id="examples-and-algo" class="row">
+                <div id="algorithm-selection" class="dropdown col-4">
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
+                            data-toggle="dropdown">
+                        Select Algorithm
+                    </button>
+                    <div id="algorithm-dropdown" class="dropdown-menu w-100">
+                        <h6 class="dropdown-header">Select Algorithm</h6>
+                        <a class="dropdown-item active">Linear projection</a>
+                        <a class="dropdown-item">Hard debiasing</a>
+                        <a class="dropdown-item">OSCaR</a>
+                        <a class="dropdown-item">Iterative Null Space Projection</a>
+                    </div>
+                </div>
+                <div id="preloaded-examples" class="dropdown col-8">
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="example-selection-button"
+                            data-toggle="dropdown">
+                        Choose an example or provide seedword sets below
+                    </button>
+                    <div id="example-dropdown" class="dropdown-menu w-100"></div>
+                </div>
+            </div>
 
-  <div id="subspace-controls" class="row mt-3">
-    <div id="subspace-dropdown" class="col-4 dropdown">
-      <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button" data-toggle="dropdown">
-        Select subspace method
-      </button>
-      <div id="subspace-dropdown-items" class="w-100 dropdown-menu">
-        <h6 class="dropdown-header">Select subspace method</h6>
-        <a class="dropdown-item active">Two means</a>
-        <a class="dropdown-item">PCA</a>
-        <a class="dropdown-item">PCA-paired</a>
-        <a class="dropdown-item">Classification</a>
-      </div>
-    </div>
-    <div id="top-bar" class="col-8">
-      <div id="input-two-col" class="input-group">
-        <div class="input-group-prepend">
-          <input type="text" class="input-group-text" id="concept-label-1" value="Concept1"/>
+            <div id="subspace-controls" class="row mt-3">
+                <div id="subspace-dropdown" class="col-4 dropdown">
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button"
+                            data-toggle="dropdown">
+                        Select subspace method
+                    </button>
+                    <div id="subspace-dropdown-items" class="w-100 dropdown-menu">
+                        <h6 class="dropdown-header">Select subspace method</h6>
+                        <a class="dropdown-item active">Two means</a>
+                        <a class="dropdown-item">PCA</a>
+                        <a class="dropdown-item">PCA-paired</a>
+                        <a class="dropdown-item">Classification</a>
+                    </div>
+                </div>
+                <div id="top-bar" class="col-8">
+                    <div id="input-two-col" class="input-group">
+                        <div class="input-group-prepend">
+                            <input type="text" class="input-group-text" id="concept-label-1" value="Concept1"/>
+                        </div>
+                        <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
+
+                        <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                    </div>
+
+                    <div id="input-two-col-oscar" class="input-group mt-3">
+                        <div class="input-group-prepend">
+                            <input type="text" class="input-group-text" id="concept-label-2" value="Concept2"/>
+                        </div>
+                        <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                        {# <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2...">#}
+                    </div>
+                </div>
+            </div>
+
+            <div id="equalize-holder" class="mt-3 input-group" style="display: None">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="equalize-label">Equalize set</span>
+                </div>
+                <input id="equalize-list" class="form-control input-group-text" type="text" placeholder="Add equalize set for Hard Debiasing...">
+            </div>
+
+            <div id="eval-and-run" class=" mt-3 input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="eval-label">Evaluation set</span>
+                </div>
+                <input id="evaluation-list" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                <div class="input-group-append">
+                    <button id="seedword-form-submit" class="btn btn-outline-primary">Run</button>
+                </div>
+            </div>
+
+            <div id="weat-score" class="row center-block" hidden>
+                <h5 id="weat-predebiased" style="margin: auto"></h5>
+                <h5 id="weat-postdebiased" style="margin: auto"></h5>
+            </div>
         </div>
-        <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-
-        <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
-      </div>
-
-      <div id="input-two-col-oscar" class="input-group mt-3">
-        <div class="input-group-prepend">
-          <input type="text" class="input-group-text" id="concept-label-2" value="Concept2"/>
+        <div class="row m-3" style="height: 50vh !important;">
+            <div class="col-md-6" align="center">
+                <h5 id="initial-embedding-title" class="text-center">Initial Embedding</h5>
+                <svg id="pre-debiased-svg" width="100%" height="100%"></svg>
+            </div>
+            <div class="col-md-6">
+                <h5 id="debiased-embedding-title" class="text-center">Debiased Embedding</h5>
+                <svg id="post-debiased-svg" width="100%" height="100%"></svg>
+            </div>
         </div>
-        <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-        {#        <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2...">#}
-      </div>
-    </div>
-  </div>
-
-  <div id="equalize-holder" class="mt-3 input-group" style="display: None">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="equalize-label">Equalize set</span>
-    </div>
-    <input id="equalize-list" class="form-control input-group-text" type="text" placeholder="Add equalize set for Hard Debiasing...">
-  </div>
-
-  <div id="eval-and-run" class=" mt-3 input-group">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="eval-label">Evaluation set</span>
-    </div>
-    <input id="evaluation-list" class="form-control input-group-text" type="text" placeholder="Add word set...">
-    <div class="input-group-append">
-      <button id="seedword-form-submit" class="btn btn-outline-primary">Run</button>
-    </div>
-  </div>
-
-  <div id="weat-score" class="row center-block" hidden>
-    <h5 id="weat-predebiased" style="margin: auto"></h5>
-    <h5 id="weat-postdebiased" style="margin: auto"></h5>
-  </div>
-
-  <div id="projections" class="row m-3" style="height: 50% !important;">
-    <div class="col-md-4" align="center">
-      <h5 id="initial-embedding-title" class="text-center">Initial Embedding</h5>
-      <svg id="pre-debiased-svg" width="100%" height="100%"></svg>
+        <hr class="mt-5"/>
     </div>
 
-    <div class="col-md-4" align="center">
-      <h5 id="intermediate-steps-title" class="text-center">Intermediate Steps</h5>
-      <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-      <svg id="animation-svg" width="100%" height="100%">
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z"></path>
-          </marker>
-        </defs>
-      </svg>
+    <div id="projections" class="row m-3 mt-5" style="height: 70vh !important;">
+        <div class="col-md-12" align="center">
+            <h5 id="intermediate-steps-title" class="text-center">Intermediate Steps</h5>
+            <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+            <svg id="animation-svg" width="100%" height="100%">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+
+
     </div>
 
-    <div class="col-md-4">
-      <h5 id="debiased-embedding-title" class="text-center">Debiased Embedding</h5>
-      <svg id="post-debiased-svg" width="100%" height="100%"></svg>
+    <div id="animation-controls" class="row justify-content-center pt-4 pb-3">
+        <div class="btn-group">
+            <button id='play-control-fb' class="btn btn-success" title="Go to the start of animation">
+                <i class="fa fa-fast-backward"></i>
+            </button>
+            <span class="btn-separator"></span>
+            <button id='play-control-sb' class="btn btn-success" title="Step backward">
+                <i class="fa fa-step-backward"></i>
+            </button>
+            <span class="btn-separator"></span>
+            {#
+            <button id='play-control-play' class="btn btn-success" title="Play animation">#}
+                {# <i class="fa fa-play"></i>#}
+                {#
+            </button>
+            #}
+            {# <span class="btn-separator"></span>#}
+            <button id='play-control-sf' class="btn btn-success" title="Step forward">
+                <i class="fa fa-step-forward"></i>
+            </button>
+            <span class="btn-separator"></span>
+            <button id='play-control-ff' class="btn btn-success" title="Go to the end of animation">
+                <i class="fa fa-fast-forward"></i>
+            </button>
+        </div>
     </div>
-  </div>
 
-  <div id="animation-controls" class="row justify-content-center pt-4 pb-3">
-    <div class="btn-group">
-      <button id='play-control-fb' class="btn btn-success" title="Go to the start of animation">
-        <i class="fa fa-fast-backward"></i>
-      </button>
-      <span class="btn-separator"></span>
-      <button id='play-control-sb' class="btn btn-success" title="Step backward">
-        <i class="fa fa-step-backward"></i>
-      </button>
-      <span class="btn-separator"></span>
-      {#      <button id='play-control-play' class="btn btn-success" title="Play animation">#}
-      {#        <i class="fa fa-play"></i>#}
-      {#      </button>#}
-      {#      <span class="btn-separator"></span>#}
-      <button id='play-control-sf' class="btn btn-success" title="Step forward">
-        <i class="fa fa-step-forward"></i>
-      </button>
-      <span class="btn-separator"></span>
-      <button id='play-control-ff' class="btn btn-success" title="Go to the end of animation">
-        <i class="fa fa-fast-forward"></i>
-      </button>
+    <div id="toolbar" class="m-1 row justify-content-center">
+        <div class="btn-toolbar">
+            <div id='toggle-labels-btn' class="custom-switch custom-control mr-4" disabled>
+                <input type="checkbox" id="data-label-chk" class="custom-control-input" checked>
+                <label for="data-label-chk" class="custom-control-label">Data labels</label>
+            </div>
+
+            <div id='remove-points-btn' class="custom-switch custom-control mr-4" disabled>
+                <input type="checkbox" id="remove-points-chk" class="custom-control-input">
+                <label for="remove-points-chk" class="custom-control-label">Remove points</label>
+            </div>
+
+            <dib id='toggle-mean-btn' class="custom-switch custom-control mr-4" disabled>
+                <input type="checkbox" id="toggle-mean-chk" class="custom-control-input" checked>
+                <label for="toggle-mean-chk" class="custom-control-label">Show concept directions</label>
+            </dib>
+
+            <div id='toggle-eval-btn' class="custom-switch custom-control mr-4" disabled>
+                <input type="checkbox" id="toggle-eval-chk" class="custom-control-input" checked>
+                <label for="toggle-eval-chk" class="custom-control-label">Show evaluation points</label>
+            </div>
+            {#
+            <div id='anim-speed-div' class="mr-4" disabled>#}
+                {# <input type="range" min="1" max="5" step="0.5" id="anim-speed-slider" class="custom-range" checked>#}
+                {# <label for="anim-speed-slider" class="custom-control-label">Animation speed</label>#}
+                {#
+            </div>
+            #}
+        </div>
     </div>
-  </div>
 
-  <div id="toolbar" class="m-1 row justify-content-center">
-    <div class="btn-toolbar">
-      <div id='toggle-labels-btn' class="custom-switch custom-control mr-4" disabled>
-        <input type="checkbox" id="data-label-chk" class="custom-control-input" checked>
-        <label for="data-label-chk" class="custom-control-label">Data labels</label>
-      </div>
-
-      <div id='remove-points-btn' class="custom-switch custom-control mr-4" disabled>
-        <input type="checkbox" id="remove-points-chk" class="custom-control-input">
-        <label for="remove-points-chk" class="custom-control-label">Remove points</label>
-      </div>
-
-      <dib id='toggle-mean-btn' class="custom-switch custom-control mr-4" disabled>
-        <input type="checkbox" id="toggle-mean-chk" class="custom-control-input" checked>
-        <label for="toggle-mean-chk" class="custom-control-label">Show concept directions</label>
-      </dib>
-
-      <div id='toggle-eval-btn' class="custom-switch custom-control mr-4" disabled>
-        <input type="checkbox" id="toggle-eval-chk" class="custom-control-input" checked>
-        <label for="toggle-eval-chk" class="custom-control-label">Show evaluation points</label>
-      </div>
-      {#      <div id='anim-speed-div' class="mr-4" disabled>#}
-      {#        <input type="range" min="1" max="5" step="0.5" id="anim-speed-slider" class="custom-range" checked>#}
-      {#        <label for="anim-speed-slider" class="custom-control-label">Animation speed</label>#}
-      {#      </div>#}
+    <hr/>
+    <div id="explanation" class="row m-3">
+        <div class="col-md-1">
+            <h5> Explanation </h5>
+        </div>
+        <div class="col-md-11">
+            <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
+        </div>
     </div>
-  </div>
-
-  <hr/>
-  <div id="explanation" class="row m-3">
-    <div class="col-md-1">
-      <h5> Explanation </h5>
-    </div>
-    <div class="col-md-11">
-      <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
-    </div>
-  </div>
 </div>
 
 <div class="overlay h-100 w-100 justify-content-center align-items-center">
-  <div id="spinner-holder" class="mt-3 text-center" style="display:none">
-    <div id="spinner" class="spinner-border text-light">
-      <span class="sr-only">Loading...</span>
+    <div id="spinner-holder" class="mt-3 text-center" style="display:none">
+        <div id="spinner" class="spinner-border text-light">
+            <span class="sr-only">Loading...</span>
+        </div>
     </div>
-  </div>
 </div>
 
 </body>
@@ -197,6 +218,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.0/Chart.js"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script src="../static/javascript/d3.v5.min.js"></script>
-{#<script src="https://d3js.org/d3.v6.min.js"></script>#}
+{#
+<script src="https://d3js.org/d3.v6.min.js"></script>
+#}
 <script src="../static/javascript/interface.js"></script>
 </html>
