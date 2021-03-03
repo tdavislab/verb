@@ -6,8 +6,8 @@ import json
 
 app = Flask(__name__)
 
-app.base_embedding = load('data/bayarea_la.pkl')
-app.debiased_embedding = load('data/bayarea_la.pkl')
+app.base_embedding = load('data/embedding.pkl')
+app.debiased_embedding = load('data/embedding.pkl')
 
 with open('static/assets/explanations.json', 'r') as explanation_json:
     app.explanations = json.load(explanation_json)
@@ -33,8 +33,8 @@ SUBSPACE_METHODS = {
 
 
 def reload_embeddings():
-    app.base_embedding = load('data/bayarea_la.pkl')
-    app.debiased_embedding = load('data/bayarea_la.pkl')  # Embedding(None)
+    app.base_embedding = load('data/embedding.pkl')
+    app.debiased_embedding = load('data/embedding.pkl')  # Embedding(None)
     # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
 

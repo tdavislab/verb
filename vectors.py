@@ -195,7 +195,7 @@ class HardDebiaser(Debiaser):
         # ---------------------------------------------------------
         # Step 2 - Remove gender component from the evalwords except gender-specific words
         # ---------------------------------------------------------
-        for i, word in enumerate(set(evalwords + equalize_words[0] + equalize_words[1] + self.app_instance.weat_A + self.app_instance.weat_B)):
+        for i, word in enumerate(set(evalwords + equalize_words[0] + equalize_words[1])):
             # remove bias direction from dataset
             # if word not in seedwords1 + seedwords2:
             self.debiased_emb.word_vectors[word].vector = remove_component(self.base_emb.word_vectors[word].vector, bias_direction)

@@ -23,87 +23,87 @@
 
 
 <div class="container-fluid p-4">
-    <div id="controls" class="collapse show">
-        <div>
-            <div id="examples-and-algo" class="row">
-                <div id="algorithm-selection" class="dropdown col-4">
-                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
-                            data-toggle="dropdown">
-                        Select Algorithm
-                    </button>
-                    <div id="algorithm-dropdown" class="dropdown-menu w-100">
-                        <h6 class="dropdown-header">Select Algorithm</h6>
-                        <a class="dropdown-item active">Linear projection</a>
-                        <a class="dropdown-item">Hard debiasing</a>
-                        <a class="dropdown-item">OSCaR</a>
-                        <a class="dropdown-item">Iterative Null Space Projection</a>
-                    </div>
-                </div>
-                <div id="preloaded-examples" class="dropdown col-8">
-                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="example-selection-button"
-                            data-toggle="dropdown">
-                        Choose an example or provide seedword sets below
-                    </button>
-                    <div id="example-dropdown" class="dropdown-menu w-100"></div>
+    <div>
+        <div id="examples-and-algo" class="row">
+            <div id="algorithm-selection" class="dropdown col-4">
+                <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
+                        data-toggle="dropdown">
+                    Select Algorithm
+                </button>
+                <div id="algorithm-dropdown" class="dropdown-menu w-100">
+                    <h6 class="dropdown-header">Select Algorithm</h6>
+                    <a class="dropdown-item active">Linear projection</a>
+                    <a class="dropdown-item">Hard debiasing</a>
+                    <a class="dropdown-item">OSCaR</a>
+                    <a class="dropdown-item">Iterative Null Space Projection</a>
                 </div>
             </div>
-
-            <div id="subspace-controls" class="row mt-3">
-                <div id="subspace-dropdown" class="col-4 dropdown">
-                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button"
-                            data-toggle="dropdown">
-                        Select subspace method
-                    </button>
-                    <div id="subspace-dropdown-items" class="w-100 dropdown-menu">
-                        <h6 class="dropdown-header">Select subspace method</h6>
-                        <a class="dropdown-item active">Two means</a>
-                        <a class="dropdown-item">PCA</a>
-                        <a class="dropdown-item">PCA-paired</a>
-                        <a class="dropdown-item">Classification</a>
-                    </div>
-                </div>
-                <div id="top-bar" class="col-8">
-                    <div id="input-two-col" class="input-group">
-                        <div class="input-group-prepend">
-                            <input type="text" class="input-group-text" id="concept-label-1" value="Concept1"/>
-                        </div>
-                        <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-
-                        <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
-                    </div>
-
-                    <div id="input-two-col-oscar" class="input-group mt-3">
-                        <div class="input-group-prepend">
-                            <input type="text" class="input-group-text" id="concept-label-2" value="Concept2"/>
-                        </div>
-                        <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-                        {# <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2...">#}
-                    </div>
-                </div>
-            </div>
-
-            <div id="equalize-holder" class="mt-3 input-group" style="display: None">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="equalize-label">Equalize set</span>
-                </div>
-                <input id="equalize-list" class="form-control input-group-text" type="text" placeholder="Add equalize set for Hard Debiasing...">
-            </div>
-
-            <div id="eval-and-run" class=" mt-3 input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="eval-label">Evaluation set</span>
-                </div>
-                <input id="evaluation-list" class="form-control input-group-text" type="text" placeholder="Add word set...">
-                <div class="input-group-append">
-                    <button id="seedword-form-submit" class="btn btn-outline-primary">Run</button>
-                </div>
-            </div>
-
-            <div id="weat-score" class="row center-block" hidden>
-                <h5 id="weat-predebiased" style="margin: auto"></h5>
-                <h5 id="weat-postdebiased" style="margin: auto"></h5>
+            <div id="preloaded-examples" class="dropdown col-8">
+                <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="example-selection-button"
+                        data-toggle="dropdown">
+                    Choose an example or provide seedword sets below
+                </button>
+                <div id="example-dropdown" class="dropdown-menu w-100"></div>
             </div>
         </div>
+
+        <div id="subspace-controls" class="row mt-3">
+            <div id="subspace-dropdown" class="col-4 dropdown">
+                <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button"
+                        data-toggle="dropdown">
+                    Select subspace method
+                </button>
+                <div id="subspace-dropdown-items" class="w-100 dropdown-menu">
+                    <h6 class="dropdown-header">Select subspace method</h6>
+                    <a class="dropdown-item active">Two means</a>
+                    <a class="dropdown-item">PCA</a>
+                    <a class="dropdown-item">PCA-paired</a>
+                    <a class="dropdown-item">Classification</a>
+                </div>
+            </div>
+            <div id="top-bar" class="col-8">
+                <div id="input-two-col" class="input-group">
+                    <div class="input-group-prepend">
+                        <input type="text" class="input-group-text" id="concept-label-1" value="Concept1"/>
+                    </div>
+                    <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
+
+                    <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                </div>
+
+                <div id="input-two-col-oscar" class="input-group mt-3">
+                    <div class="input-group-prepend">
+                        <input type="text" class="input-group-text" id="concept-label-2" value="Concept2"/>
+                    </div>
+                    <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                    {# <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2...">#}
+                </div>
+            </div>
+        </div>
+
+        <div id="equalize-holder" class="mt-3 input-group" style="display: None">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="equalize-label">Equalize set</span>
+            </div>
+            <input id="equalize-list" class="form-control input-group-text" type="text" placeholder="Add equalize set for Hard Debiasing...">
+        </div>
+
+        <div id="eval-and-run" class=" mt-3 input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="eval-label">Evaluation set</span>
+            </div>
+            <input id="evaluation-list" class="form-control input-group-text" type="text" placeholder="Add word set...">
+            <div class="input-group-append">
+                <button id="seedword-form-submit" class="btn btn-outline-primary">Run</button>
+            </div>
+        </div>
+
+        <div id="weat-score" class="row center-block" hidden>
+            <h5 id="weat-predebiased" style="margin: auto"></h5>
+            <h5 id="weat-postdebiased" style="margin: auto"></h5>
+        </div>
+    </div>
+    <div id="controls" class="collapse show">
         <div class="row m-3" style="height: 50vh !important;">
             <div class="col-md-6" align="center">
                 <h5 id="initial-embedding-title" class="text-center">Initial Embedding</h5>
@@ -114,10 +114,9 @@
                 <svg id="post-debiased-svg" width="100%" height="100%"></svg>
             </div>
         </div>
-        <hr class="mt-5"/>
     </div>
 
-    <div id="projections" class="row m-3 mt-5" style="height: 70vh !important;">
+    <div id="projections" class="row m-3" style="height: 70vh !important;">
         <div class="col-md-12" align="center">
             <h5 id="intermediate-steps-title" class="text-center">Intermediate Steps</h5>
             <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
