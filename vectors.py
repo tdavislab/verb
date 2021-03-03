@@ -292,7 +292,7 @@ class OscarDebiaser(Debiaser):
 
             rot_matrix = self.gs_constrained2d_new(np.identity(bias_direction.shape[0]), bias_direction, orth_direction)
 
-            for word in set(seedwords1 + seedwords2 + evalwords + orth_subspace_words + self.app_instance.weat_A + self.app_instance.weat_B):
+            for word in set(seedwords1 + seedwords2 + evalwords + orth_subspace_words):
                 self.debiased_emb.word_vectors[word].vector = self.correction2d_new(rot_matrix, bias_direction, orth_direction,
                                                                                     self.base_emb.word_vectors[word].vector)
 
