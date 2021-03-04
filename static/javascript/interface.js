@@ -425,7 +425,7 @@ function setup_animation(anim_svg, response, identifier) {
       svg.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       // Adjust the axis
-      let axes_limits = compute_axes_limits_sym(response.anim_steps[step].map());
+      let axes_limits = compute_axes_limits_sym(response.anim_steps[step]);
       let x_axis_obj = svg.select('.x');
       let y_axis_obj = svg.select('.y');
       x_axis.domain([axes_limits['x_min'], axes_limits['x_max']]).nice();
