@@ -18,7 +18,7 @@
 
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
-        <div id="control-panel" class="col-4 border-right">
+        <div id="control-panel" class="col-5 border-right">
             <h4 class="text-center bg-dark text-light p-3 rounded">VERB - Visualization of Embedding Representations for deBiasing</h4>
 
             <div id="algorithm-selection" class="dropdown vert-space">
@@ -46,6 +46,7 @@
                     <a class="dropdown-item">PCA</a>
                     <a class="dropdown-item">PCA-paired</a>
                     <a class="dropdown-item">Classification</a>
+                    <a class="dropdown-item">GSS</a>
                 </div>
             </div>
 
@@ -124,7 +125,7 @@
                 <h5 id="weat-postdebiased" style="margin: auto"></h5>
             </div>
 
-            <div id="toolbar">
+            <div id="toolbar" class="card p-3 vert-space">
                 <div id='toggle-labels-btn' class="custom-switch custom-control" disabled>
                     <input type="checkbox" id="data-label-chk" class="custom-control-input" checked>
                     <label for="data-label-chk" class="custom-control-label">Data labels</label>
@@ -146,9 +147,7 @@
                 </div>
             </div>
 
-            <hr/>
-
-            <div id="explanation" class="">
+            <div id="explanation" class="vert-space">
                 <h5> Explanation </h5>
                 <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
             </div>
@@ -165,7 +164,7 @@
             </div>
         </div>
 
-        <div id="visualization-panel" class="col-8">
+        <div id="visualization-panel" class="col-7">
             <div id="scatter-holder" style="height: 100%">
                 <!--                <h5 id="intermediate-steps-title" class="text-center">Intermediate Steps</h5>-->
                 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
@@ -194,8 +193,8 @@
 <script src="../static/javascript/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.0/Chart.js"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script src="../static/javascript/d3.v5.min.js"></script>
 <script src="../static/javascript/interface.js"></script>
+<script src="../static/javascript/labeler.js"></script>
 </html>

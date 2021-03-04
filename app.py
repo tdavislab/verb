@@ -28,7 +28,8 @@ SUBSPACE_METHODS = {
     'Subspace method: Two means': 'Two-means',
     'Subspace method: PCA': 'PCA',
     'Subspace method: PCA-paired': 'PCA-paired',
-    'Subspace method: Classification': 'Classification'
+    'Subspace method: Classification': 'Classification',
+    'Subspace method: GSS': 'GSS'
 }
 
 

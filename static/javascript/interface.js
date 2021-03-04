@@ -31,7 +31,8 @@ let SUBSPACE_MAP = {
   'Two means': 1,
   'PCA': 2,
   'PCA-paired': 3,
-  'Classification': 4
+  'Classification': 4,
+  'GSS': 5
 }
 
 // Set global color-scale
@@ -424,7 +425,7 @@ function setup_animation(anim_svg, response, identifier) {
       svg.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       // Adjust the axis
-      let axes_limits = compute_axes_limits_sym(response.anim_steps[step]);
+      let axes_limits = compute_axes_limits_sym(response.anim_steps[step].map());
       let x_axis_obj = svg.select('.x');
       let y_axis_obj = svg.select('.y');
       x_axis.domain([axes_limits['x_min'], axes_limits['x_max']]).nice();
@@ -572,7 +573,10 @@ function setup_animation(anim_svg, response, identifier) {
         btn_active(step_forward_btn, true);
         btn_active(fast_forward_btn, true);
 
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: ANIMSTEP_COUNTER, forward: false}, response.camera_steps[ANIMSTEP_COUNTER + 1]);
+        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {
+          index: ANIMSTEP_COUNTER,
+          forward: false
+        }, response.camera_steps[ANIMSTEP_COUNTER + 1]);
 
         if (ANIMSTEP_COUNTER === 0) {
           btn_active(step_backward_btn, false);
@@ -677,6 +681,7 @@ $('#algorithm-dropdown a').click(function (e) {
     $(subspace_selector[1]).removeClass('disabled');
     $(subspace_selector[2]).removeClass('disabled');
     $(subspace_selector[3]).removeClass('disabled');
+    $(subspace_selector[5]).removeClass('disabled');
   }
 
   if (algorithm === 'Hard debiasing') {
@@ -686,6 +691,7 @@ $('#algorithm-dropdown a').click(function (e) {
     $(subspace_selector[1]).removeClass('disabled');
     $(subspace_selector[2]).removeClass('disabled');
     $(subspace_selector[3]).removeClass('disabled');
+    $(subspace_selector[5]).removeClass('disabled');
   } else {
     $('#equalize-holder').hide();
   }
@@ -697,6 +703,7 @@ $('#algorithm-dropdown a').click(function (e) {
     $(subspace_selector[1]).removeClass('disabled');
     $(subspace_selector[2]).removeClass('disabled');
     $(subspace_selector[3]).removeClass('disabled');
+    $(subspace_selector[5]).removeClass('disabled');
   } else {
     $('#input-two-col-oscar').hide();
   }
@@ -721,7 +728,7 @@ $('#subspace-dropdown a').click(function (e) {
       $('#seedword-text-2').hide();
     } else if (subspace_method === 'PCA-paired') {
       $('#seedword-text-2').hide();
-    } else if (subspace_method === 'Two means' || subspace_method === 'Classification') {
+    } else if (subspace_method === 'Two means' || subspace_method === 'Classification' || subspace_method === 'GSS') {
       $('#seedword-text-2').show();
     } else {
       console.log('Incorrect subspace method');

@@ -130,6 +130,15 @@
       "subspace": "Two means",
       "evalset": "SPUNBYSS, EPICUREANATNOTREDAME, KINGTACO, LAXAIRPNATURALBREAK",
       "concept1": "Location"
+    },
+    {
+      "name": "Adjectives: Linear Projection - GSS",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he, him",
+      "seedwords-2": "she, her",
+      "subspace": "GSS",
+      "evalset": "beautiful, shy,  important, strong, ugly",
+      "concept1": "Gender"
     }
   ]
 }

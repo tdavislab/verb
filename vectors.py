@@ -8,6 +8,7 @@ from tqdm import tqdm
 from weat import weat_score
 import scipy
 from dynamicProj import generateFullDynamicProjPath, generateDynamicProjPath
+from gss_subspace import f_weat, gss
 
 
 class WordVector:
@@ -893,6 +894,58 @@ def bias_classification(embedding, seedwords1, seedwords2):
     return bias_direction / np.linalg.norm(bias_direction)
 
 
+def bias_gss(embedding, word_list1, word_list2, num_permutations=2):
+    vec1, vec2 = embedding.get_vecs(word_list1), embedding.get_vecs(word_list2)
+    vec1, vec2 = np.mean(vec1, axis=0), np.mean(vec2, axis=0)
+
+    if len(word_list2) == 1:
+        v = embedding.get(word_list2[0]).vector
+        v = np.expand_dims(v, 0)
+    else:
+        v = np.zeros((num_permutations, vec1.shape[0]))
+        for k in range(num_permutations):
+            word_list2 = np.random.permutation(word_list2)
+            a = embedding.get(word_list2[0]).vector
+            b = embedding.get(word_list2[1]).vector
+
+            if len(word_list2) == 2:
+                v = gss(f_weat, a, b, vec1, embedding, tol=1e-5)
+                v = np.expand_dims(v, 0)
+                break
+            else:
+                for i in range(2, len(word_list2)):
+                    a = gss(f_weat, a, b, vec1, embedding, tol=1e-5)
+                    b = embedding.get(word_list2[i]).vector
+            v[k] = a
+
+    vecB_mean_perm = np.mean(v, 0)
+
+    if len(word_list1) == 1:
+        v = embedding.get(word_list1[0]).vector
+        v = np.expand_dims(v, 0)
+    else:
+        v = np.zeros((num_permutations, vec2.shape[0]))
+        for k in range(num_permutations):
+            word_list1 = np.random.permutation(word_list1)
+            a = embedding.get(word_list1[0]).vector
+            b = embedding.get(word_list1[1]).vector
+
+            if len(word_list1) == 2:
+                v = gss(f_weat, a, b, vecB_mean_perm, embedding, tol=1e-5)
+                v = np.expand_dims(v, 0)
+                break
+            else:
+                for i in range(2, len(word_list1)):
+                    a = gss(f_weat, a, b, vecB_mean_perm, embedding, tol=1e-5)
+                    b = embedding.get(word_list1[i]).vector
+            v[k] = a
+
+    vecA_mean_perm = np.mean(v, 0)
+
+    bias_direction = (vecA_mean_perm - vecB_mean_perm) / np.linalg.norm(vecA_mean_perm - vecB_mean_perm)
+    return bias_direction / np.linalg.norm(bias_direction)
+
+
 def get_bias_direction(embedding, seedwords1, seedwords2, subspace_method):
     if subspace_method == 'Two-means':
         bias_direction = bias_two_means(embedding, seedwords1, seedwords2)
@@ -902,6 +955,8 @@ def get_bias_direction(embedding, seedwords1, seedwords2, subspace_method):
         bias_direction = bias_pca_paired(embedding, seedwords1, seedwords2)
     elif subspace_method == 'Classification':
         bias_direction = bias_classification(embedding, seedwords1, seedwords2)
+    elif subspace_method == 'GSS':
+        bias_direction = bias_gss(embedding, seedwords1, seedwords2)
     else:
         raise ValueError('Incorrect subspace method')
 
