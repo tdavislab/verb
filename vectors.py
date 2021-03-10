@@ -696,6 +696,7 @@ class Projector:
             projection = projection - projection[0]
             # projection[1] = projection[1] / np.linalg.norm(projection[1])
             words = ['Origin', 'Concept' + str(concept_idx)]
+            # words = ['Concept' + str(concept_idx), '']
         else:
             if len(words) != 0:
                 projection = self.projector.transform(embedding.get_vecs(words))

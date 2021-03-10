@@ -309,6 +309,17 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .attr('stroke-width', '1px')
     .attr('stroke-opacity', '0.75')
 
+  // // Draw the bias direction arrow
+  // let arrow_endpoints = [point_data.filter(d => d.group === 0).map(d => [d.x, d.y])];
+  // console.log(arrow_endpoints)
+  //
+  // let bias_line = svg.append('path')
+  //   .data(arrow_endpoints)
+  //   .attr('id', 'bias-direction-line')
+  //   .attr('d', d => d3.line()(d.map(d => [x(d[0], y(d[1]))])))
+  //   .attr('stroke', '#5b5b5b')
+  //   .attr('stroke-width', '4px');
+
   // Draw the bias direction arrow
   let arrow_endpoints = point_data.filter(d => d.group === 0).map(d => [x(d.x), y(d.y)]);
 
@@ -318,32 +329,42 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .attr('stroke', '#5b5b5b')
     .attr('stroke-width', '4px');
 
-  // let zoom = d3.zoom().scaleExtent([0.5, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
+  // svg.append('text')
+  //   .append('textPath')
+  //   .attr('xlink:href', '#bias-direction-line')
+  //   .text('Test');
+
+  // let zoom = d3.zoom().scaleExtent([0.02, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
   //
   // svg.append('rect')
-  //     .attr('width', width)
-  //     .attr('height', height)
-  //     .attr('fill', 'none')
-  //     .attr('pointer-events', 'all')
-  //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-  //     .lower();
+  //   .attr('width', width)
+  //   .attr('height', height)
+  //   .attr('fill', 'none')
+  //   .attr('pointer-events', 'all')
+  //   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+  //   .lower();
   //
   // svg.call(zoom);
   //
   // function update_plot() {
-  //     let newX = d3.event.transform.rescaleX(x);
-  //     let newY = d3.event.transform.rescaleY(y);
+  //   let newX = d3.event.transform.rescaleX(x);
+  //   let newY = d3.event.transform.rescaleY(y);
   //
-  //     // update axes with these new boundaries
-  //     svg.select('.x').call(d3.axisBottom(newX))
-  //     svg.select('.y').call(d3.axisLeft(newY));
+  //   // update axes with these new boundaries
+  //   svg.select('.x').call(d3.axisBottom(newX))
+  //   svg.select('.y').call(d3.axisLeft(newY));
   //
-  //     datapoint_group.transition()
-  //         .duration(0)
-  //         .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
+  //   datapoint_group.transition()
+  //     .duration(0)
+  //     .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
   //
-  //     bias_line.attr('d', d3.line()(point_data.filter(d => d.group === 0).map(d => [newX(d.x), newY(d.y)])));
-  //     // console.log(d3.line()(point_data.filter(d => d.group === 0).map(d => [newX(d.x), newY(d.y)])));
+  //   console.log(d3.select('path#bias-direction-line').data());
+  //   let new_endpoints = d3.select('path#bias-direction-line').data().map(d => d.map(e => [newX(e[0]), newY(e[1])]));
+  //   console.log(new_endpoints)
+  //   d3.select('path#bias-direction-line').data(new_endpoints).attr('d', d => d3.line()(d))
+  //
+  //   // bias_line.attr('d', d3.line()(current_endpoints));
+  //   // console.log(d3.line()(point_data.filter(d => d.group === 0).map(d => [newX(d.x), newY(d.y)])));
   // }
 }
 
@@ -381,8 +402,9 @@ function add_groups(data) {
 }
 
 function compute_axes_limits_sym(points) {
-  let x_coords = points.map(d => Math.abs(d.x));
-  let y_coords = points.map(d => Math.abs(d.y));
+  points_without_subspace = points.filter(x => x.group !== 0);
+  let x_coords = points_without_subspace.map(d => Math.abs(d.x));
+  let y_coords = points_without_subspace.map(d => Math.abs(d.y));
   let x = Math.max(...x_coords), y = Math.max(...y_coords);
   coord_max = Math.max(x, y);
   return {
@@ -833,15 +855,15 @@ $('#seedword-form-submit').click(function () {
         $('#seedword-form-submit').attr('disabled', 'disabled');
       },
       success: function (response) {
-        let predebiased_svg = d3.select('#pre-debiased-svg');
-        draw_scatter_static(predebiased_svg, response, 'Pre-debiasing', false,);
+        // let predebiased_svg = d3.select('#pre-debiased-svg');
+        // draw_scatter_static(predebiased_svg, response, 'Pre-debiasing', false,);
 
         let animation_svg = d3.select('#animation-svg');
         // draw_svg_scatter(animation_svg, response, 'Pre-debiasing', true, true);
         setup_animation(animation_svg, response, 'animation')
 
-        let postdebiased_svg = d3.select('#post-debiased-svg');
-        draw_scatter_static(postdebiased_svg, response, 'Post-debiasing', true,);
+        // let postdebiased_svg = d3.select('#post-debiased-svg');
+        // draw_scatter_static(postdebiased_svg, response, 'Post-debiasing', true,);
 
         // $('#weat-predebiased').html('WEAT score = ' + response['weat_scores']['pre-weat'].toFixed(3));
         // $('#weat-postdebiased').html('WEAT score = ' + response['weat_scores']['post-weat'].toFixed(3));
@@ -866,7 +888,6 @@ $('#seedword-form-submit').click(function () {
       error: function (request, status, error) {
         alert(request.responseJSON.message);
       }
-
     });
   } catch (e) {
     console.log(e);
@@ -940,9 +961,9 @@ $('#control-collapser').on('click', function () {
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
     // $('#seedword-text-2').val('lisa, emma, sophia, emily, chloe, hannah, lily, claire, anna');
-    $('#seedword-text-1').val('WATERDOGTAVERN1');
-    $('#seedword-text-2').val('LOSANGELESAIRPORT');
-    $('#evaluation-list').val('CSMCCAFETERIA, UNIVOFSOUTHERNCAL, SUNRICECAFE, EPICUREANATNOTREDAME');
+    // $('#seedword-text-1').val('WATERDOGTAVERN1');
+    // $('#seedword-text-2').val('LOSANGELESAIRPORT');
+    // $('#evaluation-list').val('CSMCCAFETERIA, UNIVOFSOUTHERNCAL, SUNRICECAFE, EPICUREANATNOTREDAME');
     // $('#equalize-list').val('monastery-convent, spokesman-spokeswoman, dad-mom, men-women, councilman-councilwoman,' +
     //   ' grandpa-grandma, grandsons-granddaughters, testosterone-estrogen, uncle-aunt, wives-husbands, father-mother,' +
     //   ' grandpa-grandma, he-she, boy-girl, boys-girls, brother-sister, brothers-sisters, businessman-businesswoman,' +
@@ -951,11 +972,13 @@ if (TESTING) {
     //   ' grandfather-grandmother, grandson-granddaughter, he-she, himself-herself, his-her, king-queen, kings-queens,' +
     //   ' male-female, males-females, man-woman, men-women, nephew-niece, prince-princess, schoolboy-schoolgirl, son-daughter, sons-daughters')
     // $('#oscar-seedword-text-1').val('scientist, doctor, nurse, secretary, maid, dancer, cleaner, advocate, player, banker')
-    $('#algorithm-dropdown').children()[1].click();
-    $('#subspace-dropdown-items').children()[1].click();
+    // $('#algorithm-dropdown').children()[1].click();
+    // $('#subspace-dropdown-items').children()[1].click();
     // $('#seedword-form-submit').click();
-    // $('#example-selection-button').click();
-    // $('#example-dropdown').children()[3].click();
+    $('#example-selection-button').click();
+    setTimeout(() => {
+      $('#example-dropdown').children()[7].click();
+    }, 200)
   } catch (e) {
     console.log(e);
   }
