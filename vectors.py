@@ -148,7 +148,7 @@ class LinearDebiaser(Debiaser):
         # Step 3 - Project to the space of debiased embeddings
         # ---------------------------------------------------------
         debiased_projector = self.animator.add_projector(PCA(n_components=2), name='debiased_projector')
-        debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + evalwords)
+        debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
 
         step3 = self.animator.add_anim_step(camera_step=True)
         step3.add_points(debiased_projector.project(self.debiased_emb, seedwords1, group=1))
@@ -384,7 +384,7 @@ class OscarDebiaser(Debiaser):
             # ---------------------------------------------------------
             self.animator.add_projector(PCA(n_components=2), name='debiased_projector')
             debiased_projector = self.animator.projectors['debiased_projector']
-            debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
+            debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + orth_subspace_words)
 
             step3 = self.animator.add_anim_step(camera_step=True)
             step3.add_points(debiased_projector.project(self.debiased_emb, seedwords1, group=1))

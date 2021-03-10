@@ -892,7 +892,33 @@ $('#seedword-form-submit').click(function () {
 });
 
 $('#freeze-embedding').click(function () {
-  alert('Freezed')
+  $.ajax({
+    type: 'POST',
+    url: '/freeze',
+    success: function (response) {
+      // alert('Successfully set current debiased embedding as the new base embedding.');
+      $('#freeze-embedding').prop('disabled', true)
+      $('#unfreeze-embedding').prop('disabled', false)
+    },
+    error: function (response) {
+      alert('Something went wrong');
+    }
+  });
+});
+
+$('#unfreeze-embedding').click(function () {
+  $.ajax({
+    type: 'POST',
+    url: '/unfreeze',
+    success: function (response) {
+      // alert('Successfully set current debiased embedding as the new base embedding.');
+      $('#freeze-embedding').prop('disabled', false)
+      $('#unfreeze-embedding').prop('disabled', true)
+    },
+    error: function (response) {
+      alert('Something went wrong');
+    }
+  });
 });
 
 // Allow enter in text inputs to press Run button
@@ -979,7 +1005,7 @@ if (TESTING) {
     $('#example-selection-button').click();
     setTimeout(() => {
       $('#example-dropdown').children()[6].click();
-    }, 200)
+    }, 400)
   } catch (e) {
     console.log(e);
   }

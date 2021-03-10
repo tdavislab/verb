@@ -93,7 +93,9 @@
 
             <button id="seedword-form-submit" class="btn btn-outline-primary w-100 vert-space">Run</button>
 
-            <button id="freeze-embedding" class="btn btn-outline-primary w-100 vert-space">Freeze debiased embedding as base embedding</button>
+            <button id="freeze-embedding" class="btn btn-outline-primary w-100 vert-space">Update debiased embedding as base embedding</button>
+
+            <button id="unfreeze-embedding" class="btn btn-outline-primary w-100 vert-space" disabled>Reset embedding</button>
 
             <div id="animation-controls" class="row justify-content-center">
                 <div class="btn-group">
@@ -199,4 +201,11 @@
 <script src="../static/javascript/d3.v5.min.js"></script>
 <script src="../static/javascript/interface.js"></script>
 <script src="../static/javascript/labeler.js"></script>
+<script>
+    $(document).ready(function (){
+      $.ajax({
+        'url': '/unfreeze'
+      })
+    })
+</script>
 </html>

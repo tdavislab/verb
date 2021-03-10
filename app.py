@@ -3,11 +3,13 @@ from vectors import *
 import utils
 from vectors import get_bias_direction
 import json
+import copy
 
 app = Flask(__name__)
 
 app.base_embedding = load('data/embedding.pkl')
 app.debiased_embedding = load('data/embedding.pkl')
+app.frozen = False
 
 with open('static/assets/explanations.json', 'r') as explanation_json:
     app.explanations = json.load(explanation_json)
@@ -34,6 +36,7 @@ SUBSPACE_METHODS = {
 
 
 def reload_embeddings():
+    print('Reloaded embedding')
     app.base_embedding = load('data/embedding.pkl')
     app.debiased_embedding = load('data/embedding.pkl')  # Embedding(None)
     # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
@@ -56,7 +59,8 @@ def index():
 @app.route('/seedwords2', methods=['POST'])
 def get_seedwords2():
     try:
-        reload_embeddings()
+        if not app.frozen:
+            reload_embeddings()
 
         seedwords1, seedwords2, evalwords = request.values['seedwords1'], request.values['seedwords2'], request.values['evalwords']
         equalize_set = request.values['equalize']
@@ -120,6 +124,20 @@ def get_seedwords2():
     except KeyError as e:
         print(e)
         raise InvalidUsage(f'Something went wrong! Could not find the word {str(e).strip()}', 404)
+
+
+@app.route('/freeze', methods=['POST'])
+def freeze_embedding():
+    app.frozen = True
+    app.base_embedding = copy.deepcopy(app.debiased_embedding)
+    return jsonify('Updated')
+
+
+@app.route('/unfreeze', methods=['POST'])
+def unfreeze_embedding():
+    app.frozen = False
+    reload_embeddings()
+    return jsonify('Updated')
 
 
 class InvalidUsage(Exception):
