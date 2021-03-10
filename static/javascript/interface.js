@@ -41,7 +41,7 @@ let shape = d3.scaleOrdinal([0, 1, 2, 3, 4, 5, 6],
   [d3.symbolCircle, d3.symbolCircle, d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle, d3.symbolCross].map(d => symbolGenerator(d)));
 
 function symbolGenerator(symbolObj) {
-  return d3.symbol().type(symbolObj).size(100)();
+  return d3.symbol().type(symbolObj).size(125)();
 }
 
 function getRandomInt(min, max) {
@@ -182,7 +182,7 @@ function draw_scatter_static(parent_svg, response, plotTitle, debiased = false) 
     .attr('class', 'fobj')
     .append('xhtml:div')
     .attr('class', 'class-label')
-    .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 0.9em')
+    .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
     .html(d => d.label);
 
 
@@ -289,7 +289,7 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .attr('class', 'fobj')
     .append('xhtml:div')
     .attr('class', 'class-label')
-    .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 0.9em')
+    .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
     .html(d => (d.group === 0) ? '' : d.label);
 
   // Remove buttons
@@ -323,6 +323,7 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
   svg.append('text')
     .attr('class', 'group-0')
     .attr('dy', -10)
+    .style('font-size', '1.2em')
     .append('textPath')
     .attr('xlink:href', '#bias-direction-line')
     .attr('startOffset', '60')
@@ -888,6 +889,10 @@ $('#seedword-form-submit').click(function () {
   } catch (e) {
     console.log(e);
   }
+});
+
+$('#freeze-embedding').click(function () {
+  alert('Freezed')
 });
 
 // Allow enter in text inputs to press Run button
