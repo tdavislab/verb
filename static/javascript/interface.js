@@ -352,7 +352,7 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
       .duration(0)
       .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
 
-    console.log(d3.select('path#bias-direction-line').data());
+    // console.log(d3.select('path#bias-direction-line').data());
     // let new_endpoints = d3.select('path#bias-direction-line').data().map(d => d.map(e => [newX(e[0]), newY(e[1])]));
     // console.log(new_endpoints)
     d3.select('path#bias-direction-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
@@ -483,7 +483,8 @@ function setup_animation(anim_svg, response, identifier) {
           .attr('transform', d => 'translate(' + x_axis(d.x) + ',' + y_axis(d.y) + ')');
       }
 
-      let arrow_endpoints = response.anim_steps[step].filter(d => d.group === 0).map(d => [x_axis(d.x), y_axis(d.y)]);
+      let arrow_endpoints = [response.anim_steps[step].filter(d => d.group === 0).map(d => [d.x, d.y])];
+      console.log(arrow_endpoints[0].map(d => [x_axis(d[0]), y_axis(d[1])]));
 
       if ($('#algorithm-selection-button').text() === 'Algorithm: Iterative Null Space Projection') {
         let classifier_line = response.anim_steps[step].filter(d => d.group === 0).map(d => [d.x, d.y]);
@@ -504,6 +505,7 @@ function setup_animation(anim_svg, response, identifier) {
 
       if (camera_step) {
         svg.select('#bias-direction-line')
+          .data(arrow_endpoints)
           .transition()
           .ease(INTERPOLATION)
           .duration(ANIMATION_DURATION)
@@ -513,13 +515,14 @@ function setup_animation(anim_svg, response, identifier) {
           .on('end', function () {
             d3.select('#camera-indicator').classed('animate-flicker', false).attr('visibility', 'hidden');
           })
-          .attr('d', d3.line()(arrow_endpoints));
+          .attr('d', d => d3.line()(d.map(d => [x_axis(d[0]), y_axis(d[1])])));
       } else {
         svg.select('#bias-direction-line')
+          .data(arrow_endpoints)
           .transition()
           .ease(INTERPOLATION)
           .duration(ANIMATION_DURATION)
-          .attr('d', d3.line()(arrow_endpoints));
+          .attr('d', d => d3.line()(d.map(d => [x_axis(d[0]), y_axis(d[1])])));
       }
       d3.select('#camera-indicator').classed('animate-flicker', false).attr('visibility', 'hidden');
     }
