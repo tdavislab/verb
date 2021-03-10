@@ -132,10 +132,11 @@ _______________________________________
 - [x] Combinations: Linear + Hard + Oscar - Two Means + PCA; INLP - classification
 - [x] On error, dialog box
 - [ ] Support ~empty~ evalset, single word evaluation
-- [ ] brother-sister, father-mother; eval=professor, receptionist, pregnant; seed=he,man,she,woman
-- [ ] WEAT 
-- [ ] Legend
 - [x] Linear projection - Linear projection
 - [x] Correct remove points
-- [ ] Dotted line for classifier
+- [x] Dotted line for classifier
 - [x] lose focus in text field during overlay
+
+--------------------------------
+
+

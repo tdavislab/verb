@@ -198,8 +198,12 @@ class HardDebiaser(Debiaser):
         # ---------------------------------------------------------
         for i, word in enumerate(set(evalwords + equalize_words[0] + equalize_words[1])):
             # remove bias direction from dataset
-            # if word not in seedwords1 + seedwords2:
             self.debiased_emb.word_vectors[word].vector = remove_component(self.base_emb.word_vectors[word].vector, bias_direction)
+
+        for i, word in enumerate(set(self.base_emb.words())):
+            # remove bias direction from dataset
+            if word not in seedwords1 + seedwords2:
+                self.debiased_emb.word_vectors[word].vector = remove_component(self.base_emb.word_vectors[word].vector, bias_direction)
 
         step2 = self.animator.add_anim_step()
         step2.add_points(base_projector.project(self.debiased_emb, seedwords1, group=1))
@@ -293,7 +297,11 @@ class OscarDebiaser(Debiaser):
 
             rot_matrix = self.gs_constrained2d_new(np.identity(bias_direction.shape[0]), bias_direction, orth_direction)
 
-            for word in set(seedwords1 + seedwords2 + evalwords + orth_subspace_words):
+            # for word in set(seedwords1 + seedwords2 + evalwords + orth_subspace_words):
+            #     self.debiased_emb.word_vectors[word].vector = self.correction2d_new(rot_matrix, bias_direction, orth_direction,
+            #                                                                         self.base_emb.word_vectors[word].vector)
+
+            for word in self.base_emb.words():
                 self.debiased_emb.word_vectors[word].vector = self.correction2d_new(rot_matrix, bias_direction, orth_direction,
                                                                                     self.base_emb.word_vectors[word].vector)
 
@@ -570,7 +578,8 @@ class INLPDebiaser(Debiaser):
 
         for iter_idx in range(num_iters):
             x_projected = self.debiased_emb.get_vecs(seedwords1 + seedwords2).copy()
-            x_eval = self.debiased_emb.get_vecs(evalwords).copy()
+            # x_eval = self.debiased_emb.get_vecs(evalwords).copy()
+            x_eval = self.debiased_emb.get_vecs(self.base_emb.words()).copy()
 
             classifier_i = SVC(kernel='linear').fit(x_projected, y)
             weights = np.expand_dims(classifier_i.coef_[0], 0)

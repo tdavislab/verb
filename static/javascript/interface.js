@@ -3,7 +3,7 @@ $(document).ready(function () {
 });
 
 // Fill the textboxes while testing
-let TESTING = true;
+let TESTING = false;
 
 // Initialize global variables
 let LABEL_VISIBILITY = true;
@@ -326,7 +326,7 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .style('font-size', '1.2em')
     .append('textPath')
     .attr('xlink:href', '#bias-direction-line')
-    .attr('startOffset', '60')
+    .attr('startOffset', '30')
     .text(point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label) + '➞');
 
   let zoom = d3.zoom().scaleExtent([0.02, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
