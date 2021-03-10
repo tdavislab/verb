@@ -42,7 +42,7 @@ Clone this repository to your local machine, make sure the requirement are insta
 Then navigate to the cloned repository and in the base directory, type the following
 command in the terminal.
 ```shell script
-git clone https://github.com/tdavislab/visualizing-bias.git
+git clone https://github.com/tdavislab/visualizing-bias-visa.git
 cd <repo-location>
 python3 -m flask run
 ```
