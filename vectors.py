@@ -253,18 +253,47 @@ class HardDebiaser(Debiaser):
 class OscarDebiaser(Debiaser):
     def debias(self, bias_direction, seedwords1, seedwords2, evalwords, orth_subspace_words, use2d=True, bias_method=None):
         if use2d:
-            self.base_emb.update_vectors(self.base_emb.words(), PCA(n_components=2).fit_transform(self.base_emb.vectors()))
+
+            # 1. compute the primary subspace direction and the secondary subspace direction in original space: v1, v2
+            # 2. v2' = orth_component(v2, v1) and make unit vector
+            # 3. v1 and v2' define the new x and y-axis respectively
+            # 4. project n-dimensional points to v1 and v2'
+            v1 = get_bias_direction(self.base_emb, seedwords1, seedwords2, bias_method)
+            v2 = get_bias_direction(self.base_emb, orth_subspace_words, None, 'PCA')
+            v2_prime = v2 - v1 * (v2.dot(v1))
+            v2_prime = v2_prime / np.linalg.norm(v2_prime)
+
+            vecs = self.base_emb.vectors()
+            x_coord = vecs.dot(v1)
+            y_coord = vecs.dot(v2_prime)
+            self.base_emb.update_vectors(self.base_emb.words(), np.vstack([x_coord, y_coord]).T)
             self.debiased_emb.update_vectors(self.base_emb.words(), self.base_emb.vectors())
 
-            bias_direction = get_bias_direction(self.base_emb, seedwords1, seedwords2, bias_method)
-            pca_projector = PCA(n_components=2).fit(self.base_emb.get_vecs(orth_subspace_words))
-            orth_direction = pca_projector.components_[0]
-
-            # if orth_direction.dot(bias_direction) < 0:
-            #     orth_direction = orth_direction
-
-            orth_direction_prime = orth_direction - bias_direction * (orth_direction.dot(bias_direction))
+            bias_direction = np.array([v1.dot(v1), v1.dot(v2_prime)])
+            bias_direction = bias_direction / np.linalg.norm(bias_direction)
+            orth_direction = np.array([v2.dot(v1), v2.dot(v2_prime)])
+            orth_direction = orth_direction / np.linalg.norm(orth_direction)
+            orth_direction_prime = np.array([v2_prime.dot(v1), v2_prime.dot(v2_prime)])
             orth_direction_prime = orth_direction_prime / np.linalg.norm(orth_direction_prime)
+
+            # ----------------------------------------
+            # project everything to 2-d
+            # projector_2d = PCA(n_components=2)  # should be projected to span of v1 and v2'
+            # self.base_emb.update_vectors(self.base_emb.words(), projector_2d.fit_transform(self.base_emb.vectors()))
+            # self.debiased_emb.update_vectors(self.base_emb.words(), self.base_emb.vectors())
+            #
+            # bias_direction = get_bias_direction(self.base_emb, seedwords1, seedwords2, bias_method)
+            # # project bias-direction to 2-d using same PCA projector as the vectors
+            # # bias_direction = projector_2d.transform(bias_direction)
+            # pca_projector = PCA(n_components=2).fit(self.base_emb.get_vecs(orth_subspace_words))
+            # orth_direction = pca_projector.components_[0]
+            #
+            # # if orth_direction.dot(bias_direction) < 0:
+            # #     orth_direction = -orth_direction
+            #
+            # orth_direction_prime = orth_direction - bias_direction * (orth_direction.dot(bias_direction))
+            # orth_direction_prime = orth_direction_prime / np.linalg.norm(orth_direction_prime)
+            # ----------------------------------------
 
             # ---------------------------------------------------------
             # Step 0 - PCA of points in the original word vector space
@@ -283,7 +312,7 @@ class OscarDebiaser(Debiaser):
             # ---------------------------------------------------------
             # Step 1 - Project points such that bias direction is aligned with the x-axis
             # ----------------------------------------------------------
-            base_projector = self.animator.add_projector(BiasPCA(), name='base_projector')
+            base_projector = self.animator.add_projector(CoordinateProjector(), name='base_projector')
             base_projector.fit(self.base_emb, seedwords1 + seedwords2 + orth_subspace_words, bias_direction=bias_direction,
                                secondary_direction=orth_direction_prime)
 
@@ -310,7 +339,7 @@ class OscarDebiaser(Debiaser):
             # orth_direction_prime = orth_direction_prime / np.linalg.norm(orth_direction_prime)
             # self.debiased_emb.normalize()
 
-            base_projector = self.animator.add_projector(BiasPCA(), name='base_projector')
+            base_projector = self.animator.add_projector(CoordinateProjector(), name='base_projector')
             base_projector.fit(self.base_emb, seedwords1 + seedwords2 + orth_subspace_words, bias_direction=bias_direction,
                                secondary_direction=orth_direction_prime)
 

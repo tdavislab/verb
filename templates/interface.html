@@ -60,12 +60,25 @@
 
             <div id="input-two-col" class="input-group w-100 vert-space">
                 <div class="input-group-prepend w-25">
-                    <!--                    <span class="input-group-text" id="concept-label-1" contenteditable="true">Concept1</span>-->
                     <input type="text" class="w-100 input-group-text" id="concept-label-1" value="Concept1"/>
                 </div>
                 <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-
                 <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
+            </div>
+
+            <div id="subspace-dropdown-oscar" class="dropdown vert-space">
+                <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button-oscar"
+                        data-toggle="dropdown">
+                    Select secondary subspace method
+                </button>
+                <div id="subspace-dropdown-oscar-items" class="w-100 dropdown-menu">
+                    <h6 class="dropdown-header">Select secondary subspace method</h6>
+                    <a class="dropdown-item active">Two means</a>
+                    <a class="dropdown-item">PCA</a>
+                    <a class="dropdown-item">PCA-paired</a>
+                    <a class="dropdown-item">Classification</a>
+                    <a class="dropdown-item">GSS</a>
+                </div>
             </div>
 
             <div id="input-two-col-oscar" class="input-group vert-space">
@@ -74,7 +87,7 @@
                     <input type="text" class="w-100 input-group-text" id="concept-label-2" value="Concept2"/>
                 </div>
                 <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-                {# <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2...">#}
+                <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2..." hidden>
             </div>
 
             <div id="equalize-holder" class="input-group vert-space" style="display: None">
@@ -202,10 +215,10 @@
 <script src="../static/javascript/interface.js"></script>
 <script src="../static/javascript/labeler.js"></script>
 <script>
-    $(document).ready(function (){
-      $.ajax({
-        'url': '/unfreeze'
-      })
+  $(document).ready(function () {
+    $.ajax({
+      'url': '/unfreeze'
     })
+  })
 </script>
 </html>

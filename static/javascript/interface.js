@@ -1,9 +1,9 @@
-$(document).ready(function () {
-  $.ajaxSetup({cache: false});
-});
+// $(document).ready(function () {
+//   $.ajaxSetup({cache: false});
+// });
 
 // Fill the textboxes while testing
-let TESTING = false;
+let TESTING = true;
 
 // Initialize global variables
 let LABEL_VISIBILITY = true;
@@ -266,12 +266,19 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .append('path')
     .attr('d', 'M 0 0 L 10 5 L 0 10 z');
 
+  let labelArray = [], anchorArray = [];
+
   let datapoint_group = svg.selectAll('g')
     .data(point_data)
     .enter()
     .append('g')
     .attr('class', d => 'datapoint-group group-' + d.group)
-    .attr('transform', d => 'translate(' + x(d.x) + ',' + y(d.y) + ')')
+    .attr('transform', d => {
+      let x_coord = x(d.x), y_coord = y(d.y)
+      labelArray.push({x: x_coord, y: y_coord, name: d.label, width: 40, height: 10})
+      anchorArray.push({x: x_coord, y: y_coord, r: 20})
+      return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
+    })
     .on('mouseover', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
@@ -280,17 +287,37 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
     })
 
+  d3.labeler()
+    .label(labelArray)
+    .anchor(anchorArray)
+    .width(width)
+    .height(height)
+    .start(2000);
+
+  console.log(labelArray)
+
+  let labels = datapoint_group
+    .append('text')
+    .text((d, i) => {
+      return d.group === 0 ? '' : labelArray[i].name;
+    })
+    .attr('dx', (d, i) => labelArray[i].x - anchorArray[i].x)
+    .attr('dy', (d, i) => labelArray[i].y - anchorArray[i].y)
+    .classed('class-label', 'true')
+    .attr('fill', (d, i) => labelArray[i].group === 0 ? 'black' : color(labelArray[i].group))
+
+  // .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
   // Class label
-  datapoint_group.append('foreignObject')
-    .attr('x', 15)
-    .attr('y', -10)
-    .attr('width', '1px')
-    .attr('height', '1px')
-    .attr('class', 'fobj')
-    .append('xhtml:div')
-    .attr('class', 'class-label')
-    .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
-    .html(d => (d.group === 0) ? '' : d.label);
+  // datapoint_group.append('foreignObject')
+  //   .attr('x', 15)
+  //   .attr('y', -10)
+  //   .attr('width', '1px')
+  //   .attr('height', '1px')
+  //   .attr('class', 'fobj')
+  //   .append('xhtml:div')
+  //   .attr('class', 'class-label')
+  //   .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
+  //   .html(d => (d.group === 0) ? '' : d.label);
 
   // Remove buttons
   datapoint_group.append('text')
@@ -311,7 +338,6 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
 
   // Draw the bias direction arrow
   let arrow_endpoints = [point_data.filter(d => d.group === 0).map(d => [d.x, d.y])];
-  console.log(arrow_endpoints, x, y)
 
   let bias_line = svg.append('path')
     .data(arrow_endpoints)
@@ -449,6 +475,8 @@ function setup_animation(anim_svg, response, identifier) {
       x_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisBottom(x_axis));
       y_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisLeft(y_axis));
 
+      let labelArray = [], anchorArray = [];
+
       if (DYNAMIC_PROJ && transition_info.index !== -1) {
         let transition_array = transition_info.forward ? response.transitions[transition_info.index] : response.transitions[transition_info.index].slice().reverse();
         console.log(transition_array)
@@ -476,16 +504,43 @@ function setup_animation(anim_svg, response, identifier) {
             }
           })
       } else {
-        svg.selectAll('g')
+        let datapoint_group = svg.selectAll('g')
           .data(response.anim_steps[step])
           .transition()
           .duration(ANIMATION_DURATION)
           .ease(INTERPOLATION)
-          .attr('transform', d => 'translate(' + x_axis(d.x) + ',' + y_axis(d.y) + ')');
+          .attr('transform', d => {
+            let x_coord = x_axis(d.x), y_coord = y_axis(d.y)
+            labelArray.push({x: x_coord, y: y_coord, name: d.label, width: 100, height: 20})
+            anchorArray.push({x: x_coord, y: y_coord, r: 10})
+            return 'translate(' + x_axis(d.x) + ',' + y_axis(d.y) + ')'
+          })
+        console.log(labelArray, anchorArray)
+        d3.labeler()
+          .label(labelArray)
+          .anchor(anchorArray)
+          .width(width)
+          .height(height)
+          .start(2000);
+
+        datapoint_group.selectAll('.class-label')
+          .transition()
+          .duration(200)
+          .ease(INTERPOLATION)
+          .attr('dx', (d, i) => labelArray[i].x - anchorArray[i].x)
+          .attr('dy', (d, i) => labelArray[i].y - anchorArray[i].y)
+
+
+
+        // svg.selectAll('.class-label')
+        //   .transition()
+        //   .duration(ANIMATION_DURATION)
+        //   .ease(INTERPOLATION)
+        //   .attr('x', (d, i) => labelArray[i].x - x_axis(d.x))
+        //   .attr('y', (d, i) => labelArray[i].y - y_axis(d.y))
       }
 
       let arrow_endpoints = [response.anim_steps[step].filter(d => d.group === 0).map(d => [d.x, d.y])];
-      console.log(arrow_endpoints[0].map(d => [x_axis(d[0]), y_axis(d[1])]));
 
       if ($('#algorithm-selection-button').text() === 'Algorithm: Iterative Null Space Projection') {
         let classifier_line = response.anim_steps[step].filter(d => d.group === 0).map(d => [d.x, d.y]);
@@ -1005,7 +1060,7 @@ if (TESTING) {
     $('#example-selection-button').click();
     setTimeout(() => {
       $('#example-dropdown').children()[6].click();
-    }, 400)
+    }, 600)
   } catch (e) {
     console.log(e);
   }
