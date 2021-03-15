@@ -260,7 +260,7 @@ function draw_scatter_static(parent_svg, response, plotTitle, debiased = false) 
   }
 }
 
-function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
+function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, margin) {
   // Add the scatterplot
   svg.append('defs')
     .append('marker')
@@ -289,9 +289,15 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
       anchorArray.push({x: x_coord, y: y_coord, r: 10})
       return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
     })
-    .on('mouseover', function () {
+    .on('mouseover', function (d) {
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
+      let neigbors = neighbor_data[d.label]
+      d3.select('#knn').selectAll('div')
+        .data(neigbors)
+        .join('div')
+        .classed('neighbor-item', true)
+        .html(d => d)
     })
     .on('mouseout', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
@@ -631,7 +637,7 @@ function setup_animation(anim_svg, response, identifier) {
       .attr('id', identifier + 'group')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    draw_scatter_anim(svg, response.anim_steps[0], x_axis, y_axis, width, height, margin);
+    draw_scatter_anim(svg, response.anim_steps[0], response.knn.base, x_axis, y_axis, width, height, margin);
     let axes = draw_axes(svg, width, height, x_axis, y_axis);
 
     svg.append('path')

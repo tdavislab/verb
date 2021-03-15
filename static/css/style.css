@@ -230,3 +230,10 @@ rect {
     margin-top: 0.4em;
     margin-bottom: 0.4em;
 }
+
+.neighbor-item {
+    /*color: #fffcfc;*/
+    /*background: #6c757d;*/
+    /*border-radius: 2px;*/
+    /*padding: 0.3em;*/
+}

@@ -1,6 +1,8 @@
 import os
 
 from flask import Flask, render_template, request, jsonify, send_file
+from sklearn.neighbors import NearestNeighbors
+
 from vectors import *
 import utils
 from vectors import get_bias_direction
@@ -13,6 +15,8 @@ app = Flask(__name__)
 app.base_embedding = load('data/embedding.pkl')
 app.debiased_embedding = load('data/embedding.pkl')
 app.frozen = False
+app.base_knn = None
+app.debiased_knn = None
 
 with open('static/assets/explanations.json', 'r') as explanation_json:
     app.explanations = json.load(explanation_json)
@@ -52,6 +56,20 @@ def rename_concepts(anim_steps, c1_name, c2_name):
                 point['label'] = c1_name.replace(' ', '_')
             if point['label'] == 'Concept2':
                 point['label'] = c2_name.replace(' ', '_')
+
+
+def compute_knn(k=11):
+    base_words, base_vecs = app.base_embedding.words(), app.base_embedding.vectors()
+    app.base_knn = NearestNeighbors(n_neighbors=k, metric='cosine').fit(base_vecs)
+    debiased_words, debiased_vecs = app.debiased_embedding.words(), app.debiased_embedding.vectors()
+    app.debiased_knn = NearestNeighbors(n_neighbors=k, metric='cosine').fit(debiased_vecs)
+
+
+def neighbors(embedding, knn_obj, word_list):
+    vecs = embedding.get_vecs(word_list)
+    neighbor_indices = knn_obj.kneighbors(vecs, return_distance=False)
+    words = embedding.words()
+    return {word: [words[i] for i in neighbor_indices[idx]] for idx, word in enumerate(word_list)}
 
 
 @app.route('/')
@@ -112,6 +130,11 @@ def get_seedwords2():
         anim_steps = debiaser.animator.convert_animations_to_payload()
         transitions = debiaser.animator.convert_transitions_to_payload()
         rename_concepts(anim_steps, concept1_name, concept2_name)
+        compute_knn()
+        word_list = seedwords1 + seedwords2 + evalwords + equalize_set + orth_subspace_words
+        word_list = list(set([w for w in word_list if not (w == '' or w == [''])]))
+        base_neighbors = neighbors(app.base_embedding, app.base_knn, word_list)
+        debiased_neighbors = neighbors(app.debiased_embedding, app.debiased_knn, word_list)
 
         data_payload = {'base': anim_steps[0],
                         'debiased': anim_steps[-1],
@@ -120,6 +143,7 @@ def get_seedwords2():
                         'bounds': debiaser.animator.get_bounds(),
                         'explanations': explanations[algorithm],
                         'camera_steps': debiaser.animator.get_camera_steps(),
+                        'knn': {'base': base_neighbors, 'debiased': debiased_neighbors}
                         # 'weat_scores': {'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased}
                         }
 
