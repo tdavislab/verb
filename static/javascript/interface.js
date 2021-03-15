@@ -523,8 +523,13 @@ function setup_animation(anim_svg, response, identifier) {
           .transition()
           .duration(ANIMATION_DURATION)
           .ease(INTERPOLATION)
-          .on('start', () => {d3.select('g#animationgroup').on('.zoom', null)})
-          .on('end', () => {d3.select('g#animationgroup').call(zoom.transform, d3.zoomIdentity); d3.select('g#animationgroup').call(zoom)})
+          .on('start', () => {
+            d3.select('g#animationgroup').on('.zoom', null)
+          })
+          .on('end', () => {
+            d3.select('g#animationgroup').call(zoom.transform, d3.zoomIdentity);
+            d3.select('g#animationgroup').call(zoom)
+          })
           .attr('transform', d => {
             return 'translate(' + x_axis(d.x) + ',' + y_axis(d.y) + ')'
           })
@@ -958,6 +963,13 @@ $('#seedword-form-submit').click(function () {
     console.log(e);
   }
 });
+
+// $('#export-btn').click(function () {
+//   $.ajax({
+//     type: 'POST',
+//     url: '/export-csv'
+//   })
+// });
 
 $('#freeze-embedding').click(function () {
   $.ajax({

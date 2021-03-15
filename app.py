@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, jsonify
+import os
+
+from flask import Flask, render_template, request, jsonify, send_file
 from vectors import *
 import utils
 from vectors import get_bias_direction
 import json
 import copy
+import csv
 
 app = Flask(__name__)
 
@@ -138,6 +141,18 @@ def unfreeze_embedding():
     app.frozen = False
     reload_embeddings()
     return jsonify('Updated')
+
+
+@app.route('/export')
+def export_as_csv():
+    filepath = 'static/upload/debiased.csv'
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+    with open(filepath, 'w', newline='', encoding='utf-8') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerows(app.debiased_embedding.to_csv_list())
+
+    return send_file(filepath, attachment_filename='debiased.csv', mimetype='text/csv')
 
 
 class InvalidUsage(Exception):

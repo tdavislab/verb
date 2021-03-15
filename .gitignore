@@ -133,3 +133,4 @@ data/
 pdfs/
 .idea/
 scratch/
+/static/upload/*

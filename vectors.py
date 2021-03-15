@@ -75,6 +75,9 @@ class Embedding:
     def merge(self, other_embedding):
         self.word_vectors = {**self.word_vectors, **other_embedding.word_vectors}
 
+    def to_csv_list(self):
+        return [[word] + self.word_vectors[word].vector.tolist() for word in self.word_vectors]
+
 
 # Debiaser base class
 # ----------------------------------------------------

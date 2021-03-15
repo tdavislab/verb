@@ -66,7 +66,7 @@
                 <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
             </div>
 
-            <div id="subspace-dropdown-oscar" class="dropdown vert-space">
+            <div id="subspace-dropdown-oscar" class="dropdown vert-space" hidden>
                 <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button-oscar"
                         data-toggle="dropdown">
                     Select secondary subspace method
@@ -167,6 +167,14 @@
             <div id="explanation" class="vert-space">
                 <h5> Explanation </h5>
                 <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
+            </div>
+
+            <hr/>
+
+            <div id="export-import" class="vert-space">
+                <a href="/export">
+                    <button id="export-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Export as CSV</button>
+                </a>
             </div>
 
             <div id="initial-debiased-holder" class="row m-3" style="height: 50vh !important;" hidden>
