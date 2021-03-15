@@ -263,6 +263,9 @@ class OscarDebiaser(Debiaser):
             # 4. project n-dimensional points to v1 and v2'
             v1 = get_bias_direction(self.base_emb, seedwords1, seedwords2, bias_method)
             v2 = get_bias_direction(self.base_emb, orth_subspace_words, None, 'PCA')
+            theta = angle_between(v1, v2)
+            if theta > np.pi / 2:
+                v2 = -v2
             v2_prime = v2 - v1 * (v2.dot(v1))
             v2_prime = v2_prime / np.linalg.norm(v2_prime)
 
@@ -1111,6 +1114,19 @@ def hard_debias(base_embedding: Embedding, debiased_embedding: Embedding, bias_v
             debiased_embedding.vectors.append(base_embedding.vectors[i])
 
     debiased_embedding.vectors = np.array(debiased_embedding.vectors)
+
+
+def unit_vector(vector):
+    """ Returns the unit vector of the vector.  """
+    return vector / np.linalg.norm(vector)
+
+
+def angle_between(v1, v2):
+    """ Returns the angle in radians between vectors 'v1' and 'v2'
+    """
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
 # If called directly from command line, create and save Embedding object

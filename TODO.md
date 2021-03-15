@@ -139,5 +139,5 @@ _______________________________________
 - [ ] Add 'Save Embeddings' and 'Import Embeddings' buttons on the Control Panel
 - [ ] Show WEAT scores before and after debiasing for a fixed set of words
 - [ ] When 'data labels' are turned off, allow the evaluation set labels to be turned back on. More general functionality: allow a user-clicked subset of points with the labels turned on during the animation.
-- [ ] Show k=10 nearest neighbor as a list from the high-dimensional embedding.
+- [x] Show k=10 nearest neighbor as a list from the high-dimensional embedding.
 

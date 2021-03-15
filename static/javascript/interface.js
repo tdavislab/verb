@@ -289,15 +289,17 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       anchorArray.push({x: x_coord, y: y_coord, r: 10})
       return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
     })
-    .on('mouseover', function (d) {
+    .on('mouseover', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
+    })
+    .on('click', function(d) {
       let neigbors = neighbor_data[d.label]
-      d3.select('#knn').selectAll('div')
+      d3.select('#knn').selectAll('span')
         .data(neigbors)
-        .join('div')
+        .join('span')
         .classed('neighbor-item', true)
-        .html(d => d)
+        .html(d => d);
     })
     .on('mouseout', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
