@@ -90,33 +90,27 @@ _______________________________________
 - [x] Add step to show subspace method computations
 - [ ] Rotation for bias direction alignment instead of flipping
 - [x] Visual indication for camera movement vs actual projections
-- [ ] gendered words instead of names, use names in the critiques of debiasing
+- [x] gendered words instead of names, use names in the critiques of debiasing
 - [x] Bias direction projection
 - [x] Checkbox for toggle buttons
-- [ ] Do not remove origin bias labels on toggle data labels
+- [x] Do not remove origin bias labels on toggle data labels
 - [ ] WEAT score in initial and debiased embedding
 - [x] Not show all equalize set
 - [x] Bias1 and Bias 2 -> ~concept 1 and concept 2~; subspace 1 and subspace 2 
-- [ ] ability to name the subspaces
+- [x] ability to name the subspaces
 - [x] Update v to v' in Oscar step
 - [x] Disable other subspace methods
-- [ ] INLP - always reorient to classifier at each step, should be two steps - reorient to classifier direciton and project away from it
+- [x] INLP - always reorient to classifier at each step, should be two steps - reorient to classifier direciton and project away from it
 - [x] Scale of x and y-axis be same, balance +-x and +-y, animate axes
-- Low words in chosen examples
 - [x] Slow animation
 - [ ] Rotation using dynamic projections
-
-- Implementation of all methods
-- Send github invite
-- Meet friday 3-4
-- On update send email
 
 -----------------------------------
 
 - [x] Toggle buttons
 - [x] Camera movement indicator
 - [x] Custom names for subspaces
-- [ ] INLP break down classifier finding and rotation step
+- [x] INLP break down classifier finding and rotation step
 
 ----------------------------------
 
@@ -139,4 +133,10 @@ _______________________________________
 
 --------------------------------
 
+- [ ] Label placement to avoid overlapping labels 
+- [ ] Bug fixes involving zooming during animation and resetting the initial embedding: including disabling the zoom when the points are moving in the Embedding View panel.
+- [ ] Add ``Save Embeddings" and "Import Embeddings" buttons on the Control Panel
+- [ ] Show WEAT scores before and after debiasing for a fixed set of words
+- [ ] When ``data labels" are turned off, allow the evaluation set labels to be turned back on. More general functionality: allow a user-clicked subset of points with the labels turned on during the animation.
+- [ ] Show k=10 nearest neighbor as a list from the high-dimensional embedding.
 
