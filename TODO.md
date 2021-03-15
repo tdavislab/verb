@@ -133,8 +133,8 @@ _______________________________________
 
 --------------------------------
 
-- [ ] Label placement to avoid overlapping labels 
-- [ ] Bug fixes involving zooming during animation and resetting the initial embedding: including disabling the zoom when the points are moving in the Embedding View panel.
+- [x] Label placement to avoid overlapping labels 
+- [x] Bug fixes involving zooming during animation and resetting the initial embedding: including disabling the zoom when the points are moving in the Embedding View panel.
 - [ ] Add ``Save Embeddings" and "Import Embeddings" buttons on the Control Panel
 - [ ] Show WEAT scores before and after debiasing for a fixed set of words
 - [ ] When ``data labels" are turned off, allow the evaluation set labels to be turned back on. More general functionality: allow a user-clicked subset of points with the labels turned on during the animation.

@@ -15,6 +15,7 @@ let ANIMATION_DURATION = 4000;
 let AXIS_TOLERANCE = 0.05;
 let INTERPOLATION = d3.easeLinear;
 let DYNAMIC_PROJ = false;
+let zoom = null;
 
 if (TESTING) {
   ANIMATION_DURATION = 2000;
@@ -51,6 +52,10 @@ function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function filterByName(name, array, prop) {
+  return array.filter(d => d[prop] === name)[0];
 }
 
 function process_response(response, eval = false, debiased = false) {
@@ -130,6 +135,7 @@ function sample_label_position(scale) {
 }
 
 function draw_scatter_static(parent_svg, response, plotTitle, debiased = false) {
+  p_svg = parent_svg;
   parent_svg.selectAll('*').remove();
 
   let margin = {top: 20, right: 20, bottom: 20, left: 40};
@@ -279,7 +285,7 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .attr('class', d => 'datapoint-group group-' + d.group)
     .attr('transform', d => {
       let x_coord = x(d.x), y_coord = y(d.y)
-      labelArray.push({x: x_coord, y: y_coord, name: d.label})
+      labelArray.push({x: x_coord, y: y_coord, name: d.label, group: d.group})
       anchorArray.push({x: x_coord, y: y_coord, r: 10})
       return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
     })
@@ -312,25 +318,12 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .anchor(anchorArray)
     .width(width)
     .height(height)
-    .start(1000);
+    .start(2000);
 
   labels.transition()
     .duration(500)
     .attr('x', (d, i) => labelArray[i].x - anchorArray[i].x)
     .attr('y', (d, i) => labelArray[i].y - anchorArray[i].y)
-
-  // .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
-  // Class label
-  // datapoint_group.append('foreignObject')
-  //   .attr('x', 15)
-  //   .attr('y', -10)
-  //   .attr('width', '1px')
-  //   .attr('height', '1px')
-  //   .attr('class', 'fobj')
-  //   .append('xhtml:div')
-  //   .attr('class', 'class-label')
-  //   .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
-  //   .html(d => (d.group === 0) ? '' : d.label);
 
   // Remove buttons
   datapoint_group.append('text')
@@ -368,7 +361,7 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .attr('startOffset', '30')
     .text(point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label) + '➞');
 
-  let zoom = d3.zoom().scaleExtent([0.02, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
+  zoom = d3.zoom().scaleExtent([0.02, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
 
   svg.append('rect')
     .attr('width', width)
@@ -530,6 +523,8 @@ function setup_animation(anim_svg, response, identifier) {
           .transition()
           .duration(ANIMATION_DURATION)
           .ease(INTERPOLATION)
+          .on('start', () => {d3.select('g#animationgroup').on('.zoom', null)})
+          .on('end', () => {d3.select('g#animationgroup').call(zoom.transform, d3.zoomIdentity); d3.select('g#animationgroup').call(zoom)})
           .attr('transform', d => {
             return 'translate(' + x_axis(d.x) + ',' + y_axis(d.y) + ')'
           })
@@ -550,26 +545,12 @@ function setup_animation(anim_svg, response, identifier) {
           .anchor(anchorArray)
           .width(width)
           .height(height)
-          .start(1000);
+          .start(2000);
 
-
-        function filterByName(name, array, prop) {
-          return array.filter(d => d[prop] === name)[0];
-        }
-
-        console.log(filterByName('he', labelArray, 'name'))
         labels.transition()
           .duration(500)
           .attr('x', d => filterByName(d.label, labelArray, 'name').x - filterByName(d.label, anchorArray, 'name').x)
           .attr('y', d => filterByName(d.label, labelArray, 'name').y - filterByName(d.label, anchorArray, 'name').y)
-
-
-        // svg.selectAll('.class-label')
-        //   .transition()
-        //   .duration(ANIMATION_DURATION)
-        //   .ease(INTERPOLATION)
-        //   .attr('x', (d, i) => labelArray[i].x - x_axis(d.x))
-        //   .attr('y', (d, i) => labelArray[i].y - y_axis(d.y))
       }
 
       let arrow_endpoints = [response.anim_steps[step].filter(d => d.group === 0).map(d => [d.x, d.y])];
@@ -847,10 +828,10 @@ $('#subspace-dropdown a').click(function (e) {
 // Functionality for various toggle buttons
 $('#data-label-chk').click(function () {
   if (LABEL_VISIBILITY === true) {
-    d3.selectAll('.fobj').attr('hidden', true);
+    d3.selectAll('.class-label').attr('hidden', true);
     d3.select('#toggle-label-icon').attr('class', 'fa fa-toggle-on fa-rotate-180');
   } else {
-    d3.selectAll('.fobj').attr('hidden', null);
+    d3.selectAll('.class-label').attr('hidden', null);
     d3.select('#toggle-label-icon').attr('class', 'fa fa-toggle-on');
   }
   LABEL_VISIBILITY = !LABEL_VISIBILITY;
