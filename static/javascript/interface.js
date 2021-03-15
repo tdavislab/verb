@@ -3,7 +3,7 @@
 // });
 
 // Fill the textboxes while testing
-let TESTING = true;
+let TESTING = false;
 
 // Initialize global variables
 let LABEL_VISIBILITY = true;
