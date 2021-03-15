@@ -3,7 +3,7 @@
 // });
 
 // Fill the textboxes while testing
-let TESTING = false;
+let TESTING = true;
 
 // Initialize global variables
 let LABEL_VISIBILITY = true;
@@ -19,6 +19,9 @@ let DYNAMIC_PROJ = false;
 if (TESTING) {
   ANIMATION_DURATION = 2000;
 }
+
+let labelArray = [];
+let anchorArray = [];
 
 let ALGO_MAP = {
   'Linear projection': 1,
@@ -266,7 +269,8 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .append('path')
     .attr('d', 'M 0 0 L 10 5 L 0 10 z');
 
-  let labelArray = [], anchorArray = [];
+  labelArray = [];
+  anchorArray = [];
 
   let datapoint_group = svg.selectAll('g')
     .data(point_data)
@@ -275,8 +279,8 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
     .attr('class', d => 'datapoint-group group-' + d.group)
     .attr('transform', d => {
       let x_coord = x(d.x), y_coord = y(d.y)
-      labelArray.push({x: x_coord, y: y_coord, name: d.label, width: 40, height: 10})
-      anchorArray.push({x: x_coord, y: y_coord, r: 20})
+      labelArray.push({x: x_coord, y: y_coord, name: d.label})
+      anchorArray.push({x: x_coord, y: y_coord, r: 10})
       return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
     })
     .on('mouseover', function () {
@@ -287,24 +291,33 @@ function draw_scatter_anim(svg, point_data, x, y, width, height, margin) {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
     })
 
+  // Draw labels
+  let labels = datapoint_group.append('text')
+    .text((d, i) => d.group === 0 ? '' : labelArray[i].name)
+    .attr('dx', (d, i) => labelArray[i].x - anchorArray[i].x)
+    .attr('dy', (d, i) => labelArray[i].y - anchorArray[i].y)
+    .classed('class-label', 'true')
+    .attr('fill', (d, i) => labelArray[i].group === 0 ? 'black' : color(labelArray[i].group))
+
+  // Size of each label
+  let index = 0;
+  labels.each(function () {
+    labelArray[index].width = this.getBBox().width;
+    labelArray[index].height = this.getBBox().height;
+    index += 1;
+  });
+
   d3.labeler()
     .label(labelArray)
     .anchor(anchorArray)
     .width(width)
     .height(height)
-    .start(2000);
+    .start(1000);
 
-  console.log(labelArray)
-
-  let labels = datapoint_group
-    .append('text')
-    .text((d, i) => {
-      return d.group === 0 ? '' : labelArray[i].name;
-    })
-    .attr('dx', (d, i) => labelArray[i].x - anchorArray[i].x)
-    .attr('dy', (d, i) => labelArray[i].y - anchorArray[i].y)
-    .classed('class-label', 'true')
-    .attr('fill', (d, i) => labelArray[i].group === 0 ? 'black' : color(labelArray[i].group))
+  labels.transition()
+    .duration(500)
+    .attr('x', (d, i) => labelArray[i].x - anchorArray[i].x)
+    .attr('y', (d, i) => labelArray[i].y - anchorArray[i].y)
 
   // .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
   // Class label
@@ -475,7 +488,15 @@ function setup_animation(anim_svg, response, identifier) {
       x_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisBottom(x_axis));
       y_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisLeft(y_axis));
 
-      let labelArray = [], anchorArray = [];
+      labelArray = [];
+      anchorArray = [];
+
+      for (let i = 0; i < response.anim_steps[step].length; i++) {
+        let d = response.anim_steps[step][i];
+        let x_coord = x_axis(d.x), y_coord = y_axis(d.y)
+        labelArray.push({x: x_coord, y: y_coord, name: d.label})
+        anchorArray.push({x: x_coord, y: y_coord, name: d.label, r: 10})
+      }
 
       if (DYNAMIC_PROJ && transition_info.index !== -1) {
         let transition_array = transition_info.forward ? response.transitions[transition_info.index] : response.transitions[transition_info.index].slice().reverse();
@@ -510,26 +531,37 @@ function setup_animation(anim_svg, response, identifier) {
           .duration(ANIMATION_DURATION)
           .ease(INTERPOLATION)
           .attr('transform', d => {
-            let x_coord = x_axis(d.x), y_coord = y_axis(d.y)
-            labelArray.push({x: x_coord, y: y_coord, name: d.label, width: 100, height: 20})
-            anchorArray.push({x: x_coord, y: y_coord, r: 10})
             return 'translate(' + x_axis(d.x) + ',' + y_axis(d.y) + ')'
           })
-        console.log(labelArray, anchorArray)
+
+        // Draw labels
+        let labels = datapoint_group.selectAll('text.class-label')
+
+        // Size of each label
+        let index = 0;
+        labels.each(function () {
+          labelArray[index].width = this.getBBox().width;
+          labelArray[index].height = this.getBBox().height;
+          index += 1;
+        });
+
         d3.labeler()
           .label(labelArray)
           .anchor(anchorArray)
           .width(width)
           .height(height)
-          .start(2000);
+          .start(1000);
 
-        datapoint_group.selectAll('.class-label')
-          .transition()
-          .duration(200)
-          .ease(INTERPOLATION)
-          .attr('dx', (d, i) => labelArray[i].x - anchorArray[i].x)
-          .attr('dy', (d, i) => labelArray[i].y - anchorArray[i].y)
 
+        function filterByName(name, array, prop) {
+          return array.filter(d => d[prop] === name)[0];
+        }
+
+        console.log(filterByName('he', labelArray, 'name'))
+        labels.transition()
+          .duration(500)
+          .attr('x', d => filterByName(d.label, labelArray, 'name').x - filterByName(d.label, anchorArray, 'name').x)
+          .attr('y', d => filterByName(d.label, labelArray, 'name').y - filterByName(d.label, anchorArray, 'name').y)
 
 
         // svg.selectAll('.class-label')
