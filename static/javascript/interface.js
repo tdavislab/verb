@@ -375,6 +375,8 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     .attr('width', width)
     .attr('height', height)
     .attr('fill', 'none')
+    // .attr('stroke', 'black')
+    // .attr('rx', 15)
     .attr('pointer-events', 'all')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .lower();
