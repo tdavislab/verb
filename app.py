@@ -130,11 +130,18 @@ def get_seedwords2():
         anim_steps = debiaser.animator.convert_animations_to_payload()
         transitions = debiaser.animator.convert_transitions_to_payload()
         rename_concepts(anim_steps, concept1_name, concept2_name)
+
         compute_knn()
-        word_list = seedwords1 + seedwords2 + evalwords + equalize_set + orth_subspace_words
+        if algorithm == 'Hard':
+            word_list = seedwords1 + seedwords2 + evalwords + orth_subspace_words + [y for x in equalize_set for y in x]
+        else:
+            word_list = seedwords1 + seedwords2 + evalwords + orth_subspace_words
+
         word_list = list(set([w for w in word_list if not (w == '' or w == [''])]))
         base_neighbors = neighbors(app.base_embedding, app.base_knn, word_list)
         debiased_neighbors = neighbors(app.debiased_embedding, app.debiased_knn, word_list)
+        # base_neighbors = {word: ['t'] for word in word_list}
+        # debiased_neighbors = {word: ['t'] for word in word_list}
 
         data_payload = {'base': anim_steps[0],
                         'debiased': anim_steps[-1],
@@ -146,7 +153,7 @@ def get_seedwords2():
                         'knn': {'base': base_neighbors, 'debiased': debiased_neighbors}
                         # 'weat_scores': {'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased}
                         }
-
+        print('done creating response')
         return jsonify(data_payload)
     except KeyError as e:
         print(e)

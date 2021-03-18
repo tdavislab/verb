@@ -239,7 +239,7 @@ function draw_scatter_static(parent_svg, response, plotTitle, debiased = false) 
     .attr('height', height)
     .attr('fill', 'none')
     .attr('pointer-events', 'all')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    // .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .lower();
 
   parent_svg.call(zoom)
@@ -256,6 +256,7 @@ function draw_scatter_static(parent_svg, response, plotTitle, debiased = false) 
       .duration(0)
       .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
 
+    //
     bias_line.attr('d', d3.line()(data.filter(d => d.group === 0).map(d => [newX(d.x), newY(d.y)])));
   }
 }
@@ -293,7 +294,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
     })
-    .on('click', function(d) {
+    .on('click', function (d) {
       let neigbors = neighbor_data[d.label]
       d3.select('#knn').selectAll('span')
         .data(neigbors)
@@ -343,7 +344,6 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     .text('\uf057');
 
   datapoint_group.append('path')
-    // .attr('fill', d => color(d.group))
     .attr('fill', d => d.group === 0 ? '#414141' : color(d.group))
     .attr('d', d => (d.group === 0 && d.label != 'Origin') ? '' : shape(d.group))
     .attr('stroke', 'black')
@@ -353,21 +353,49 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
   // Draw the bias direction arrow
   let arrow_endpoints = [point_data.filter(d => d.group === 0).map(d => [d.x, d.y])];
 
-  let bias_line = svg.append('path')
-    .data(arrow_endpoints)
-    .attr('id', 'bias-direction-line')
-    .attr('d', d => d3.line()(d.map(d => [x(d[0]), y(d[1])])))
-    .attr('stroke', '#5b5b5b')
-    .attr('stroke-width', '4px');
+  if ($('#algorithm-selection-button').text() === 'Algorithm: OSCaR') {
+    let line_data = [[arrow_endpoints[0][0], arrow_endpoints[0][1]], [arrow_endpoints[0][2], arrow_endpoints[0][3]]];
+    console.log(line_data);
 
-  svg.append('text')
-    .attr('class', 'group-0')
-    .attr('dy', -10)
-    .style('font-size', '1.2em')
-    .append('textPath')
-    .attr('xlink:href', '#bias-direction-line')
-    .attr('startOffset', '30')
-    .text(point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label) + '➞');
+    let bias_lines = svg.append('g')
+      .attr('id', 'bias-direction-group')
+      .selectAll('path')
+      .data(line_data)
+      .join('path')
+      .attr('d', d => d3.line()(d.map(d => [x(d[0]), y(d[1])])))
+      .attr('id', (d, i) => 'bias-direction-line' + i)
+      .attr('class', 'bias-line')
+      .attr('stroke', '#5b5b5b')
+      .attr('stroke-width', '4px');
+
+    d3.select('#bias-direction-group').selectAll('text')
+      .data(line_data)
+      .join('text')
+      .attr('class', 'group-0')
+      .attr('dy', -10)
+      .style('font-size', '1.2em')
+      .attr('id', (d, i) => 'text' + i)
+      .append('textPath')
+      .attr('xlink:href', (d, i) => '#bias-direction-line' + i)
+      .attr('startOffset', '30')
+      .text((d, i) => point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label)[i] + '➞');
+  } else {
+    let bias_line = svg.append('path')
+      .data(arrow_endpoints)
+      .attr('id', 'bias-direction-line')
+      .attr('d', d => d3.line()(d.map(d => [x(d[0]), y(d[1])])))
+      .attr('stroke', '#5b5b5b')
+      .attr('stroke-width', '4px');
+
+    svg.append('text')
+      .attr('class', 'group-0')
+      .attr('dy', -10)
+      .style('font-size', '1.2em')
+      .append('textPath')
+      .attr('xlink:href', '#bias-direction-line')
+      .attr('startOffset', '30')
+      .text(point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label) + '➞');
+  }
 
   zoom = d3.zoom().scaleExtent([0.02, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
 
@@ -395,12 +423,8 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       .duration(0)
       .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
 
-    // console.log(d3.select('path#bias-direction-line').data());
-    // let new_endpoints = d3.select('path#bias-direction-line').data().map(d => d.map(e => [newX(e[0]), newY(e[1])]));
-    // console.log(new_endpoints)
     d3.select('path#bias-direction-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
-    // bias_line.attr('d', d3.line()(current_endpoints));
-    // console.log(d3.line()(point_data.filter(d => d.group === 0).map(d => [newX(d.x), newY(d.y)])));
+    d3.selectAll('.bias-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
   }
 }
 
@@ -488,8 +512,21 @@ function setup_animation(anim_svg, response, identifier) {
       let y_axis_obj = svg.select('.y');
       x_axis.domain([axes_limits['x_min'], axes_limits['x_max']]).nice();
       y_axis.domain([axes_limits['y_min'], axes_limits['y_max']]).nice();
-      x_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisBottom(x_axis));
-      y_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisLeft(y_axis));
+
+      if (camera_step) {
+        x_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION)
+          .on('start', function () {
+            d3.select('#camera-indicator').classed('animate-flicker', true).attr('visibility', 'visible');
+          })
+          .on('end', function () {
+            d3.select('#camera-indicator').classed('animate-flicker', false).attr('visibility', 'hidden');
+          })
+          .call(d3.axisBottom(x_axis))
+        y_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisLeft(y_axis));
+      } else {
+        x_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisBottom(x_axis));
+        y_axis_obj.transition().duration(ANIMATION_DURATION).ease(INTERPOLATION).call(d3.axisLeft(y_axis));
+      }
 
       labelArray = [];
       anchorArray = [];
@@ -587,18 +624,15 @@ function setup_animation(anim_svg, response, identifier) {
           .remove();
       }
 
-      if (camera_step) {
-        svg.select('#bias-direction-line')
-          .data(arrow_endpoints)
+      if ($('#algorithm-selection-button').text() === 'Algorithm: OSCaR') {
+        let line_data = [[arrow_endpoints[0][0], arrow_endpoints[0][1]], [arrow_endpoints[0][2], arrow_endpoints[0][3]]];
+
+        svg.select('#bias-direction-group')
+          .selectAll('path')
+          .data(line_data)
           .transition()
           .ease(INTERPOLATION)
           .duration(ANIMATION_DURATION)
-          .on('start', function () {
-            d3.select('#camera-indicator').classed('animate-flicker', true).attr('visibility', 'visible');
-          })
-          .on('end', function () {
-            d3.select('#camera-indicator').classed('animate-flicker', false).attr('visibility', 'hidden');
-          })
           .attr('d', d => d3.line()(d.map(d => [x_axis(d[0]), y_axis(d[1])])));
       } else {
         svg.select('#bias-direction-line')
@@ -608,7 +642,6 @@ function setup_animation(anim_svg, response, identifier) {
           .duration(ANIMATION_DURATION)
           .attr('d', d => d3.line()(d.map(d => [x_axis(d[0]), y_axis(d[1])])));
       }
-      d3.select('#camera-indicator').classed('animate-flicker', false).attr('visibility', 'hidden');
     }
 
     let margin = {top: 20, right: 20, bottom: 20, left: 40};
@@ -1094,7 +1127,7 @@ if (TESTING) {
     // $('#seedword-form-submit').click();
     $('#example-selection-button').click();
     setTimeout(() => {
-      $('#example-dropdown').children()[6].click();
+      $('#example-dropdown').children()[4].click();
     }, 600)
   } catch (e) {
     console.log(e);
