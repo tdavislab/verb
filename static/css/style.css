@@ -122,12 +122,7 @@ svg {
 
 .custom-control-input:focus ~
 .custom-control-label::before {
-    /* when the button is toggled off
-       it is still in focus and a violet border will appear */
     border-color: #28a745 !important;
-    /* box shadow is blue by default
-       but we do not want any shadow hence we have set
-       all the values as 0 */
     box-shadow: 0 0 0 0rem rgba(0, 0, 0, 0) !important;
 }
 
@@ -240,4 +235,14 @@ rect {
     line-height: 1.8;
     word-wrap: normal;
     display: inline-block;
+}
+
+.toggles {
+    display: inline !important;
+    /*padding: 0.3em;*/
+    margin-right: 1em !important;
+}
+
+.datapoint-group {
+    cursor: pointer;
 }

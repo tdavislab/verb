@@ -295,9 +295,20 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       d3.select(this).classed('translucent', false);
     })
     .on('click', function (d) {
-      let neigbors = neighbor_data[d.label]
-      d3.select('#knn').selectAll('span')
-        .data(neigbors)
+      let neigbors_base = neighbor_data.base[d.label], neighbors_debiased = neighbor_data.debiased[d.label];
+
+      d3.select('#knn').select('#base-neighbors')
+        // .text('Base neighbors: ')
+        .selectAll('span')
+        .data(neigbors_base)
+        .join('span')
+        .classed('neighbor-item', true)
+        .html(d => d);
+
+      d3.select('#knn').select('#debiased-neighbors')
+        // .text('Debiased neighbors: ')
+        .selectAll('span')
+        .data(neigbors_base)
         .join('span')
         .classed('neighbor-item', true)
         .html(d => d);
@@ -674,7 +685,7 @@ function setup_animation(anim_svg, response, identifier) {
       .attr('id', identifier + 'group')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    draw_scatter_anim(svg, response.anim_steps[0], response.knn.base, x_axis, y_axis, width, height, margin);
+    draw_scatter_anim(svg, response.anim_steps[0], response.knn, x_axis, y_axis, width, height, margin);
     let axes = draw_axes(svg, width, height, x_axis, y_axis);
 
     svg.append('path')
@@ -1127,7 +1138,7 @@ if (TESTING) {
     // $('#seedword-form-submit').click();
     $('#example-selection-button').click();
     setTimeout(() => {
-      $('#example-dropdown').children()[4].click();
+      $('#example-dropdown').children()[0].click();
     }, 600)
   } catch (e) {
     console.log(e);
