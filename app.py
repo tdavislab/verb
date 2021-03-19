@@ -11,9 +11,9 @@ import copy
 import csv
 
 app = Flask(__name__)
-
-app.base_embedding = load('data/embedding.pkl')
-app.debiased_embedding = load('data/embedding.pkl')
+app.embedding_path = 'data/embedding.pkl'
+app.base_embedding = load(app.embedding_path)
+app.debiased_embedding = load(app.embedding_path)
 app.frozen = False
 app.base_knn = None
 app.debiased_knn = None
@@ -44,8 +44,8 @@ SUBSPACE_METHODS = {
 
 def reload_embeddings():
     print('Reloaded embedding')
-    app.base_embedding = load('data/embedding.pkl')
-    app.debiased_embedding = load('data/embedding.pkl')  # Embedding(None)
+    app.base_embedding = load(app.embedding_path)
+    app.debiased_embedding = load(app.embedding_path)  # Embedding(None)
     # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
 
@@ -184,6 +184,11 @@ def export_as_csv():
         writer.writerows(app.debiased_embedding.to_csv_list())
 
     return send_file(filepath, attachment_filename='debiased.csv', mimetype='text/csv')
+
+
+@app.route('/import', methods=['POST'])
+def import_csv():
+    filepath = 'data/imported_embedding.pkl'
 
 
 class InvalidUsage(Exception):

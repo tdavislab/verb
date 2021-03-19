@@ -1018,13 +1018,6 @@ $('#seedword-form-submit').click(function () {
   }
 });
 
-// $('#export-btn').click(function () {
-//   $.ajax({
-//     type: 'POST',
-//     url: '/export-csv'
-//   })
-// });
-
 $('#freeze-embedding').click(function () {
   $.ajax({
     type: 'POST',
@@ -1117,6 +1110,10 @@ $('#control-collapser').on('click', function () {
   } else if (this.innerHTML === 'Show controls') {
     this.innerHTML = 'Hide controls';
   }
+})
+
+$('#import-btn').on('click', function () {
+  $('#import-input').click();
 })
 
 if (TESTING) {
