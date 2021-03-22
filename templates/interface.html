@@ -149,25 +149,38 @@
             </div>
 
             <div id="toolbar" class="mt-3 p-3 vert-space border rounded">
-                <span id='toggle-labels-btn' class="custom-switch custom-control toggles" disabled>
-                    <input type="checkbox" id="data-label-chk" class="custom-control-input" checked>
-                    <label for="data-label-chk" class="custom-control-label">Data labels</label>
-                </span>
-
-                <span id='remove-points-btn' class="custom-switch custom-control toggles" disabled>
-                    <input type="checkbox" id="remove-points-chk" class="custom-control-input">
-                    <label for="remove-points-chk" class="custom-control-label">Remove points</label>
-                </span>
-
-                <span id='toggle-mean-btn' class="custom-switch custom-control toggles" disabled>
-                    <input type="checkbox" id="toggle-mean-chk" class="custom-control-input" checked>
-                    <label for="toggle-mean-chk" class="custom-control-label">Show concept directions</label>
-                </span>
-
-                <span id='toggle-eval-btn' class="custom-switch custom-control toggles" disabled>
-                    <input type="checkbox" id="toggle-eval-chk" class="custom-control-input" checked>
-                    <label for="toggle-eval-chk" class="custom-control-label">Show evaluation points</label>
-                </span>
+                <table class="w-100">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span id='toggle-labels-btn' class="custom-switch custom-control toggles" disabled>
+                                <input type="checkbox" id="data-label-chk" class="custom-control-input" checked>
+                                <label for="data-label-chk" class="custom-control-label">Show data labels</label>
+                            </span>
+                        </td>
+                        <td>
+                            <span id='remove-points-btn' class="custom-switch custom-control toggles" disabled>
+                                <input type="checkbox" id="remove-points-chk" class="custom-control-input">
+                                <label for="remove-points-chk" class="custom-control-label">Remove points</label>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span id='toggle-mean-btn' class="custom-switch custom-control toggles" disabled>
+                                <input type="checkbox" id="toggle-mean-chk" class="custom-control-input" checked>
+                                <label for="toggle-mean-chk" class="custom-control-label">Show concept directions</label>
+                            </span>
+                        </td>
+                        <td>
+                            <span id='toggle-eval-btn' class="custom-switch custom-control toggles" disabled>
+                                <input type="checkbox" id="toggle-eval-chk" class="custom-control-input" checked>
+                                <label for="toggle-eval-chk" class="custom-control-label">Show evaluation points</label>
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div id="explanation" class="vert-space">

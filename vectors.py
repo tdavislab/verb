@@ -269,6 +269,20 @@ class OscarDebiaser(Debiaser):
             v2_prime = v2 - v1 * (v2.dot(v1))
             v2_prime = v2_prime / np.linalg.norm(v2_prime)
 
+            # ---------------------------------------------------------
+            # Step 0 - PCA of points in the original word vector space
+            # ---------------------------------------------------------
+            prebase_projector = self.animator.add_projector(PCA(n_components=2), name='prebase_projector')
+            prebase_projector.fit(self.base_emb, seedwords1 + seedwords2 + orth_subspace_words)
+
+            step0 = self.animator.add_anim_step()
+            step0.add_points(prebase_projector.project(self.base_emb, seedwords1, group=1))
+            step0.add_points(prebase_projector.project(self.base_emb, seedwords2, group=2))
+            step0.add_points(prebase_projector.project(self.base_emb, evalwords, group=3))
+            step0.add_points(prebase_projector.project(self.base_emb, orth_subspace_words, group=4))
+            step0.add_points(prebase_projector.project(self.base_emb, [], group=0, direction=v1))
+            step0.add_points(prebase_projector.project(self.base_emb, [], group=0, direction=v2, concept_idx=2))
+
             vecs = self.base_emb.vectors()
             x_coord = vecs.dot(v1)
             y_coord = vecs.dot(v2_prime)
@@ -300,20 +314,6 @@ class OscarDebiaser(Debiaser):
             # orth_direction_prime = orth_direction - bias_direction * (orth_direction.dot(bias_direction))
             # orth_direction_prime = orth_direction_prime / np.linalg.norm(orth_direction_prime)
             # ----------------------------------------
-
-            # ---------------------------------------------------------
-            # Step 0 - PCA of points in the original word vector space
-            # ---------------------------------------------------------
-            prebase_projector = self.animator.add_projector(CoordinateProjector(), name='prebase_projector')
-            prebase_projector.fit(self.base_emb, seedwords1 + seedwords2 + orth_subspace_words, bias_direction=bias_direction)
-
-            step0 = self.animator.add_anim_step()
-            step0.add_points(prebase_projector.project(self.base_emb, seedwords1, group=1))
-            step0.add_points(prebase_projector.project(self.base_emb, seedwords2, group=2))
-            step0.add_points(prebase_projector.project(self.base_emb, evalwords, group=3))
-            step0.add_points(prebase_projector.project(self.base_emb, orth_subspace_words, group=4))
-            step0.add_points(prebase_projector.project(self.base_emb, [], group=0, direction=bias_direction))
-            step0.add_points(prebase_projector.project(self.base_emb, [], group=0, direction=orth_direction, concept_idx=2))
 
             # ---------------------------------------------------------
             # Step 1 - Project points such that bias direction is aligned with the x-axis
@@ -549,22 +549,12 @@ class OscarDebiaser(Debiaser):
             v2P = v2 - proj(v1, v2)
             v2P = v2P / np.linalg.norm(v2P)
 
-            # x_temp = x.copy()
-            # x[0] = v1.dot(x_temp)
-            # x[1] = v2P.dot(x_temp)
-
             thetaP = np.arccos(np.dot(v1, v2))
-            # if thetaP < np.pi / 2.0:
-            #     theta = (np.pi / 2.0) - thetaP
-            # else:
-            #     theta = thetaP - np.pi / 2.0
             theta = np.abs(thetaP - np.pi / 2)
-            # theta = (np.pi / 2.0) - thetaP
 
             phi = np.arccos(np.dot(v1 / np.linalg.norm(v1), (x / np.linalg.norm(x))))
             d = np.dot(v2P / np.linalg.norm(v2P), (x / np.linalg.norm(x)))
 
-            # thetaX = 1.0
             if d > 0 and phi < thetaP:
                 thetaX = theta * (phi / thetaP)
             elif d > 0 and phi > thetaP:
@@ -575,9 +565,6 @@ class OscarDebiaser(Debiaser):
                 thetaX = theta * (phi / (np.pi - thetaP + 1e-10))
             else:
                 return x
-
-            # if v1.dot(v2) > 0:
-            #     thetaX = -thetaX
 
             R = np.zeros((2, 2))
             R[0][0] = np.cos(thetaX)

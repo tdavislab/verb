@@ -125,10 +125,10 @@
     {
       "name": "Linear projection: Merchant names",
       "algorithm": "Linear projection",
-      "seedwords-1": "WATERDOGTAVERN1, SHOREWAYCAFE, COYOTEMEXICANCAFE",
-      "seedwords-2": "LOSANGELESAIRPORT, UCLA, BOTTEGALOUIELOS",
+      "seedwords-1": "BAY_WATERDOGTAVERN1, BAY_SHOREWAYCAFE, BAY_COYOTEMEXICANCAFE",
+      "seedwords-2": "LA_LOSANGELESAIRPORT, LA_UCLA, LA_BOTTEGALOUIELOS",
       "subspace": "Two means",
-      "evalset": "SPUNBYSS, EPICUREANATNOTREDAME, KINGTACO, LAXAIRPNATURALBREAK",
+      "evalset": "BAY_SPUNBYSS, BAY_EPICUREANATNOTREDAME, LA_KINGTACO, LA_LAXAIRPNATURALBREAK",
       "concept1": "Location"
     },
     {
