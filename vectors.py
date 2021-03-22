@@ -9,6 +9,7 @@ from weat import weat_score
 import scipy
 from dynamicProj import generateFullDynamicProjPath, generateDynamicProjPath
 from gss_subspace import f_weat, gss
+from joblib import Parallel, delayed
 
 
 class WordVector:
@@ -336,6 +337,13 @@ class OscarDebiaser(Debiaser):
             #     self.debiased_emb.word_vectors[word].vector = self.correction2d_new(rot_matrix, bias_direction, orth_direction,
             #                                                                         self.base_emb.word_vectors[word].vector)
 
+            # def update_oscar(word):
+            #     return self.correction2d_new(rot_matrix, bias_direction, orth_direction,
+            #                                                                         self.base_emb.word_vectors[word].vector)
+            #
+            # debiased_vectors = Parallel(n_jobs=-2)(delayed(update_oscar)(word) for word in self.base_emb.words())
+            # self.debiased_emb.update_vectors(self.base_emb.words(), debiased_vectors)
+
             for word in self.base_emb.words():
                 self.debiased_emb.word_vectors[word].vector = self.correction2d_new(rot_matrix, bias_direction, orth_direction,
                                                                                     self.base_emb.word_vectors[word].vector)
@@ -542,38 +550,6 @@ class OscarDebiaser(Debiaser):
 
     @staticmethod
     def correction2d_new(U, v1, v2, x):
-        def rotation(v1, v2, x):
-            def proj(u, a):
-                return (np.dot(u, a)) * u
-
-            v2P = v2 - proj(v1, v2)
-            v2P = v2P / np.linalg.norm(v2P)
-
-            thetaP = np.arccos(np.dot(v1, v2))
-            theta = np.abs(thetaP - np.pi / 2)
-
-            phi = np.arccos(np.dot(v1 / np.linalg.norm(v1), (x / np.linalg.norm(x))))
-            d = np.dot(v2P / np.linalg.norm(v2P), (x / np.linalg.norm(x)))
-
-            if d > 0 and phi < thetaP:
-                thetaX = theta * (phi / thetaP)
-            elif d > 0 and phi > thetaP:
-                thetaX = theta * ((np.pi - phi) / (np.pi - thetaP + 1e-10))
-            elif d < 0 and phi >= np.pi - thetaP:
-                thetaX = theta * ((np.pi - phi) / thetaP)
-            elif d < 0 and phi < np.pi - thetaP:
-                thetaX = theta * (phi / (np.pi - thetaP + 1e-10))
-            else:
-                return x
-
-            R = np.zeros((2, 2))
-            R[0][0] = np.cos(thetaX)
-            R[0][1] = -np.sin(thetaX)
-            R[1][0] = np.sin(thetaX)
-            R[1][1] = np.cos(thetaX)
-
-            return np.matmul(R, x)
-
         if np.count_nonzero(x) != 0:
             rotated_x = rotation(v1, v2, x)
             return rotated_x
@@ -582,9 +558,6 @@ class OscarDebiaser(Debiaser):
 
     @staticmethod
     def gs_constrained2d_new(matrix, v1, v2):
-        def proj(u, a):
-            return (np.dot(u, a)) * u
-
         u = np.zeros((np.shape(matrix)[0], np.shape(matrix)[1]))
         u[0] = v1
         u[0] = u[0] / np.linalg.norm(u[0])
@@ -1053,6 +1026,41 @@ def basis(vec):
     v2_prime = second_component - first_component * float(np.matmul(first_component, second_component.T))
     v2_prime = v2_prime / np.linalg.norm(v2_prime)
     return v2_prime
+
+
+def proj(u, a):
+    return (np.dot(u, a)) * u
+
+
+def rotation(v1, v2, x):
+    v2P = v2 - proj(v1, v2)
+    v2P = v2P / np.linalg.norm(v2P)
+
+    thetaP = np.arccos(np.dot(v1, v2))
+    theta = np.abs(thetaP - np.pi / 2)
+
+    x_norm = x / np.linalg.norm(x)
+    phi = np.arccos(np.dot(v1 / np.linalg.norm(v1), x_norm))
+    d = np.dot(v2P, x_norm)
+
+    if d > 0 and phi < thetaP:
+        thetaX = theta * (phi / thetaP)
+    elif d > 0 and phi > thetaP:
+        thetaX = theta * ((np.pi - phi) / (np.pi - thetaP + 1e-10))
+    elif d < 0 and phi >= np.pi - thetaP:
+        thetaX = theta * ((np.pi - phi) / thetaP)
+    elif d < 0 and phi < np.pi - thetaP:
+        thetaX = theta * (phi / (np.pi - thetaP + 1e-10))
+    else:
+        return x
+
+    R = np.zeros((2, 2))
+    R[0][0] = np.cos(thetaX)
+    R[0][1] = -np.sin(thetaX)
+    R[1][0] = np.sin(thetaX)
+    R[1][1] = np.cos(thetaX)
+
+    return np.matmul(R, x)
 
 
 def two_means(embedding, word_list1, word_list2):
