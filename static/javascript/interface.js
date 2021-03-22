@@ -977,6 +977,7 @@ $('#seedword-form-submit').click(function () {
         $('.overlay').addClass('d-flex').show();
         $('#spinner-holder').show();
         $('#seedword-form-submit').attr('disabled', 'disabled');
+        $('#weat-display').text('')
       },
       success: function (response) {
         // let predebiased_svg = d3.select('#pre-debiased-svg');
@@ -1115,6 +1116,19 @@ $('#control-collapser').on('click', function () {
 $('#import-btn').on('click', function () {
   $('#import-input').click();
 })
+
+$('#weat-btn').on('click', function () {
+  $.ajax({
+    'url': '/weat',
+    'success': function(response) {
+      console.log(response);
+      $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
+    },
+    'error': function(response) {
+      console.log(response);
+    }
+  })
+});
 
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');

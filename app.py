@@ -21,8 +21,8 @@ app.debiased_knn = None
 with open('static/assets/explanations.json', 'r') as explanation_json:
     app.explanations = json.load(explanation_json)
 
-# app.weat_A = ['doctor', 'engineer', 'lawyer', 'mathematician', 'banker']
-# app.weat_B = ['receptionist', 'homemaker', 'nurse', 'dancer', 'maid']
+app.weat_A = ['doctor', 'engineer', 'lawyer', 'mathematician', 'banker']
+app.weat_B = ['receptionist', 'homemaker', 'nurse', 'dancer', 'maid']
 
 # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
@@ -151,9 +151,7 @@ def get_seedwords2():
                         'explanations': explanations[algorithm],
                         'camera_steps': debiaser.animator.get_camera_steps(),
                         'knn': {'base': base_neighbors, 'debiased': debiased_neighbors}
-                        # 'weat_scores': {'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased}
                         }
-        print('done creating response')
         return jsonify(data_payload)
     except KeyError as e:
         print(e)
@@ -189,6 +187,14 @@ def export_as_csv():
 @app.route('/import', methods=['POST'])
 def import_csv():
     filepath = 'data/imported_embedding.pkl'
+
+
+@app.route('/weat', methods=['POST', 'GET'])
+def get_weat():
+    weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B)
+    weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B)
+
+    return jsonify(weat_scores={'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased})
 
 
 class InvalidUsage(Exception):
