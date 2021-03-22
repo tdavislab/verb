@@ -140,6 +140,7 @@ def get_seedwords2():
         word_list = list(set([w for w in word_list if not (w == '' or w == [''])]))
         base_neighbors = neighbors(app.base_embedding, app.base_knn, word_list)
         debiased_neighbors = neighbors(app.debiased_embedding, app.debiased_knn, word_list)
+
         # base_neighbors = {word: ['t'] for word in word_list}
         # debiased_neighbors = {word: ['t'] for word in word_list}
 
