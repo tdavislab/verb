@@ -1156,10 +1156,10 @@ if (TESTING) {
     // $('#algorithm-dropdown').children()[1].click();
     // $('#subspace-dropdown-items').children()[1].click();
     // $('#seedword-form-submit').click();
-    $('#example-selection-button').click();
-    setTimeout(() => {
-      $('#example-dropdown').children()[0].click();
-    }, 600)
+    // $('#example-selection-button').click();
+    // setTimeout(() => {
+    //   $('#example-dropdown').children()[0].click();
+    // }, 600)
   } catch (e) {
     console.log(e);
   }

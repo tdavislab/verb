@@ -560,8 +560,8 @@ class INLPDebiaser(Debiaser):
 
         for iter_idx in range(num_iters):
             x_projected = self.debiased_emb.get_vecs(seedwords1 + seedwords2).copy()
-            # x_eval = self.debiased_emb.get_vecs(evalwords).copy()
-            x_eval = self.debiased_emb.get_vecs(self.base_emb.words()).copy()
+            x_eval = self.debiased_emb.get_vecs(evalwords).copy()
+            # x_eval = self.debiased_emb.get_vecs(self.base_emb.words()).copy()
 
             classifier_i = SVC(kernel='linear').fit(x_projected, y)
             weights = np.expand_dims(classifier_i.coef_[0], 0)
@@ -574,7 +574,7 @@ class INLPDebiaser(Debiaser):
             # Step 1 - PCA of points in their vector space
             # ---------------------------------------------------------
             base_projector = self.animator.add_projector(PCA(n_components=2), name='base_projector')
-            base_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
+            base_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + evalwords)
 
             step1 = self.animator.add_anim_step(camera_step=True)
             step1.add_points(base_projector.project(self.debiased_emb, seedwords1, group=1))
@@ -596,7 +596,7 @@ class INLPDebiaser(Debiaser):
             # Step 3 - Project points such that bias direction is aligned with the x-axis
             # ---------------------------------------------------------
             align_projector = self.animator.add_projector(BiasPCA(), name='align_projector')
-            align_projector.fit(self.debiased_emb, seedwords1 + seedwords2, bias_direction=bias_direction)
+            align_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + evalwords, bias_direction=bias_direction)
 
             step3 = self.animator.add_anim_step(camera_step=True)
             step3.add_points(align_projector.project(self.debiased_emb, seedwords1, group=1))
@@ -613,11 +613,14 @@ class INLPDebiaser(Debiaser):
 
             # now project data to new rowspace
             P = self.get_projection_to_intersection_of_nullspaces(rowspace_projections, x_projected.shape[1])
-            x_projected = P.dot(x_projected.T).T
-            x_eval = P.dot(x_eval.T).T
+            # x_projected = P.dot(x_projected.T).T
+            # x_eval = P.dot(x_eval.T).T
 
-            self.debiased_emb.update_vectors(seedwords1 + seedwords2, x_projected)
-            self.debiased_emb.update_vectors(evalwords, x_eval)
+            x_projected = P.dot(self.base_emb.vectors().T).T
+            self.debiased_emb.update_vectors(self.base_emb.words(), x_projected)
+
+            # self.debiased_emb.update_vectors(seedwords1 + seedwords2, x_projected)
+            # self.debiased_emb.update_vectors(evalwords, x_eval)
 
             step4 = self.animator.add_anim_step()
             step4.add_points(align_projector.project(self.debiased_emb, seedwords1, group=1))
