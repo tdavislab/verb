@@ -929,7 +929,13 @@ $('#remove-points-chk').click(function () {
 });
 
 $('#toggle-scrshot-chk').click(function () {
+  let scr_state = $(this).prop('checked');
+  if (scr_state === true) {
+    // d3.selectAll('.group-3').attr('hidden', true);
     $('.datapoint-group').attr('transform', function() {return $(this).attr('transform') + 'scale(1.5 1.5)'})
+  } else {
+    $('.datapoint-group').attr('transform', function() {return $(this).attr('transform') + 'scale(0.6667 0.6667)'})
+  }
 });
 
 function svg_cleanup() {
