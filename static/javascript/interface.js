@@ -690,7 +690,7 @@ function setup_animation(anim_svg, response, identifier) {
     svg.append('path')
       .attr('id', 'classification-line')
       .attr('stroke', '#2751ac')
-      .attr('d', d3.line()([[0, 0], [1, 1]]))
+      .attr('d', d3.line()([[x_axis(0), y_axis(0)], [x_axis(0), y_axis(0)]]))
       .attr('stroke-width', '2px')
       .attr('stroke-dasharray', '5, 5')
 
