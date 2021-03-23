@@ -10,7 +10,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Lipstick on a Pig: Hard debiasing",
+      "name": "Hard debiasing: Lipstick on a Pig",
       "algorithm": "Hard debiasing",
       "seedwords-1": "he",
       "seedwords-2": "she",
@@ -20,7 +20,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Lipstick on a Pig: Linear projection",
+      "name": "Linear projection: Lipstick on a Pig",
       "algorithm": "Linear projection",
       "seedwords-1": "he",
       "seedwords-2": "she",
@@ -29,7 +29,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Lipstick on a Pig: INLP",
+      "name": "INLP: Lipstick on a Pig",
       "algorithm": "Iterative Null Space Projection",
       "seedwords-1": "he,engineer,banker",
       "seedwords-2": "she,nurse, receptionist",
@@ -38,7 +38,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Example from paper: OSCaR",
+      "name": "OSCaR: Example from paper",
       "algorithm": "OSCaR",
       "seedwords-1": "he",
       "seedwords-2": "she",
@@ -58,7 +58,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Adjectives: Linear Projection",
+      "name": "Linear Projection: Adjectives",
       "algorithm": "Linear projection",
       "seedwords-1": "he, him",
       "seedwords-2": "she, her",
@@ -67,7 +67,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Adjectives: Hard Debiasing",
+      "name": "Hard Debiasing: Adjectives",
       "algorithm": "Hard debiasing",
       "seedwords-1": "he, him",
       "seedwords-2": "she, her",
@@ -77,7 +77,7 @@
       "concept1": "Gender"
     },
     {
-      "name": "Nationality (Case1): Linear Projection",
+      "name": "Linear Projection: Nationality (Case1)",
       "algorithm": "Linear projection",
       "seedwords-1": "syrian, persian",
       "seedwords-2": "american, canadian",
@@ -86,11 +86,20 @@
       "concept1": "Nationality"
     },
     {
-      "name": "Nationality (Case 2): Linear Projection",
+      "name": "Linear Projection: Nationality (Case 2)",
       "algorithm": "Linear projection",
       "seedwords-1": "persian, american, canadian, chinese, indian, british, syrian",
       "subspace": "PCA",
       "evalset": "good, evil, smart,  greedy, nice",
+      "concept1": "Nationality"
+    },
+    {
+      "name": "Linear Projection: Nationality (Case3)",
+      "algorithm": "Linear projection",
+      "seedwords-1": "american, canadian",
+      "seedwords-2": "iran, iraq",
+      "subspace": "Two means",
+      "evalset": "good, evil, right, wrong",
       "concept1": "Nationality"
     },
     {
@@ -103,12 +112,22 @@
       "concept1": "Gender"
     },
     {
-      "name": "OSCaR: gender-occupations",
+      "name": "OSCaR: gender-occupations (Case 1)",
       "algorithm": "OSCaR",
       "seedwords-1": "he, man, boy, him, she, woman, girl, her",
       "oscar-c2-seedwords": "scientist, doctor, nurse, secretary",
       "subspace": "PCA",
       "evalset": "engineer, tiger, tigress",
+      "concept1": "Gender",
+      "concept2": "Occupations"
+    },
+    {
+      "name": "OSCaR: gender-occupations (Case 2)",
+      "algorithm": "OSCaR",
+      "seedwords-1": "he, man, him, his, she, woman, her, hers",
+      "subspace": "PCA",
+      "oscar-c2-seedwords": "engineer, scientist, nurse, receptionist, banker, maid, lawyer, homemaker",
+      "evalset": "programmer, grandpa, grandma",
       "concept1": "Gender",
       "concept2": "Occupations"
     },
@@ -123,6 +142,24 @@
       "concept2": "Names"
     },
     {
+      "name": "Linear Projection - GSS: Adjectives",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he, him",
+      "seedwords-2": "she, her",
+      "subspace": "GSS",
+      "evalset": "beautiful, shy,  important, strong, ugly",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Linear Projection: Royalty",
+      "algorithm": "Linear projection",
+      "seedwords-1": "king, queen",
+      "seedwords-2": "man, woman",
+      "subspace": "Two means",
+      "evalset": "obnoxious, attentive, considerate, plain, fancy, important, majestic",
+      "concept1": "Royalty"
+    },
+    {
       "name": "Linear projection: Merchant names",
       "algorithm": "Linear projection",
       "seedwords-1": "BAY_WATERDOGTAVERN1, BAY_SHOREWAYCAFE, BAY_COYOTEMEXICANCAFE",
@@ -130,15 +167,6 @@
       "subspace": "Two means",
       "evalset": "BAY_SPUNBYSS, BAY_EPICUREANATNOTREDAME, LA_KINGTACO, LA_LAXAIRPNATURALBREAK",
       "concept1": "Location"
-    },
-    {
-      "name": "Adjectives: Linear Projection - GSS",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he, him",
-      "seedwords-2": "she, her",
-      "subspace": "GSS",
-      "evalset": "beautiful, shy,  important, strong, ugly",
-      "concept1": "Gender"
     }
   ]
 }

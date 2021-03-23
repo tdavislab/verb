@@ -112,9 +112,6 @@ class LinearDebiaser(Debiaser):
         step0.add_points(prebase_projector.project(self.base_emb, evalwords, group=3))
         step0.add_points(prebase_projector.project(self.base_emb, [], group=0, direction=bias_direction))
 
-        # step1_source = step0.get_point_array()
-        # print(step1_source)
-
         # ---------------------------------------------------------
         # Step 1 - Project points such that bias direction is aligned with the x-axis
         # ---------------------------------------------------------
@@ -126,17 +123,6 @@ class LinearDebiaser(Debiaser):
         step1.add_points(base_projector.project(self.base_emb, seedwords2, group=2))
         step1.add_points(base_projector.project(self.base_emb, evalwords, group=3))
         step1.add_points(base_projector.project(self.base_emb, [], group=0, direction=bias_direction))
-
-        # step1_target = step1.get_point_array()
-        # print(step1_target)
-        # projection_path = generateFullDynamicProjPath(step1_source, step1_target)
-        # for proj in projection_path:
-        #     step1_5 = self.animator.add_anim_step()
-        #     word_vecs_2d = []
-        #     for i, vec in enumerate(np.array(proj)):
-        #         x, y = vec[0], vec[1]
-        #         word_vecs_2d.append(WordVec2D('word', np.round(x, 6), np.round(y, 6), group=1))
-        #     step1_5.add_points(word_vecs_2d)
 
         # ---------------------------------------------------------
         # Step 2 - Show the bias-x aligned projection of the debiased embedding
@@ -173,7 +159,7 @@ class HardDebiaser(Debiaser):
         # Step 0 - PCA of points in the original word vector space
         # ---------------------------------------------------------
         prebase_projector = self.animator.add_projector(PCA(n_components=2), name='prebase_projector')
-        prebase_projector.fit(self.base_emb, seedwords1 + seedwords2)
+        prebase_projector.fit(self.base_emb, seedwords1 + seedwords2 + evalwords)
 
         step0 = self.animator.add_anim_step()
         step0.add_points(prebase_projector.project(self.base_emb, seedwords1, group=1))
@@ -187,7 +173,7 @@ class HardDebiaser(Debiaser):
         # Step 1 - Project points such that bias direction is aligned with the x-axis
         # ---------------------------------------------------------
         base_projector = self.animator.add_projector(BiasPCA(), name='base_projector')
-        base_projector.fit(self.base_emb, seedwords1 + seedwords2, bias_direction=bias_direction)
+        base_projector.fit(self.base_emb, seedwords1 + seedwords2 + evalwords, bias_direction=bias_direction)
 
         step1 = self.animator.add_anim_step(camera_step=True)
         step1.add_points(base_projector.project(self.base_emb, seedwords1, group=1))
@@ -200,9 +186,10 @@ class HardDebiaser(Debiaser):
         # ---------------------------------------------------------
         # Step 2 - Remove gender component from the evalwords except gender-specific words
         # ---------------------------------------------------------
-        for i, word in enumerate(set(evalwords + equalize_words[0] + equalize_words[1])):
-            # remove bias direction from dataset
-            self.debiased_emb.word_vectors[word].vector = remove_component(self.base_emb.word_vectors[word].vector, bias_direction)
+
+        # for i, word in enumerate(set(evalwords + equalize_words[0] + equalize_words[1])):
+        #     # remove bias direction from dataset
+        #     self.debiased_emb.word_vectors[word].vector = remove_component(self.base_emb.word_vectors[word].vector, bias_direction)
 
         for i, word in enumerate(set(self.base_emb.words())):
             # remove bias direction from dataset
