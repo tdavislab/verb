@@ -99,6 +99,8 @@ def get_seedwords2():
 
         if subspace_method == 'PCA-paired':
             seedwords1, seedwords2 = list(zip(*[(w.split('-')[0], w.split('-')[1]) for w in seedwords1]))
+            seedwords1 = list(seedwords1)
+            seedwords2 = list(seedwords2)
 
         if subspace_method == 'PCA':
             seedwords2 = []

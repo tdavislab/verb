@@ -295,10 +295,10 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       d3.select(this).classed('translucent', false);
     })
     .on('click', function (d) {
-      let neigbors_base = neighbor_data.base[d.label], neighbors_debiased = neighbor_data.debiased[d.label];
+      let neigbors_base = neighbor_data.base[d.label]
+      let neighbors_debiased = neighbor_data.debiased[d.label];
 
       d3.select('#knn').select('#base-neighbors')
-        // .text('Base neighbors: ')
         .selectAll('span')
         .data(neigbors_base)
         .join('span')
@@ -306,9 +306,8 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
         .html(d => d);
 
       d3.select('#knn').select('#debiased-neighbors')
-        // .text('Debiased neighbors: ')
         .selectAll('span')
-        .data(neigbors_base)
+        .data(neighbors_debiased)
         .join('span')
         .classed('neighbor-item', true)
         .html(d => d);
