@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "name": "Linear projection: Simple example",
+      "name": "Linear projection: Occupations",
       "algorithm": "Linear projection",
       "seedwords-1": "he, him",
       "seedwords-2": "she, her",
@@ -10,20 +10,20 @@
       "concept1": "Gender"
     },
     {
-      "name": "Hard debiasing: Lipstick on a Pig",
+      "name": "Linear projection: Lipstick on a Pig",
       "algorithm": "Hard debiasing",
       "seedwords-1": "he",
       "seedwords-2": "she",
       "subspace": "Two means",
-      "equalize": "john-amy, paul-joan, mike-lisa, kevin-sarah, steve-diana, greg-kate, jeff-ann, bill-donna",
       "evalset": "engineer, lawyer, receptionist, homemaker",
       "concept1": "Gender"
     },
     {
-      "name": "Linear projection: Lipstick on a Pig",
-      "algorithm": "Linear projection",
+      "name": "Hard debiasing: Lipstick on a Pig",
+      "algorithm": "Hard debiasing",
       "seedwords-1": "he",
       "seedwords-2": "she",
+      "equalize": "man-woman, boy-girl",
       "subspace": "Two means",
       "evalset": "engineer, lawyer, receptionist, homemaker",
       "concept1": "Gender"
@@ -36,17 +36,6 @@
       "subspace": "Classification",
       "evalset": "doctor, maid",
       "concept1": "Gender"
-    },
-    {
-      "name": "OSCaR: Example from paper",
-      "algorithm": "OSCaR",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "subspace": "Two means",
-      "oscar-c2-seedwords": "scientist, doctor, nurse, secretary, maid, dancer, cleaner, advocate, player, banker",
-      "evalset": "receptionist, homemaker",
-      "concept1": "Gender",
-      "concept2": "Occupations"
     },
     {
       "name": "INLP: gender",
@@ -63,16 +52,6 @@
       "seedwords-1": "he, him",
       "seedwords-2": "she, her",
       "subspace": "Two means",
-      "evalset": "beautiful, shy,  important, strong, ugly",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Hard Debiasing: Adjectives",
-      "algorithm": "Hard debiasing",
-      "seedwords-1": "he, him",
-      "seedwords-2": "she, her",
-      "subspace": "Two means",
-      "equalize": "man-woman,he-him,she-her",
       "evalset": "beautiful, shy,  important, strong, ugly",
       "concept1": "Gender"
     },
@@ -103,26 +82,7 @@
       "concept1": "Nationality"
     },
     {
-      "name": "INLP: gender",
-      "algorithm": "Iterative Null Space Projection",
-      "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
-      "seedwords-2": "woman, she, her, girl, grandma, aunt, jill",
-      "subspace": "Classification",
-      "evalset": "engineer, homemaker",
-      "concept1": "Gender"
-    },
-    {
-      "name": "OSCaR: gender-occupations (Case 1)",
-      "algorithm": "OSCaR",
-      "seedwords-1": "he, man, boy, him, she, woman, girl, her",
-      "oscar-c2-seedwords": "scientist, doctor, nurse, secretary",
-      "subspace": "PCA",
-      "evalset": "engineer, tiger, tigress",
-      "concept1": "Gender",
-      "concept2": "Occupations"
-    },
-    {
-      "name": "OSCaR: gender-occupations (Case 2)",
+      "name": "OSCaR: gender-occupations",
       "algorithm": "OSCaR",
       "seedwords-1": "he, man, him, his, she, woman, her, hers",
       "subspace": "PCA",
@@ -132,14 +92,13 @@
       "concept2": "Occupations"
     },
     {
-      "name": "OSCaR: gender-names",
-      "algorithm": "OSCaR",
-      "seedwords-1": "he, man, boy, him, she, woman, girl, her",
-      "oscar-c2-seedwords": "jim, tom, mike, steve, mary, jane, sue, kim",
-      "subspace": "PCA",
-      "evalset": "tiger, tigress",
-      "concept1": "Gender",
-      "concept2": "Names"
+      "name": "Linear projection: gender-occupations",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "subspace": "Two means",
+      "evalset": "engineer, lawyer, receptionist, homemaker, man, woman, boy, girl",
+      "concept1": "Gender"
     },
     {
       "name": "Linear Projection - GSS: Adjectives",
@@ -158,15 +117,6 @@
       "subspace": "Two means",
       "evalset": "obnoxious, attentive, considerate, plain, fancy, important, majestic",
       "concept1": "Royalty"
-    },
-    {
-      "name": "Linear projection: Merchant names",
-      "algorithm": "Linear projection",
-      "seedwords-1": "BAY_WATERDOGTAVERN1, BAY_SHOREWAYCAFE, BAY_COYOTEMEXICANCAFE",
-      "seedwords-2": "LA_LOSANGELESAIRPORT, LA_UCLA, LA_BOTTEGALOUIELOS",
-      "subspace": "Two means",
-      "evalset": "BAY_SPUNBYSS, BAY_EPICUREANATNOTREDAME, LA_KINGTACO, LA_LAXAIRPNATURALBREAK",
-      "concept1": "Location"
     }
   ]
 }
