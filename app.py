@@ -49,6 +49,9 @@ def reload_embeddings():
     # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
 
+app.reload_embeddings = reload_embeddings
+
+
 def rename_concepts(anim_steps, c1_name, c2_name):
     for step in anim_steps:
         for point in step:
