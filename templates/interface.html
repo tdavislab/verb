@@ -184,7 +184,7 @@
                     </tr>
                     <tr>
                         <td>
-<!--                            <button id="toggle-scrshot-chk">Screenshot mode</button>-->
+                            <!--                            <button id="toggle-scrshot-chk">Screenshot mode</button>-->
                             <span id='toggle-scrshot-btn' class="custom-switch custom-control toggles" disabled>
                                 <input type="checkbox" id="toggle-scrshot-chk" class="custom-control-input">
                                 <label for="toggle-scrshot-chk" class="custom-control-label">Screenshot mode</label>
@@ -195,26 +195,33 @@
                 </table>
             </div>
 
+            <div id="export-misc" class="d-flex" style="justify-content: space-evenly">
+
+
+                <div id="export-import" class="vert-space">
+                    <a href="/export">
+                        <button id="export-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Export as
+                            CSV
+                        </button>
+                    </a>
+                    <form method="POST" enctype="multipart/form-data" action="/import">
+                        <button id="import-btn" class="btn btn-outline-primary" title="Import word embedding from a CSV file" hidden>Import
+                            CSV
+                        </button>
+                        <input id="import-input" type="file" hidden>
+                    </form>
+                </div>
+
+                <div id="weat-container" class="vert-space">
+                    <button id="weat-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Compute WEAT
+                    </button>
+                    <span id="weat-display" class="pl-3"></span>
+                </div>
+            </div>
+            <hr/>
             <div id="explanation" class="vert-space">
                 <h5> Explanation </h5>
                 <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
-            </div>
-
-            <hr/>
-
-            <div id="export-import" class="vert-space">
-                <a href="/export">
-                    <button id="export-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Export as CSV</button>
-                </a>
-                <form method="POST" enctype="multipart/form-data" action="/import">
-                    <button id="import-btn" class="btn btn-outline-primary" title="Import word embedding from a CSV file" hidden>Import CSV</button>
-                    <input id="import-input" type="file" hidden>
-                </form>
-            </div>
-
-            <div id="weat-container" class="vert-space">
-                <button id="weat-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Compute WEAT</button>
-                <span id="weat-display" class="pl-3"></span>
             </div>
 
             <hr/>

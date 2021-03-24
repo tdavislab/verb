@@ -970,7 +970,6 @@ $('#seedword-form-submit').click(function () {
     $('#debiased-neighbors > span').remove();
     $('#knn').prop('hidden', true);
 
-
     ANIMSTEP_COUNTER = 0;
 
     $('#toggle-eval-chk').prop('checked', true);

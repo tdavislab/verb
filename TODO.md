@@ -141,8 +141,4 @@ _______________________________________
 - [ ] When 'data labels' are turned off, allow the evaluation set labels to be turned back on. More general functionality: allow a user-clicked subset of points with the labels turned on during the animation.
 - [x] Show k=10 nearest neighbor as a list from the high-dimensional embedding.
 
-- Oscar extract n-2 space and stack with 2-d for neighbor and csv queries
-- VERB /newline Visualization...
-- Save as SVG js library
-- Oscar two labels, PCA 50-d view first in oscar
-- PCA-paired, hard-debiasing hyphenated list
+
