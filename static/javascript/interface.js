@@ -2,6 +2,18 @@
 //   $.ajaxSetup({cache: false});
 // });
 
+// Set the SVG height and width
+function svg_setup() {
+  let container_dims = document.getElementById('scatter-holder').getBoundingClientRect();
+  let svg = d3.select('#animation-svg');
+  let svg_dim = Math.min(container_dims.width, container_dims.height);
+  svg.attr('width', svg_dim)
+    .attr('height', svg_dim)
+}
+
+svg_setup()
+d3.select(window).on('resize', svg_setup);
+
 // Fill the textboxes while testing
 let TESTING = false;
 
@@ -295,6 +307,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       d3.select(this).classed('translucent', false);
     })
     .on('click', function (d) {
+      $('#knn').prop('hidden', false);
       let neigbors_base = neighbor_data.base[d.label]
       let neighbors_debiased = neighbor_data.debiased[d.label];
 
@@ -932,9 +945,13 @@ $('#toggle-scrshot-chk').click(function () {
   let scr_state = $(this).prop('checked');
   if (scr_state === true) {
     // d3.selectAll('.group-3').attr('hidden', true);
-    $('.datapoint-group').attr('transform', function() {return $(this).attr('transform') + 'scale(1.5 1.5)'})
+    $('.datapoint-group').attr('transform', function () {
+      return $(this).attr('transform') + 'scale(1.5 1.5)'
+    })
   } else {
-    $('.datapoint-group').attr('transform', function() {return $(this).attr('transform') + 'scale(0.6667 0.6667)'})
+    $('.datapoint-group').attr('transform', function () {
+      return $(this).attr('transform') + 'scale(0.6667 0.6667)'
+    })
   }
 });
 
@@ -948,11 +965,18 @@ function svg_cleanup() {
 $('#seedword-form-submit').click(function () {
   try { // Perform cleanup
     svg_cleanup();
+    $('#weat-display').text('');
+    $('#base-neighbors > span').remove();
+    $('#debiased-neighbors > span').remove();
+    $('#knn').prop('hidden', true);
+
+
     ANIMSTEP_COUNTER = 0;
 
     $('#toggle-eval-chk').prop('checked', true);
     $('#toggle-mean-chk').prop('checked', true);
     $('#data-label-chk').prop('checked', true);
+    $('#toggle-scrshot-chk').prop('checked', false);
     if ($('#remove-points-chk').prop('checked', true)) {
       $('#remove-points-chk').click()
     }
@@ -1128,11 +1152,11 @@ $('#import-btn').on('click', function () {
 $('#weat-btn').on('click', function () {
   $.ajax({
     'url': '/weat',
-    'success': function(response) {
+    'success': function (response) {
       console.log(response);
       $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
     },
-    'error': function(response) {
+    'error': function (response) {
       console.log(response);
     }
   })

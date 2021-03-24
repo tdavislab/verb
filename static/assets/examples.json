@@ -11,7 +11,7 @@
     },
     {
       "name": "Linear projection: Lipstick on a Pig",
-      "algorithm": "Hard debiasing",
+      "algorithm": "Linear projection",
       "seedwords-1": "he",
       "seedwords-2": "she",
       "subspace": "Two means",
