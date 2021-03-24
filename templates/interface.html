@@ -196,11 +196,10 @@
             </div>
 
             <div id="export-misc" class="d-flex" style="justify-content: space-evenly">
-
-
                 <div id="export-import" class="vert-space">
                     <a href="/export">
-                        <button id="export-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Export as
+                        <button id="export-btn" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom"
+                                title="Export the debiased embedding as a CSV file">Export as
                             CSV
                         </button>
                     </a>
@@ -213,7 +212,8 @@
                 </div>
 
                 <div id="weat-container" class="vert-space">
-                    <button id="weat-btn" class="btn btn-outline-primary" title="Export the debiased embedding as a CSV file">Compute WEAT
+                    <button id="weat-btn" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom"
+                            title="Standard WEAT test to measure associations between gender vs. occupation">Compute WEAT
                     </button>
                     <span id="weat-display" class="pl-3"></span>
                 </div>
@@ -280,10 +280,12 @@
 <script src="../static/javascript/interface.js"></script>
 <script src="../static/javascript/labeler.js"></script>
 <script>
+  $('#weat-btn').tooltip();
+  $('#export-btn').tooltip();
   $(document).ready(function () {
     $.ajax({
       'url': '/unfreeze'
-    })
-  })
+    });
+  });
 </script>
 </html>
