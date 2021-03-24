@@ -920,10 +920,12 @@ $('#toggle-eval-chk').click(function () {
 $('#toggle-mean-chk').click(function () {
   if (MEAN_VISIBILITY === true) {
     d3.selectAll('#bias-direction-line').attr('hidden', true);
+    d3.selectAll('.bias-line').attr('hidden', true);
     d3.selectAll('.group-0').attr('hidden', true);
     d3.select('#toggle-mean-icon').attr('class', 'fa fa-toggle-on fa-rotate-180');
   } else {
     d3.selectAll('#bias-direction-line').attr('hidden', null);
+    d3.selectAll('.bias-line').attr('hidden', null);
     d3.selectAll('.group-0').attr('hidden', null);
     d3.selectAll('#toggle-mean-icon').attr('class', 'fa fa-toggle-on');
   }
