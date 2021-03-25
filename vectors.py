@@ -159,7 +159,7 @@ class HardDebiaser(Debiaser):
         # Step 0 - PCA of points in the original word vector space
         # ---------------------------------------------------------
         prebase_projector = self.animator.add_projector(PCA(n_components=2), name='prebase_projector')
-        prebase_projector.fit(self.base_emb, seedwords1 + seedwords2 + evalwords)
+        prebase_projector.fit(self.base_emb, seedwords1 + seedwords2 + evalwords + equalize_words[0] + equalize_words[1])
 
         step0 = self.animator.add_anim_step()
         step0.add_points(prebase_projector.project(self.base_emb, seedwords1, group=1))
@@ -173,7 +173,7 @@ class HardDebiaser(Debiaser):
         # Step 1 - Project points such that bias direction is aligned with the x-axis
         # ---------------------------------------------------------
         base_projector = self.animator.add_projector(BiasPCA(), name='base_projector')
-        base_projector.fit(self.base_emb, seedwords1 + seedwords2 + evalwords, bias_direction=bias_direction)
+        base_projector.fit(self.base_emb, seedwords1 + seedwords2 + evalwords + equalize_words[0] + equalize_words[1], bias_direction=bias_direction)
 
         step1 = self.animator.add_anim_step(camera_step=True)
         step1.add_points(base_projector.project(self.base_emb, seedwords1, group=1))
@@ -851,9 +851,15 @@ def bias_pca(embedding, word_list):
 
 def bias_pca_paired(embedding, pair1, pair2):
     assert len(pair1) == len(pair2)
+
+    if len(pair1) == len(pair2) == 1:
+        diff = embedding.get_vecs(pair1) - embedding.get_vecs(pair2)
+        return diff[0] / np.linalg.norm(diff[0])
+
     vec1, vec2 = embedding.get_vecs(pair1), embedding.get_vecs(pair2)
     paired_vecs = vec1 - vec2
-    bias_direction = PCA().fit(paired_vecs).components_[0]
+    # SVD first singular vector
+    bias_direction = PCA(n_components=2).fit(paired_vecs).components_[0]
 
     return bias_direction / np.linalg.norm(bias_direction)
 
