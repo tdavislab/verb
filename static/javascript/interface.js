@@ -1128,6 +1128,51 @@ function save_example() {
 
 $('#save-example-btn').on('click', save_example);
 
+function set_tour_data() {
+  $('#algorithm-selection').attr('data-intro', 'Select debiasing algorithm');
+  $('#algorithm-selection').attr('data-step', 1);
+
+  $('#subspace-dropdown').attr('data-intro', 'Select subspace computation method');
+  $('#subspace-dropdown').attr('data-step', 2);
+
+  $('#preloaded-examples').attr('data-intro', 'You can also explore any of the preloaded examples');
+  $('#preloaded-examples').attr('data-step', 3);
+
+  $('#seedset-container').attr('data-intro', 'Enter the seed sets depending on the chosen debiasing algorithm and subspace computation method');
+  $('#seedset-container').attr('data-step', 4);
+
+  $('#seedword-form-submit').attr('data-intro', 'Press \'Run\' to visualize the algorithms output for current configuration');
+  $('#seedword-form-submit').attr('data-step', 5);
+
+  $('#save-example').attr('data-intro', 'Save the current example. These will show up in the list of preloaded examples.');
+  $('#save-example').attr('data-step', 6);
+
+  $('#visualization-panel').attr('data-intro', 'The visualization of the chosen algorithm on a 2D projection of the word vectors will be shown here');
+  $('#visualization-panel').attr('data-step', 7);
+
+  $('#animation-btn-group').attr('data-intro', 'Controls to navigate the various steps of the algorithm\'s visualization');
+  $('#animation-btn-group').attr('data-step', 8);
+
+  $('#toolbar').attr('data-intro', 'Controls for various elements in the visualization panel')
+  $('#toolbar').attr('data-step', 9)
+
+  $('#export-misc').attr('data-intro', 'You can also export the debiased embedding and compute WEAT scores')
+  $('#export-misc').attr('data-step', 10)
+
+  $('#explanation').attr('data-intro', 'Provides a textual explanation of the currently visualized step in the visualization panel')
+}
+
+set_tour_data();
+
+$('#tour-question').on('click', function () {
+  console.log('test')
+  try {
+    introJs().start();
+  } catch (e) {
+    console.log(e)
+  }
+});
+
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
     // $('#seedword-text-2').val('lisa, emma, sophia, emily, chloe, hannah, lily, claire, anna');

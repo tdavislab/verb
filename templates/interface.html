@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/bootstrap-tour.css">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
@@ -22,7 +24,15 @@
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
         <div id="control-panel" class="col-5 border-right">
-            <h4 class="text-center bg-dark text-light p-3 rounded">VERB</h4>
+            <h4 class="text-center bg-dark text-light p-3 rounded">VERB
+                <svg id="tour-question"
+                     xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                     fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16" style="cursor: pointer">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path
+                        d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+            </h4>
 
             <div id="algo-subspace" class="d-flex">
                 <div id="algorithm-selection" class="dropdown vert-space d-inline w-50" style="padding-right: 0.3em;">
@@ -63,50 +73,52 @@
                 <div id="example-dropdown" class="dropdown-menu w-100"></div>
             </div>
 
-            <div id="input-two-col" class="input-group w-100 vert-space">
-                <div class="input-group-prepend w-25">
-                    <input type="text" class="w-100 input-group-text" id="concept-label-1" value="Concept1"/>
+            <div id="seedset-container">
+                <div id="input-two-col" class="input-group w-100 vert-space">
+                    <div class="input-group-prepend w-25">
+                        <input type="text" class="w-100 input-group-text" id="concept-label-1" value="Concept1"/>
+                    </div>
+                    <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                    <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
                 </div>
-                <input id="seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-                <input id="seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add word set...">
-            </div>
 
-            <div id="subspace-dropdown-oscar" class="dropdown vert-space" hidden>
-                <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button-oscar"
-                        data-toggle="dropdown">
-                    Select secondary subspace method
-                </button>
-                <div id="subspace-dropdown-oscar-items" class="w-100 dropdown-menu">
-                    <h6 class="dropdown-header">Select secondary subspace method</h6>
-                    <a class="dropdown-item active">Two means</a>
-                    <a class="dropdown-item">PCA</a>
-                    <a class="dropdown-item">PCA-paired</a>
-                    <a class="dropdown-item">Classification</a>
-                    <a class="dropdown-item">GSS</a>
+                <div id="subspace-dropdown-oscar" class="dropdown vert-space" hidden>
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button-oscar"
+                            data-toggle="dropdown">
+                        Select secondary subspace method
+                    </button>
+                    <div id="subspace-dropdown-oscar-items" class="w-100 dropdown-menu">
+                        <h6 class="dropdown-header">Select secondary subspace method</h6>
+                        <a class="dropdown-item active">Two means</a>
+                        <a class="dropdown-item">PCA</a>
+                        <a class="dropdown-item">PCA-paired</a>
+                        <a class="dropdown-item">Classification</a>
+                        <a class="dropdown-item">GSS</a>
+                    </div>
                 </div>
-            </div>
 
-            <div id="input-two-col-oscar" class="input-group vert-space">
-                <div class="input-group-prepend w-25">
-                    <!--                    <span class="input-group-text" id="concept-label-2" contenteditable="true">Concept2</span>-->
-                    <input type="text" class="w-100 input-group-text" id="concept-label-2" value="Concept2"/>
+                <div id="input-two-col-oscar" class="input-group vert-space">
+                    <div class="input-group-prepend w-25">
+                        <!--                    <span class="input-group-text" id="concept-label-2" contenteditable="true">Concept2</span>-->
+                        <input type="text" class="w-100 input-group-text" id="concept-label-2" value="Concept2"/>
+                    </div>
+                    <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                    <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2..." hidden>
                 </div>
-                <input id="oscar-seedword-text-1" class="form-control input-group-text" type="text" placeholder="Add word set...">
-                <input id="oscar-seedword-text-2" class="form-control input-group-text" type="text" placeholder="Add seed set 2..." hidden>
-            </div>
 
-            <div id="equalize-holder" class="input-group vert-space" style="display: None">
-                <div class="input-group-prepend w-25">
-                    <span class="input-group-text w-100 justify-content-center" id="equalize-label">Equalize set</span>
+                <div id="equalize-holder" class="input-group vert-space" style="display: None">
+                    <div class="input-group-prepend w-25">
+                        <span class="input-group-text w-100 justify-content-center" id="equalize-label">Equalize set</span>
+                    </div>
+                    <input id="equalize-list" class="form-control input-group-text" type="text" placeholder="Add equalize set for Hard Debiasing...">
                 </div>
-                <input id="equalize-list" class="form-control input-group-text" type="text" placeholder="Add equalize set for Hard Debiasing...">
-            </div>
 
-            <div id="eval-and-run" class="input-group vert-space">
-                <div class="input-group-prepend w-25">
-                    <span class="input-group-text w-100 justify-content-center" id="eval-label">Evaluation set</span>
+                <div id="eval-and-run" class="input-group vert-space">
+                    <div class="input-group-prepend w-25">
+                        <span class="input-group-text w-100 justify-content-center" id="eval-label">Evaluation set</span>
+                    </div>
+                    <input id="evaluation-list" class="form-control input-group-text" type="text" placeholder="Add word set...">
                 </div>
-                <input id="evaluation-list" class="form-control input-group-text" type="text" placeholder="Add word set...">
             </div>
 
             <button id="seedword-form-submit" class="btn btn-outline-primary w-100 vert-space">Run</button>
@@ -117,7 +129,8 @@
                         <button id="save-example-btn" class="btn btn-outline-primary w-100">Save example</button>
                     </div>
                     <div class="w-50">
-                        <input id="example-name" type="text" class="form-control input-group-text w-100 justify-content-center" placeholder="Set example name...">
+                        <input id="example-name" type="text" class="form-control input-group-text w-100 justify-content-center"
+                               placeholder="Set example name...">
                     </div>
                 </div>
             </div>
@@ -131,7 +144,7 @@
             </div>
 
             <div id="animation-controls" class="row vert-space justify-content-center">
-                <div class="btn-group">
+                <div id="animation-btn-group" class="btn-group">
                     <button id='play-control-fb' class="btn btn-success" title="Go to the start of animation">
                         <i class="fa fa-fast-backward"></i>
                     </button>
@@ -319,6 +332,7 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
 <script src="../static/javascript/d3.v5.min.js"></script>
 <script src="../static/javascript/interface.js"></script>
 <script src="../static/javascript/labeler.js"></script>
@@ -327,7 +341,7 @@
   $('#export-btn').tooltip();
   $(document).ready(function () {
     $.ajax({
-      'url': '/unfreeze'
+      url: '/unfreeze'
     });
   });
 </script>
