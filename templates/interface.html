@@ -58,7 +58,7 @@
             <div id="preloaded-examples" class="dropdown vert-space">
                 <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="example-selection-button"
                         data-toggle="dropdown">
-                    Choose an example or provide seedword sets below
+                    Choose an example or provide seed words below
                 </button>
                 <div id="example-dropdown" class="dropdown-menu w-100"></div>
             </div>
@@ -212,13 +212,44 @@
                 </div>
 
                 <div id="weat-container" class="vert-space">
-                    <button id="weat-btn" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom"
+                    <button id="weat-btn" class="btn btn-outline-primary" data-toggle="collapse" data-target="#weat-display"
                             title="Standard WEAT test to measure associations between gender vs. occupation">Compute WEAT
                     </button>
-                    <span id="weat-display" class="pl-3"></span>
+                </div>
+            </div>
+
+            <div id="weat-display" class="collapse vert-space">
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <input type="text" class="input-group-text" value="Occupational words A" disabled>
+                    </div>
+                    <input id="occupation-A" class="form-control input-group-text" type="text" placeholder="Occupational words A"
+                           value="doctor, engineer, lawyer, mathematician, banker">
+                </div>
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <input type="text" class="input-group-text" value="Occupational words B" disabled>
+                    </div>
+                    <input id="occupation-B" class="form-control input-group-text" type="text" placeholder="Occupational words B"
+                    value="receptionist, homemaker, nurse, dancer, maid">
+                </div>
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <input type="text" class="input-group-text" value="Gendered words A" disabled>
+                    </div>
+                    <input id="gender-A" class="form-control input-group-text" type="text" placeholder="Gendered words A"
+                    value="man, male, boy, brother, him, his, son">
+                </div>
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <input type="text" class="input-group-text" value="Gendered words B" disabled>
+                    </div>
+                    <input id="gender-B" class="form-control input-group-text" type="text" placeholder="Gendered words B"
+                    value="woman, female, girl, brother, her, hers, daughter">
                 </div>
             </div>
             <hr/>
+
             <div id="explanation" class="vert-space">
                 <h5> Explanation </h5>
                 <div id="explanation-text" class="explanation-text text-slightly-muted"></div>

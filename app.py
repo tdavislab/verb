@@ -23,6 +23,8 @@ with open('static/assets/explanations.json', 'r') as explanation_json:
 
 app.weat_A = ['doctor', 'engineer', 'lawyer', 'mathematician', 'banker']
 app.weat_B = ['receptionist', 'homemaker', 'nurse', 'dancer', 'maid']
+app.male_words = ['man', 'male', 'boy', 'brother', 'him', 'his', 'son']
+app.female_words = ['woman', 'female', 'girl', 'brother', 'her', 'hers', 'daughter']
 
 # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
@@ -197,8 +199,8 @@ def import_csv():
 
 @app.route('/weat', methods=['POST', 'GET'])
 def get_weat():
-    weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B)
-    weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B)
+    weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B, app.male_words, app.female_words)
+    weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B, app.male_words, app.female_words)
 
     return jsonify(weat_scores={'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased})
 

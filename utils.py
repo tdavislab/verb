@@ -14,9 +14,7 @@ def make_projector(method='PCA'):
     return projector
 
 
-def get_weat_score(embedding, seedwords1, seedwords2):
-    male_words = {'man', 'male', 'boy', 'brother', 'him', 'his', 'son'}
-    female_words = {'woman', 'female', 'girl', 'brother', 'her', 'hers', 'daughter'}
+def get_weat_score(embedding, seedwords1, seedwords2, male_words, female_words):
     return compute_weat_score(embedding, male_words, female_words, seedwords1, seedwords2)
 
 

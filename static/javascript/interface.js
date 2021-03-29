@@ -146,133 +146,6 @@ function sample_label_position(scale) {
   return parseInt(pos * scale);
 }
 
-function draw_scatter_static(parent_svg, response, plotTitle, debiased = false) {
-  p_svg = parent_svg;
-  parent_svg.selectAll('*').remove();
-
-  let margin = {top: 20, right: 20, bottom: 20, left: 40};
-  let width = parent_svg.node().width.baseVal.value - margin.left - margin.right;
-  let height = parent_svg.node().height.baseVal.value - margin.top - margin.bottom;
-
-  // Append group to the svg
-  let svg = parent_svg
-    .append('g')
-    .attr('id', plotTitle + 'group')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-
-  // set the ranges
-  let x = d3.scaleLinear().range([0, width - 30]);
-  let y = d3.scaleLinear().range([height, 0]);
-
-  let axes_limits;
-  if (debiased) {
-    axes_limits = compute_axes_limits_sym(response.anim_steps[response.anim_steps.length - 1]);
-  } else {
-    axes_limits = compute_axes_limits_sym(response.anim_steps[0]);
-  }
-
-  x.domain([axes_limits['x_min'], axes_limits['x_max']]).nice();
-  y.domain([axes_limits['y_min'], axes_limits['y_max']]).nice();
-
-  let data = debiased ? response.debiased : response.base;
-
-  // Add the scatterplot
-  let datapoint_group = svg.selectAll('g')
-    .data(data)
-    .enter()
-    .append('g')
-    .attr('class', d => 'datapoint-group group-' + d.group)
-    .attr('transform', d => 'translate(' + x(d.x) + ',' + y(d.y) + ')')
-    .on('mouseover', function () {
-      parent_svg.selectAll('g.datapoint-group').classed('translucent', true);
-      parent_svg.select('#bias-direction-line').classed('translucent', true);
-      d3.select(this).classed('translucent', false);
-    })
-    .on('mouseout', function () {
-      parent_svg.selectAll('g.datapoint-group').classed('translucent', false);
-      parent_svg.selectAll('#bias-direction-line').classed('translucent', false);
-    })
-
-  // Class label
-  datapoint_group.append('foreignObject')
-    .attr('x', 15)
-    .attr('y', -10)
-    .attr('width', '1px')
-    .attr('height', '1px')
-    .attr('class', 'fobj')
-    .append('xhtml:div')
-    .attr('class', 'class-label')
-    .attr('style', d => 'color:' + (d.group === 0 ? 'black' : color(d.group)) + '; font-weight: 430; opacity:0.8; font-size: 1.2em')
-    .html(d => d.label);
-
-
-  // Remove buttons
-  datapoint_group.append('text')
-    .attr('class', 'fa cross-button')
-    .attr('x', 10)
-    .attr('y', -10)
-    .attr('visibility', 'hidden')
-    .on('click', remove_point)
-    .text('\uf057');
-
-  datapoint_group.append('path')
-    .attr('fill', d => d.group === 0 ? '#414141' : color(d.group))
-    .attr('d', d => (d.group === 0 && d.label !== 'Origin') ? '' : shape(d.group))
-    .attr('stroke', 'black')
-    .attr('stroke-width', '1px')
-    .attr('stroke-opacity', '0.75')
-
-
-  // Add the X Axis
-  let x_axis_g = svg.append('g')
-    .attr('transform', 'translate(0,' + height + ')')
-    .classed('axis', true)
-    .call(d3.axisBottom(x));
-
-  // Add the Y Axis
-  let y_axis_g = svg.append('g')
-    .classed('axis', true)
-    .call(d3.axisLeft(y));
-
-  // Draw the bias direction arrow
-  let arrow_endpoints = data.filter(d => d.group === 0).map(d => [x(d.x), y(d.y)]);
-
-  let bias_line = svg.append('path')
-    .attr('id', 'bias-direction-line')
-    .attr('d', d3.line()(arrow_endpoints))
-    .attr('stroke', '#5b5b5b')
-    .attr('stroke-width', '4px');
-
-  let zoom = d3.zoom().scaleExtent([0.5, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
-
-  parent_svg.append('rect')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('fill', 'none')
-    .attr('pointer-events', 'all')
-    // .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-    .lower();
-
-  parent_svg.call(zoom)
-
-  function update_plot() {
-    let newX = d3.event.transform.rescaleX(x);
-    let newY = d3.event.transform.rescaleY(y);
-
-    // update axes with these new boundaries
-    x_axis_g.call(d3.axisBottom(newX))
-    y_axis_g.call(d3.axisLeft(newY));
-
-    datapoint_group.transition()
-      .duration(0)
-      .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
-
-    //
-    bias_line.attr('d', d3.line()(data.filter(d => d.group === 0).map(d => [newX(d.x), newY(d.y)])));
-  }
-}
-
 function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, margin) {
   // Add the scatterplot
   svg.append('defs')
@@ -445,6 +318,8 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     datapoint_group.transition()
       .duration(0)
       .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
+
+    d3.select('#classification-line').attr('transform', d3.event.transform);
 
     d3.select('path#bias-direction-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
     d3.selectAll('.bias-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
@@ -967,7 +842,7 @@ function svg_cleanup() {
 $('#seedword-form-submit').click(function () {
   try { // Perform cleanup
     svg_cleanup();
-    $('#weat-display').text('');
+    // $('#weat-display').text('');
     $('#base-neighbors > span').remove();
     $('#debiased-neighbors > span').remove();
     $('#knn').prop('hidden', true);
@@ -1010,7 +885,7 @@ $('#seedword-form-submit').click(function () {
         $('.overlay').addClass('d-flex').show();
         $('#spinner-holder').show();
         $('#seedword-form-submit').attr('disabled', 'disabled');
-        $('#weat-display').text('')
+        // $('#weat-display').text('')
       },
       success: function (response) {
         // let predebiased_svg = d3.select('#pre-debiased-svg');
@@ -1150,18 +1025,18 @@ $('#import-btn').on('click', function () {
   $('#import-input').click();
 })
 
-$('#weat-btn').on('click', function () {
-  $.ajax({
-    'url': '/weat',
-    'success': function (response) {
-      console.log(response);
-      $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
-    },
-    'error': function (response) {
-      console.log(response);
-    }
-  })
-});
+// $('#weat-btn').on('click', function () {
+//   $.ajax({
+//     'url': '/weat',
+//     'success': function (response) {
+//       console.log(response);
+//       $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
+//     },
+//     'error': function (response) {
+//       console.log(response);
+//     }
+//   })
+// });
 
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
