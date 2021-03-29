@@ -206,15 +206,16 @@ class HardDebiaser(Debiaser):
 
         # Equalize words in equalize_set such that they are equidistant to set defining the gender direction
         for a, b in equalize_set:
-            if a in self.base_emb.words() and b in self.base_emb.words():
-                y = remove_component((self.base_emb.word_vectors[a].vector + self.base_emb.word_vectors[b].vector) / 2, bias_direction)
-                z = np.sqrt(1 - np.linalg.norm(y) ** 2)
+            y = remove_component((self.base_emb.word_vectors[a].vector + self.base_emb.word_vectors[b].vector) / 2, bias_direction)
+            z = np.sqrt(1 - np.linalg.norm(y) ** 2)
 
-                if (self.base_emb.word_vectors[a].vector - self.base_emb.word_vectors[b].vector).dot(bias_direction) < 0:
-                    z = -z
+            if (self.base_emb.word_vectors[a].vector - self.base_emb.word_vectors[b].vector).dot(bias_direction) < 0:
+                z = -z
 
-                self.debiased_emb.word_vectors[a].vector = z * bias_direction + y
-                self.debiased_emb.word_vectors[b].vector = -z * bias_direction + y
+            self.debiased_emb.word_vectors[a].vector = z * bias_direction + y
+            self.debiased_emb.word_vectors[b].vector = -z * bias_direction + y
+
+        # self.debiased_emb.normalize()
 
         # ---------------------------------------------------------
         # Step 3 - Compute new projection of the words in equalize set so that they are equidistant to both clusters
@@ -230,7 +231,8 @@ class HardDebiaser(Debiaser):
         # Step 4 - Reorient the embeddings back to the debiased space
         # ---------------------------------------------------------
         debiased_projector = self.animator.add_projector(PCA(n_components=2), name='debiased_projector')
-        debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
+        debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + evalwords + equalize_set[0] + equalize_set[1])
+        # debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
 
         step4 = self.animator.add_anim_step(camera_step=True)
         step4.add_points(debiased_projector.project(self.debiased_emb, seedwords1, group=1))
@@ -858,8 +860,18 @@ def bias_pca_paired(embedding, pair1, pair2):
 
     vec1, vec2 = embedding.get_vecs(pair1), embedding.get_vecs(pair2)
     paired_vecs = vec1 - vec2
+
+    matrix = []
+
+    for a, b in zip(vec1, vec2):
+        center = (a + b) / 2
+        matrix.append(a - center)
+        matrix.append(b - center)
+
+    matrix = np.array(matrix)
     # SVD first singular vector
-    bias_direction = PCA(n_components=2).fit(paired_vecs).components_[0]
+
+    bias_direction = PCA(n_components=2).fit(matrix).components_[0]
 
     return bias_direction / np.linalg.norm(bias_direction)
 
@@ -941,7 +953,7 @@ def get_bias_direction(embedding, seedwords1, seedwords2, subspace_method):
     else:
         raise ValueError('Incorrect subspace method')
 
-    return bias_direction
+    return bias_direction / np.linalg.norm(bias_direction)
 
 
 # IO helpers

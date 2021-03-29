@@ -211,14 +211,14 @@
                     </form>
                 </div>
 
-                <div id="weat-container" class="vert-space">
-                    <button id="weat-btn" class="btn btn-outline-primary" data-toggle="collapse" data-target="#weat-display"
+                <div id="weat-btn-div" class="vert-space">
+                    <button id="weat-btn" class="btn btn-outline-primary" data-toggle="collapse" data-target="#weat-container"
                             title="Standard WEAT test to measure associations between gender vs. occupation">Compute WEAT
                     </button>
                 </div>
             </div>
 
-            <div id="weat-display" class="collapse vert-space">
+            <div id="weat-container" class="collapse vert-space">
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <input type="text" class="input-group-text" value="Occupational words A" disabled>
@@ -247,6 +247,7 @@
                     <input id="gender-B" class="form-control input-group-text" type="text" placeholder="Gendered words B"
                     value="woman, female, girl, brother, her, hers, daughter">
                 </div>
+                <div id="weat-display" class="text-center"></div>
             </div>
             <hr/>
 

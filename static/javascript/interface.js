@@ -23,7 +23,7 @@ let MEAN_VISIBILITY = true;
 let EVAL_VISIBILITY = true;
 let REMOVE_POINTS = false;
 let ANIMSTEP_COUNTER = 0;
-let ANIMATION_DURATION = 4000;
+let ANIMATION_DURATION = 400;
 let AXIS_TOLERANCE = 0.05;
 let INTERPOLATION = d3.easeLinear;
 let DYNAMIC_PROJ = false;
@@ -842,7 +842,8 @@ function svg_cleanup() {
 $('#seedword-form-submit').click(function () {
   try { // Perform cleanup
     svg_cleanup();
-    // $('#weat-display').text('');
+    $('#weat-display').text('');
+    $('#weat-container').collapse('hide');
     $('#base-neighbors > span').remove();
     $('#debiased-neighbors > span').remove();
     $('#knn').prop('hidden', true);
@@ -885,7 +886,7 @@ $('#seedword-form-submit').click(function () {
         $('.overlay').addClass('d-flex').show();
         $('#spinner-holder').show();
         $('#seedword-form-submit').attr('disabled', 'disabled');
-        // $('#weat-display').text('')
+        $('#weat-display').text('')
       },
       success: function (response) {
         // let predebiased_svg = d3.select('#pre-debiased-svg');
@@ -1025,18 +1026,34 @@ $('#import-btn').on('click', function () {
   $('#import-input').click();
 })
 
-// $('#weat-btn').on('click', function () {
-//   $.ajax({
-//     'url': '/weat',
-//     'success': function (response) {
-//       console.log(response);
-//       $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
-//     },
-//     'error': function (response) {
-//       console.log(response);
-//     }
-//   })
-// });
+function display_weat() {
+  let occupation_a = $('#occupation-A').val();
+  let occupation_b = $('#occupation-B').val();
+  let gender_a = $('#gender-A').val();
+  let gender_b = $('#gender-B').val();
+
+  $.ajax({
+    'url': '/weat',
+    data: {occupation_a, occupation_b, gender_a, gender_b},
+    'success': function (response) {
+      console.log('bumbum')
+      $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
+    },
+    'error': function (response) {
+      console.log(response);
+    }
+  })
+}
+
+function weat_update(e) {
+  if (e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 9) {
+    display_weat();
+  }
+}
+
+$('#weat-container').on('show.bs.collapse', display_weat);
+$('#occupation-A, #occupation-B, #gender-A, #gender-B').on('keyup', weat_update);
+$('#occupation-A, #occupation-B, #gender-A, #gender-B').on('focusout', display_weat);
 
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');

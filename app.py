@@ -173,7 +173,7 @@ def freeze_embedding():
     return jsonify('Updated')
 
 
-@app.route('/unfreeze', methods=['POST'])
+@app.route('/unfreeze', methods=['GET'])
 def unfreeze_embedding():
     app.frozen = False
     reload_embeddings()
@@ -199,8 +199,13 @@ def import_csv():
 
 @app.route('/weat', methods=['POST', 'GET'])
 def get_weat():
-    weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B, app.male_words, app.female_words)
-    weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B, app.male_words, app.female_words)
+    weat_a, weat_b = request.values['occupation_a'], request.values['occupation_b']
+    male_words, female_words = request.values['gender_a'], request.values['gender_b']
+    weat_a, weat_b = utils.process_seedwords(weat_a), utils.process_seedwords(weat_b)
+    male_words, female_words = utils.process_seedwords(male_words), utils.process_seedwords(female_words)
+
+    weatscore_predebiased = utils.get_weat_score(app.base_embedding, weat_a, weat_b, male_words, female_words)
+    weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, weat_a, weat_b, male_words, female_words)
 
     return jsonify(weat_scores={'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased})
 
