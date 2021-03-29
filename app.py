@@ -197,7 +197,7 @@ def import_csv():
     filepath = 'data/imported_embedding.pkl'
 
 
-@app.route('/weat', methods=['POST', 'GET'])
+@app.route('/weat', methods=['POST'])
 def get_weat():
     weat_a, weat_b = request.values['occupation_a'], request.values['occupation_b']
     male_words, female_words = request.values['gender_a'], request.values['gender_b']

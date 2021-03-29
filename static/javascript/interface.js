@@ -1033,10 +1033,10 @@ function display_weat() {
   let gender_b = $('#gender-B').val();
 
   $.ajax({
-    'url': '/weat',
+    type: 'POST',
+    url: '/weat',
     data: {occupation_a, occupation_b, gender_a, gender_b},
     'success': function (response) {
-      console.log('bumbum')
       $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
     },
     'error': function (response) {
@@ -1051,7 +1051,7 @@ function weat_update(e) {
   }
 }
 
-$('#weat-container').on('show.bs.collapse', display_weat);
+$('#weat-container').on('shown.bs.collapse', display_weat);
 $('#occupation-A, #occupation-B, #gender-A, #gender-B').on('keyup', weat_update);
 $('#occupation-A, #occupation-B, #gender-A, #gender-B').on('focusout', display_weat);
 
