@@ -111,6 +111,17 @@
 
             <button id="seedword-form-submit" class="btn btn-outline-primary w-100 vert-space">Run</button>
 
+            <div id="save-example">
+                <div class="input-group">
+                    <div class="input-group-prepend w-50">
+                        <button id="save-example-btn" class="btn btn-outline-primary w-100">Save example</button>
+                    </div>
+                    <div class="w-50">
+                        <input id="example-name" type="text" class="form-control input-group-text w-100 justify-content-center" placeholder="Set example name...">
+                    </div>
+                </div>
+            </div>
+
             <div class="d-flex btn-group">
                 <button id="freeze-embedding" class="btn btn-outline-primary w-50 vert-space" hidden>
                     Update debiased embedding as base embedding
@@ -231,21 +242,21 @@
                         <input type="text" class="input-group-text" value="Occupational words B" disabled>
                     </div>
                     <input id="occupation-B" class="form-control input-group-text" type="text" placeholder="Occupational words B"
-                    value="receptionist, homemaker, nurse, dancer, maid">
+                           value="receptionist, homemaker, nurse, dancer, maid">
                 </div>
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <input type="text" class="input-group-text" value="Gendered words A" disabled>
                     </div>
                     <input id="gender-A" class="form-control input-group-text" type="text" placeholder="Gendered words A"
-                    value="man, male, boy, brother, him, his, son">
+                           value="man, male, boy, brother, him, his, son">
                 </div>
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <input type="text" class="input-group-text" value="Gendered words B" disabled>
                     </div>
                     <input id="gender-B" class="form-control input-group-text" type="text" placeholder="Gendered words B"
-                    value="woman, female, girl, brother, her, hers, daughter">
+                           value="woman, female, girl, brother, her, hers, daughter">
                 </div>
                 <div id="weat-display" class="text-center"></div>
             </div>

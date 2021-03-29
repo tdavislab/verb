@@ -1,5 +1,5 @@
 // $(document).ready(function () {
-//   $.ajaxSetup({cache: false});
+//   $.ajaxSetup({cache: false, headers: {"cache-control": "no-cache"}});
 // });
 
 // Set the SVG height and width
@@ -966,15 +966,43 @@ $('#equalize-list').on('keyup', captureEnter);
 $('#oscar-seedword-text-1').on('keyup', captureEnter);
 
 // Preloaded examples
-$('#preloaded-examples').on('click', function () {
+$('#example-selection-button').on('click', function () {
+  console.log('loading examples')
   $("#example-dropdown").empty();
-  $.getJSON('static/assets/examples.json', {ts: new Date().getTime()}, function (examples) {
+
+  $.getJSON('static/assets/examples.json', {ts: new Date().getTime()})
+    .done(function (data) {
+      load_examples(data);
+
+      $.getJSON('static/assets/user_examples.json', {ts: new Date().getTime()})
+        .done(function (user_data) {
+          load_examples(user_data, true);
+        })
+        .fail(function (e) {
+          console.log(e);
+        });
+    })
+    .fail(function (e) {
+      console.log(e);
+    });
+
+  function load_examples(examples, user = false) {
+    console.log(examples.data.length);
+
+    if (user && examples.data.length !== 0) {
+      d3.select('#example-dropdown').append('div').classed('dropdown-divider', true)
+      d3.select('#example-dropdown').append('h6').classed('dropdown-header', true).text('User examples')
+      d3.select('#example-dropdown').append('div').classed('dropdown-divider', true);
+    }
+
     examples.data.forEach(function (example, index) {
       let dropdown = d3.select('#example-dropdown');
+
       let dropdown_item = dropdown.append('a')
         .classed('dropdown-item', true)
         .classed(index === 0 ? 'active' : '', true)
         .text((index + 1) + '. ' + example.name);
+
       dropdown_item.on('click', function () {
         $('#algorithm-dropdown').children()[ALGO_MAP[example.algorithm]].click();
         $('#subspace-dropdown-items').children()[SUBSPACE_MAP[example.subspace]].click();
@@ -1008,9 +1036,7 @@ $('#preloaded-examples').on('click', function () {
         $('#seedword-form-submit').click();
       })
     })
-  }).fail(function (e) {
-    console.log(e);
-  })
+  }
 })
 
 $('#control-collapser').on('click', function () {
@@ -1054,6 +1080,53 @@ function weat_update(e) {
 $('#weat-container').on('shown.bs.collapse', display_weat);
 $('#occupation-A, #occupation-B, #gender-A, #gender-B').on('keyup', weat_update);
 $('#occupation-A, #occupation-B, #gender-A, #gender-B').on('focusout', display_weat);
+
+function save_example() {
+  let example_name = $('#example-name').val();
+
+  if (example_name === "") {
+    alert('Example name cannot be empty');
+    return;
+  }
+
+  let algorithm = $('#algorithm-selection-button').text().replace('Algorithm: ', '');
+  let subspace = $('#subspace-selection-button').text().replace('Subspace method: ', '');
+  let seedwords1 = $('#seedword-text-1').val();
+  let seedwords2 = $('#seedword-text-2').val();
+  let concept1 = $('#concept-label-1').val();
+  let concept2 = $('#concept-label-2').val();
+  let oscar_seedwords = $('#oscar-seedword-text-1').val();
+  let equalize_set = $('#equalize-list').val();
+  let evalset = $('#evaluation-list').val();
+
+  let example = {
+    "name": example_name,
+    "algorithm": algorithm,
+    "subspace": subspace,
+    "seedwords-1": seedwords1,
+    "seedwords-2": seedwords2,
+    "concept1": concept1,
+    "concept2": concept2,
+    "evalset": evalset,
+    "equalize": equalize_set,
+    "oscar-c2-seedwords": oscar_seedwords
+  }
+
+  $.ajax({
+    type: 'POST',
+    url: 'save_example',
+    data: example,
+    success: function (response) {
+      console.log(response);
+      alert('Example saved!')
+    },
+    error: function (response) {
+      console.log(response);
+    }
+  })
+}
+
+$('#save-example-btn').on('click', save_example);
 
 if (TESTING) {
   try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');

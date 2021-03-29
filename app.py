@@ -212,6 +212,20 @@ def get_weat():
     return jsonify(weat_scores={'pre-weat': weatscore_predebiased, 'post-weat': weatscore_postdebiased})
 
 
+@app.route('/save_example', methods=['POST'])
+def save_example():
+    example = request.values.to_dict()
+
+    with open('./static/assets/user_examples.json', 'r+') as user_examples:
+        curr_data = json.load(user_examples)
+        curr_data['data'].append(example)
+        user_examples.seek(0)
+        json.dump(curr_data, user_examples, indent=2)
+        user_examples.truncate()
+
+    return jsonify('Success')
+
+
 class InvalidUsage(Exception):
     status_code = 400
 
