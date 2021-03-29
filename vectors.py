@@ -846,7 +846,10 @@ def bias_two_means(embedding, word_list1, word_list2):
 
 def bias_pca(embedding, word_list):
     vecs = embedding.get_vecs(word_list)
-    bias_direction = PCA(n_components=2).fit(vecs).components_[0]
+    if len(word_list) == 1:
+        bias_direction = vecs[0]
+    else:
+        bias_direction = PCA(n_components=2).fit(vecs).components_[0]
 
     return bias_direction / np.linalg.norm(bias_direction)
 
