@@ -134,4 +134,4 @@ pdfs/
 .idea/
 scratch/
 /static/upload/*
-static/assets/user_examples.json
+/static/assets/user_examples.json
