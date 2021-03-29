@@ -231,8 +231,8 @@ class HardDebiaser(Debiaser):
         # Step 4 - Reorient the embeddings back to the debiased space
         # ---------------------------------------------------------
         debiased_projector = self.animator.add_projector(PCA(n_components=2), name='debiased_projector')
-        debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + evalwords + equalize_set[0] + equalize_set[1])
-        # debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
+        # debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2 + evalwords + equalize_words[0] + equalize_words[1])
+        debiased_projector.fit(self.debiased_emb, seedwords1 + seedwords2)
 
         step4 = self.animator.add_anim_step(camera_step=True)
         step4.add_points(debiased_projector.project(self.debiased_emb, seedwords1, group=1))
@@ -869,7 +869,6 @@ def bias_pca_paired(embedding, pair1, pair2):
         matrix.append(b - center)
 
     matrix = np.array(matrix)
-    # SVD first singular vector
 
     bias_direction = PCA(n_components=2).fit(matrix).components_[0]
 
