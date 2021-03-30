@@ -515,7 +515,8 @@ function setup_animation(anim_svg, response, identifier) {
           .transition()
           .ease(INTERPOLATION)
           .duration(ANIMATION_DURATION)
-          .attr('d', d3.line()(classifier_line));
+          .attr('d', d3.line()(classifier_line))
+          .attr('transform', 'translate(0,0) scale(1)');
       } else {
         svg.select('#classification-line')
           .selectAll('*')
