@@ -710,34 +710,34 @@ $('#algorithm-dropdown a').click(function (e) {
   subspace_selector.removeClass('disabled');
 
   if (algorithm === 'Linear projection') {
-    subspace_selector.addClass('disabled');
+    // subspace_selector.addClass('disabled');
     subspace_selector[1].click();
-    $(subspace_selector[1]).removeClass('disabled');
-    $(subspace_selector[2]).removeClass('disabled');
-    $(subspace_selector[3]).removeClass('disabled');
-    $(subspace_selector[5]).removeClass('disabled');
+    // $(subspace_selector[1]).removeClass('disabled');
+    // $(subspace_selector[2]).removeClass('disabled');
+    // $(subspace_selector[3]).removeClass('disabled');
+    // $(subspace_selector[5]).removeClass('disabled');
   }
 
   if (algorithm === 'Hard debiasing') {
     $('#equalize-holder').show();
-    subspace_selector.addClass('disabled');
+    // subspace_selector.addClass('disabled');
     subspace_selector[1].click();
-    $(subspace_selector[1]).removeClass('disabled');
-    $(subspace_selector[2]).removeClass('disabled');
-    $(subspace_selector[3]).removeClass('disabled');
-    $(subspace_selector[5]).removeClass('disabled');
+    // $(subspace_selector[1]).removeClass('disabled');
+    // $(subspace_selector[2]).removeClass('disabled');
+    // $(subspace_selector[3]).removeClass('disabled');
+    // $(subspace_selector[5]).removeClass('disabled');
   } else {
     $('#equalize-holder').hide();
   }
 
   if (algorithm === 'OSCaR') {
     $('#input-two-col-oscar').show();
-    subspace_selector.addClass('disabled');
+    // subspace_selector.addClass('disabled');
     subspace_selector[1].click();
-    $(subspace_selector[1]).removeClass('disabled');
-    $(subspace_selector[2]).removeClass('disabled');
-    $(subspace_selector[3]).removeClass('disabled');
-    $(subspace_selector[5]).removeClass('disabled');
+    // $(subspace_selector[1]).removeClass('disabled');
+    // $(subspace_selector[2]).removeClass('disabled');
+    // $(subspace_selector[3]).removeClass('disabled');
+    // $(subspace_selector[5]).removeClass('disabled');
   } else {
     $('#input-two-col-oscar').hide();
   }

@@ -10,10 +10,19 @@
       "concept1": "Gender"
     },
     {
-      "name": "INLP: gender",
+      "name": "INLP: gender (Case 1)",
       "algorithm": "Iterative Null Space Projection",
       "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
       "seedwords-2": "woman, she, her, girl, grandma, aunt, jill",
+      "subspace": "Classification",
+      "evalset": "engineer, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "INLP: gender (Case 2)",
+      "algorithm": "Iterative Null Space Projection",
+      "seedwords-1": "man, he, his, him, guy, boy, grandpa, uncle, brother, son, nephew, mr",
+      "seedwords-2": "woman, she, her, hers, gal, girl, grandma, aunt, sister, daughter, niece, mrs",
       "subspace": "Classification",
       "evalset": "engineer, homemaker",
       "concept1": "Gender"
@@ -53,6 +62,7 @@
       "evalset": "good, evil, right, wrong",
       "concept1": "Nationality"
     },
+
     {
       "name": "OSCaR: gender-occupations",
       "algorithm": "OSCaR",
@@ -62,6 +72,16 @@
       "evalset": "programmer, grandpa, grandma",
       "concept1": "Gender",
       "concept2": "Occupations"
+    },
+    {
+      "name": "Hard debiasing: gender-occupations",
+      "algorithm": "Hard debiasing",
+      "seedwords-1": "he, man",
+      "seedwords-2": "she, woman",
+      "equalize": "boy-girl, brother-siste",
+      "subspace": "Two means",
+      "evalset": "receptionist, banker, engineer, nurse",
+      "concept1": "Gender"
     },
     {
       "name": "Linear projection: gender-occupations",
