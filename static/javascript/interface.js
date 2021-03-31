@@ -23,7 +23,7 @@ let MEAN_VISIBILITY = true;
 let EVAL_VISIBILITY = true;
 let REMOVE_POINTS = false;
 let ANIMSTEP_COUNTER = 0;
-let ANIMATION_DURATION = 4000;
+let ANIMATION_DURATION = 2000;
 let AXIS_TOLERANCE = 0.05;
 let INTERPOLATION = d3.easeLinear;
 let DYNAMIC_PROJ = false;
@@ -968,7 +968,6 @@ $('#oscar-seedword-text-1').on('keyup', captureEnter);
 
 // Preloaded examples
 $('#example-selection-button').on('click', function () {
-  console.log('loading examples')
   $("#example-dropdown").empty();
 
   $.getJSON('static/assets/examples.json', {ts: new Date().getTime()})
@@ -988,7 +987,6 @@ $('#example-selection-button').on('click', function () {
     });
 
   function load_examples(examples, user = false) {
-    console.log(examples.data.length);
 
     if (user && examples.data.length !== 0) {
       d3.select('#example-dropdown').append('div').classed('dropdown-divider', true)
@@ -1130,37 +1128,55 @@ function save_example() {
 $('#save-example-btn').on('click', save_example);
 
 function set_tour_data() {
-  $('#algorithm-selection').attr('data-intro', 'Select debiasing algorithm');
-  $('#algorithm-selection').attr('data-step', 1);
+  let step_index = 1;
 
-  $('#subspace-dropdown').attr('data-intro', 'Select subspace computation method');
-  $('#subspace-dropdown').attr('data-step', 2);
+  function set_step(selector, position='') {
+    $(selector).attr('data-step', step_index);
+    step_index += 1;
+    if (position !== '') {
+      $(selector).attr('data-position', position);
+    }
+  }
+
+  $('#control-panel').attr('data-intro', 'Control Panel');
+  set_step('#control-panel', 'right');
+
+  $('#visualization-panel').attr('data-intro', 'Embedding View');
+  set_step('#visualization-panel', 'left');
+
+  $('#algo-subspace').attr('data-intro', 'Select debiasing algorithm and subspace computation method');
+  set_step('#algo-subspace', 'right');
+
+  // $('#subspace-dropdown').attr('data-intro', 'Select subspace computation method');
+  // set_step('#subspace-dropdown');
 
   $('#preloaded-examples').attr('data-intro', 'You can also explore any of the preloaded examples');
-  $('#preloaded-examples').attr('data-step', 3);
+  set_step('#preloaded-examples', 'right');
+
 
   $('#seedset-container').attr('data-intro', 'Enter the seed sets depending on the chosen debiasing algorithm and subspace computation method');
-  $('#seedset-container').attr('data-step', 4);
+  set_step('#seedset-container', 'right');
 
   $('#seedword-form-submit').attr('data-intro', 'Press \'Run\' to visualize the algorithms output for current configuration');
-  $('#seedword-form-submit').attr('data-step', 5);
+  set_step('#seedword-form-submit', 'right');
 
   $('#save-example').attr('data-intro', 'Save the current example. These will show up in the list of preloaded examples.');
-  $('#save-example').attr('data-step', 6);
+  set_step('#save-example', 'right');
 
-  $('#visualization-panel').attr('data-intro', 'The visualization of the chosen algorithm on a 2D projection of the word vectors will be shown here');
-  $('#visualization-panel').attr('data-step', 7);
+  // $('#visualization-panel').attr('data-intro', 'The visualization of the chosen algorithm on a 2D projection of the word vectors will be shown here');
+  // set_step('#visualization-panel');
 
   $('#animation-btn-group').attr('data-intro', 'Controls to navigate the various steps of the algorithm\'s visualization');
-  $('#animation-btn-group').attr('data-step', 8);
+  set_step('#animation-btn-group', 'right');
 
   $('#toolbar').attr('data-intro', 'Controls for various elements in the visualization panel')
-  $('#toolbar').attr('data-step', 9)
+  set_step('#toolbar', 'right');
 
   $('#export-misc').attr('data-intro', 'You can also export the debiased embedding and compute WEAT scores')
-  $('#export-misc').attr('data-step', 10)
+  set_step('#export-misc', 'right');
 
   $('#explanation').attr('data-intro', 'Provides a textual explanation of the currently visualized step in the visualization panel')
+  set_step('#explanation', 'right');
 }
 
 set_tour_data();
