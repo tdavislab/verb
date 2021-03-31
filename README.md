@@ -1,4 +1,4 @@
-# Visualizing Word Vector Biases
+# VERB - Visualizing Embedding Representation for deBiasing
 
 ### Requirements
 Python 3.6+, pip
