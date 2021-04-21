@@ -21,8 +21,15 @@
         <div id="control-panel" class="col-5 border-right">
             <h4 class="text-center bg-dark text-light p-3 rounded">VERB</h4>
 
-            <h4 class="text-center">Select embeddings to diff</h4>
 
+            <div id="input-two-col" class="input-group w-100 vert-space">
+                <div class="input-group-prepend w-25">
+                    <input type="text" class="w-100 input-group-text" id="wordlist-label" value="Wordlist"/>
+                </div>
+                <input id="wordlist" class="form-control input-group-text" type="text" placeholder="Provide wordlist...">
+            </div>
+
+            <h4 class="text-center">Select embeddings to diff</h4>
             <div id="emb-dropdowns" class="d-flex">
                 <div id="emb1" class="dropdown vert-space d-inline w-50" style="padding-right: 0.3em;">
                     <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="emb1-button" data-toggle="dropdown">
@@ -46,6 +53,8 @@
                     </div>
                 </div>
             </div>
+
+            <button id="run-button" class="btn btn-outline-primary w-100 vert-space">Run</button>
         </div>
 
         <div id="visualization-panel" class="col-7">

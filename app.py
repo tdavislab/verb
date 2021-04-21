@@ -93,6 +93,7 @@ def index():
 def alignment():
     return render_template('alignment.html')
 
+
 @app.route('/seedwords2', methods=['POST'])
 def get_seedwords2():
     try:
@@ -177,6 +178,23 @@ def get_seedwords2():
         raise InvalidUsage(f'Something went wrong! Could not find the word {str(e).strip()}', 404)
     # except Exception as e:
     #     raise InvalidUsage(f'Something went wrong! Error message from the backend: \n{str(e).strip()}', 404)
+
+
+@app.route('/align_embs', methods=['POST'])
+def alignment_data():
+    emb1 = request.values['emb1']
+    emb2 = request.values['emb2']
+    wordlist = request.values['wordlist']
+
+    print(emb1, emb2, wordlist)
+
+    emb1_obj = app.base_embedding
+    emb2_obj = app.debiased_embedding
+    wordlist = ['he', 'she', 'him', 'her']
+    projector = AlignmentProjector(emb1_obj, emb2_obj)
+    projector.compute_2d(wordlist)
+
+    return projector.convert_to_payload()
 
 
 @app.route('/freeze', methods=['POST'])

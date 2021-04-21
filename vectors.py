@@ -81,6 +81,47 @@ class Embedding:
         return [[word] + self.word_vectors[word].vector.tolist() for word in self.word_vectors]
 
 
+# Alignment
+class AlignmentProjector:
+    def __init__(self, emb1_obj: Embedding, emb2_obj: Embedding):
+        self.emb1 = emb1_obj
+        self.emb2 = emb2_obj
+        self.vecs1 = None
+        self.vecs2 = None
+        self.wordlist = None
+
+    def compute_2d(self, wordlist):
+        # Fit PCA to words
+        # Multiple strategies are possible
+        # 1. PCA on space of emb1 or emb2
+        # 2. PCA on space of emb1 + emb2 (vstack vector)
+        emb1_vecs = self.emb1.get_vecs(wordlist)
+        emb2_vecs = self.emb2.get_vecs(wordlist)
+
+        print(emb1_vecs)
+
+        print(emb2_vecs)
+
+        # Go with PCA on space of emb1 for now
+        projector = PCA(n_components=2)
+        projector.fit(np.vstack([emb1_vecs, emb2_vecs]))
+
+        self.vecs1 = projector.transform(emb1_vecs)
+        self.vecs2 = projector.transform(emb2_vecs)
+        self.wordlist = wordlist
+
+        return self
+
+    def convert_to_payload(self):
+        payload = {'emb1': [], 'emb2': []}
+
+        for i, word in enumerate(self.wordlist):
+            payload['emb1'].append({'label': word, 'x': self.vecs1[i][0], 'y': self.vecs1[i][1], 'group': 1})
+            payload['emb2'].append({'label': word, 'x': self.vecs2[i][0], 'y': self.vecs2[i][1], 'group': 2})
+
+        return payload
+
+
 # Debiaser base class
 # ----------------------------------------------------
 class Debiaser:

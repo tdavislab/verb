@@ -15,7 +15,7 @@ svg_setup()
 d3.select(window).on('resize', svg_setup);
 
 // Fill the textboxes while testing
-let TESTING = false;
+let TESTING = true;
 
 // Initialize global variables
 let LABEL_VISIBILITY = true;
@@ -55,36 +55,9 @@ function filterByName(name, array, prop) {
   return array.filter(d => d[prop] === name)[0];
 }
 
-function remove_point() {
-  let element = d3.select(this);
-  let label = element.datum().label;
-  let group = element.datum().group;
-  if (group === 1) {
-    let seedwords = $('#seedword-text-1').val().split(', ');
-    let filtered = seedwords.filter(elem => elem !== label);
-    $('#seedword-text-1').val(filtered.join(', '));
-  }
-  if (group === 2) {
-    let seedwords = $('#seedword-text-2').val().split(', ');
-    let filtered = seedwords.filter(elem => elem !== label);
-    $('#seedword-text-2').val(filtered.join(', '));
-  }
-  if (group === 3) {
-    let evalwords = $('#evaluation-list').val().split(', ');
-    let filtered = evalwords.filter(elem => elem !== label);
-    $('#evaluation-list').val(filtered.join(', '));
-  }
-  if (group === 4) {
-    let orth_subspace_words = $('#oscar-seedword-text-1').val().split(', ');
-    let filtered = orth_subspace_words.filter(elem => elem !== label);
-    $('#oscar-seedword-text-1').val(filtered.join(', '));
-  }
-  console.log(element)
-  element.attr('visibility', 'hidden')
-  d3.select(this.parentNode).attr('visibility', 'hidden');
-}
+function draw_scatter(svg, response, x, y, width, height, margin) {
+  let point_data = response.emb1.concat(response.emb2);
 
-function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, margin) {
   // Add the scatterplot
   svg.append('defs')
     .append('marker')
@@ -116,25 +89,6 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     .on('mouseover', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
-    })
-    .on('click', function (d) {
-      $('#knn').prop('hidden', false);
-      let neigbors_base = neighbor_data.base[d.label]
-      let neighbors_debiased = neighbor_data.debiased[d.label];
-
-      d3.select('#knn').select('#base-neighbors')
-        .selectAll('span')
-        .data(neigbors_base)
-        .join('span')
-        .classed('neighbor-item', true)
-        .html(d => d);
-
-      d3.select('#knn').select('#debiased-neighbors')
-        .selectAll('span')
-        .data(neighbors_debiased)
-        .join('span')
-        .classed('neighbor-item', true)
-        .html(d => d);
     })
     .on('mouseout', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
@@ -168,15 +122,6 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     .attr('x', (d, i) => labelArray[i].x - anchorArray[i].x)
     .attr('y', (d, i) => labelArray[i].y - anchorArray[i].y)
 
-  // Remove buttons
-  datapoint_group.append('text')
-    .attr('class', 'fa cross-button')
-    .attr('x', 10)
-    .attr('y', -10)
-    .attr('visibility', 'hidden')
-    .on('click', remove_point)
-    .text('\uf057');
-
   datapoint_group.append('path')
     .attr('fill', d => d.group === 0 ? '#414141' : color(d.group))
     .attr('d', d => (d.group === 0 && d.label != 'Origin') ? '' : shape(d.group))
@@ -186,50 +131,6 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
 
   // Draw the bias direction arrow
   let arrow_endpoints = [point_data.filter(d => d.group === 0).map(d => [d.x, d.y])];
-
-  if ($('#algorithm-selection-button').text() === 'Algorithm: OSCaR') {
-    let line_data = [[arrow_endpoints[0][0], arrow_endpoints[0][1]], [arrow_endpoints[0][2], arrow_endpoints[0][3]]];
-    console.log(line_data);
-
-    let bias_lines = svg.append('g')
-      .attr('id', 'bias-direction-group')
-      .selectAll('path')
-      .data(line_data)
-      .join('path')
-      .attr('d', d => d3.line()(d.map(d => [x(d[0]), y(d[1])])))
-      .attr('id', (d, i) => 'bias-direction-line' + i)
-      .attr('class', 'bias-line')
-      .attr('stroke', '#5b5b5b')
-      .attr('stroke-width', '4px');
-
-    d3.select('#bias-direction-group').selectAll('text')
-      .data(line_data)
-      .join('text')
-      .attr('class', 'group-0')
-      .attr('dy', -10)
-      .style('font-size', '1.2em')
-      .attr('id', (d, i) => 'text' + i)
-      .append('textPath')
-      .attr('xlink:href', (d, i) => '#bias-direction-line' + i)
-      .attr('startOffset', '30')
-      .text((d, i) => point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label)[i] + '➞');
-  } else {
-    let bias_line = svg.append('path')
-      .data(arrow_endpoints)
-      .attr('id', 'bias-direction-line')
-      .attr('d', d => d3.line()(d.map(d => [x(d[0]), y(d[1])])))
-      .attr('stroke', '#5b5b5b')
-      .attr('stroke-width', '4px');
-
-    svg.append('text')
-      .attr('class', 'group-0')
-      .attr('dy', -10)
-      .style('font-size', '1.2em')
-      .append('textPath')
-      .attr('xlink:href', '#bias-direction-line')
-      .attr('startOffset', '30')
-      .text(point_data.filter(d => d.group === 0 && d.label !== 'Origin').map(d => d.label) + '➞');
-  }
 
   zoom = d3.zoom().scaleExtent([0.02, 20]).extent([[0, 0], [width, height]]).on("zoom", update_plot);
 
@@ -256,11 +157,6 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     datapoint_group.transition()
       .duration(0)
       .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
-
-    d3.select('#classification-line').attr('transform', d3.event.transform);
-
-    d3.select('path#bias-direction-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
-    d3.selectAll('.bias-line').attr('d', d => d3.line()(d.map(d => [newX(d[0]), newY(d[1])])));
   }
 }
 
@@ -314,7 +210,7 @@ function compute_perpendicular(line) {
   return [-line[1] / line[0], 1];
 }
 
-function setup_animation(anim_svg, response, identifier) {
+function setup_drawing(anim_svg, response, identifier) {
   try {
     console.log(response);
 
@@ -470,30 +366,17 @@ function setup_animation(anim_svg, response, identifier) {
     // set the ranges
     let x_axis = d3.scaleLinear().range([0, width - 30]);
     let y_axis = d3.scaleLinear().range([height, 0]);
-    let axes_limits = compute_axes_limits_sym(response.anim_steps[0]);
+
+    let axes_limits = compute_axes_limits_sym(response.emb1);
     x_axis.domain([axes_limits['x_min'], axes_limits['x_max']]).nice();
     y_axis.domain([axes_limits['y_min'], axes_limits['y_max']]).nice();
-
-    let camera_icon = anim_svg.append('image')
-      .attr('id', 'camera-indicator')
-      .attr('x', 50)
-      .attr('y', height - 30)
-      .attr('href', 'static/assets/camera.svg')
-      .attr('visibility', 'hidden')
-
-    let step_indicator = anim_svg.append('text')
-      .attr('id', 'step-indicator')
-      .attr('x', width)
-      .attr('y', 25)
-      .attr('text-anchor', 'end')
-      .text('Step=0');
 
 
     let svg = anim_svg.append('g')
       .attr('id', identifier + 'group')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    draw_scatter_anim(svg, response.anim_steps[0], response.knn, x_axis, y_axis, width, height, margin);
+    draw_scatter(svg, response, x_axis, y_axis, width, height, margin);
     let axes = draw_axes(svg, width, height, x_axis, y_axis);
 
     svg.append('path')
@@ -504,100 +387,6 @@ function setup_animation(anim_svg, response, identifier) {
       .attr('stroke-dasharray', '5, 5')
 
     let x_axes_obj = axes[0], y_axes_obj = axes[1];
-    $('#explanation-text').text(response.explanations[0]);
-
-    // Step back
-    let step_backward_btn = $('#play-control-sb');
-    let step_forward_btn = $('#play-control-sf');
-    let fast_backward_btn = $('#play-control-fb');
-    let fast_forward_btn = $('#play-control-ff');
-
-    btn_active(step_backward_btn, false);
-    btn_active(fast_backward_btn, false);
-    btn_active(step_forward_btn, true);
-    btn_active(fast_forward_btn, true);
-
-    // Step backward
-    step_backward_btn.unbind('click').on('click', function (e) {
-      // if already at 0, do nothing
-      if (ANIMSTEP_COUNTER === 0) {
-        console.log('Already at first step');
-      } else {
-        ANIMSTEP_COUNTER -= 1;
-        btn_active(step_forward_btn, true);
-        btn_active(fast_forward_btn, true);
-
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {
-          index: ANIMSTEP_COUNTER,
-          forward: false
-        }, response.camera_steps[ANIMSTEP_COUNTER + 1]);
-
-        if (ANIMSTEP_COUNTER === 0) {
-          btn_active(step_backward_btn, false);
-          btn_active(fast_backward_btn, false);
-        }
-      }
-      d3.select('#step-indicator').text(`Step=${ANIMSTEP_COUNTER}`);
-    })
-
-    // To the first step
-    fast_backward_btn.unbind('click').on('click', function (e) {
-      if (ANIMSTEP_COUNTER === 0) {
-        console.log('Already at first step');
-      } else {
-        ANIMSTEP_COUNTER = 0;
-        btn_active(step_forward_btn, true);
-        btn_active(fast_forward_btn, true);
-
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: -1, forward: false}, true);
-
-        if (ANIMSTEP_COUNTER === 0) {
-          btn_active(step_backward_btn, false);
-          btn_active(fast_backward_btn, false);
-        }
-      }
-      d3.select('#step-indicator').text(`Step=${ANIMSTEP_COUNTER}`);
-
-    })
-
-    // Step forward
-    step_forward_btn.unbind('click').on('click', function (e) {
-      if (ANIMSTEP_COUNTER === response.anim_steps.length - 1) {
-        console.log('Already at last step');
-      } else {
-        ANIMSTEP_COUNTER += 1;
-        btn_active(step_backward_btn, true);
-        btn_active(fast_backward_btn, true);
-
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: ANIMSTEP_COUNTER - 1, forward: true}, response.camera_steps[ANIMSTEP_COUNTER]);
-
-        if (ANIMSTEP_COUNTER === response.anim_steps.length - 1) {
-          btn_active(step_forward_btn, false);
-          btn_active(fast_forward_btn, false);
-        }
-      }
-      d3.select('#step-indicator').text(`Step=${ANIMSTEP_COUNTER}`);
-    })
-
-    // To the last step
-    fast_forward_btn.unbind('click').on('click', function (e) {
-      if (ANIMSTEP_COUNTER === response.anim_steps.length - 1) {
-        console.log('Already at last step');
-      } else {
-        ANIMSTEP_COUNTER = response.anim_steps.length - 1;
-        btn_active(step_backward_btn, true);
-        btn_active(fast_backward_btn, true);
-
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: -1, forward: true}, true);
-
-        if (ANIMSTEP_COUNTER === response.anim_steps.length - 1) {
-          btn_active(step_forward_btn, false);
-          btn_active(fast_forward_btn, false);
-        }
-      }
-      d3.select('#step-indicator').text(`Step=${ANIMSTEP_COUNTER}`);
-
-    })
   } catch (e) {
     console.log(e);
   }
@@ -607,239 +396,59 @@ function btn_active(btn, bool_active) {
   btn.prop('disabled', !bool_active);
 }
 
-function captureEnter(e) {
-  if (e.key === 'Enter' || e.keyCode === 13) {
-    $(e.target).blur();
-    $('#seedword-form-submit').click();
-    $('#example-selection-button').html('Choose an example or provide seedword sets below')
-  }
-}
-
-// Functionality for the dropdown-menus
-$('#example-dropdown a').click(function (e) {
-  $('#example-selection-button').text(this.innerHTML);
-});
-
-$('#algorithm-dropdown a').click(function (e) {
-  $('#example-selection-button').html('Choose an example or provide seedword sets below');
-
-  let algorithm = this.innerHTML;
-  let subspace_selector = $('#subspace-dropdown-items').children();
-
-  $('#algorithm-selection-button').text('Algorithm: ' + algorithm);
-  subspace_selector.removeClass('disabled');
-
-  if (algorithm === 'Linear projection') {
-    // subspace_selector.addClass('disabled');
-    subspace_selector[1].click();
-    // $(subspace_selector[1]).removeClass('disabled');
-    // $(subspace_selector[2]).removeClass('disabled');
-    // $(subspace_selector[3]).removeClass('disabled');
-    // $(subspace_selector[5]).removeClass('disabled');
-  }
-
-  if (algorithm === 'Hard debiasing') {
-    $('#equalize-holder').show();
-    // subspace_selector.addClass('disabled');
-    subspace_selector[1].click();
-    // $(subspace_selector[1]).removeClass('disabled');
-    // $(subspace_selector[2]).removeClass('disabled');
-    // $(subspace_selector[3]).removeClass('disabled');
-    // $(subspace_selector[5]).removeClass('disabled');
-  } else {
-    $('#equalize-holder').hide();
-  }
-
-  if (algorithm === 'OSCaR') {
-    $('#input-two-col-oscar').show();
-    // subspace_selector.addClass('disabled');
-    subspace_selector[1].click();
-    // $(subspace_selector[1]).removeClass('disabled');
-    // $(subspace_selector[2]).removeClass('disabled');
-    // $(subspace_selector[3]).removeClass('disabled');
-    // $(subspace_selector[5]).removeClass('disabled');
-  } else {
-    $('#input-two-col-oscar').hide();
-  }
-  if (algorithm === 'Iterative Null Space Projection') {
-    subspace_selector.addClass('disabled');
-    subspace_selector[4].click();
-    $(subspace_selector[4]).removeClass('disabled');
-  }
-});
-
-$('#subspace-dropdown a').click(function (e) {
-  try {
-    $('#example-selection-button').html('Choose an example or provide seedword sets below')
-
-    let subspace_method = this.innerHTML;
-    $('#subspace-selection-button').text('Subspace method: ' + subspace_method);
-
-    if (subspace_method === 'PCA') {
-      // let seedwords1 = $('#seedword-text-1').val()
-      // let seedwords2 = $('#seedword-text-2').val();
-      // $('#seedword-text-1').val(seedwords1 + ', ' + seedwords2)
-      $('#seedword-text-2').hide();
-    } else if (subspace_method === 'PCA-paired') {
-      $('#seedword-text-2').hide();
-    } else if (subspace_method === 'Two means' || subspace_method === 'Classification' || subspace_method === 'GSS') {
-      $('#seedword-text-2').show();
-    } else {
-      console.log('Incorrect subspace method');
-    }
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-// Functionality for various toggle buttons
-$('#data-label-chk').click(function () {
-  if (LABEL_VISIBILITY === true) {
-    d3.selectAll('.class-label').attr('hidden', true);
-    d3.select('#toggle-label-icon').attr('class', 'fa fa-toggle-on fa-rotate-180');
-  } else {
-    d3.selectAll('.class-label').attr('hidden', null);
-    d3.select('#toggle-label-icon').attr('class', 'fa fa-toggle-on');
-  }
-  LABEL_VISIBILITY = !LABEL_VISIBILITY;
-});
-
-$('#toggle-eval-chk').click(function () {
-  let eval_state = $(this).prop('checked');
-  if (eval_state === false) {
-    d3.selectAll('.group-3').attr('hidden', true);
-  } else {
-    d3.selectAll('.group-3').attr('hidden', null);
-  }
-});
-
-$('#toggle-mean-chk').click(function () {
-  if (MEAN_VISIBILITY === true) {
-    d3.selectAll('#bias-direction-line').attr('hidden', true);
-    d3.selectAll('.bias-line').attr('hidden', true);
-    d3.selectAll('.group-0').attr('hidden', true);
-    d3.select('#toggle-mean-icon').attr('class', 'fa fa-toggle-on fa-rotate-180');
-  } else {
-    d3.selectAll('#bias-direction-line').attr('hidden', null);
-    d3.selectAll('.bias-line').attr('hidden', null);
-    d3.selectAll('.group-0').attr('hidden', null);
-    d3.selectAll('#toggle-mean-icon').attr('class', 'fa fa-toggle-on');
-  }
-  MEAN_VISIBILITY = !MEAN_VISIBILITY;
-});
-
-$('#remove-points-chk').click(function () {
-  let cross_buttons = d3.selectAll('.cross-button');
-  let chk_state = $(this).prop('checked');
-  if (chk_state === false) {
-    cross_buttons.attr('visibility', 'hidden');
-  } else {
-    cross_buttons.filter(d => d.group !== 0).attr('visibility', 'visible');
-    // .classed('shaker', !cross_buttons.classed('shaker'));
-  }
-});
-
-$('#toggle-scrshot-chk').click(function () {
-  let scr_state = $(this).prop('checked');
-  if (scr_state === true) {
-    // d3.selectAll('.group-3').attr('hidden', true);
-    $('.datapoint-group').attr('transform', function () {
-      return $(this).attr('transform') + 'scale(1.5 1.5)'
-    })
-  } else {
-    $('.datapoint-group').attr('transform', function () {
-      return $(this).attr('transform') + 'scale(0.6667 0.6667)'
-    })
-  }
-});
-
 function svg_cleanup() {
   $('#pre-debiased-svg').empty();
   $('#animation-svg').empty();
   $('#post-debiased-svg').empty();
 }
 
+$('#emb1 a').click(function (e) {
+  try {
+    let emb1 = this.innerHTML;
+    $('#emb1-button').text(emb1);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+$('#emb2 a').click(function (e) {
+  try {
+    let emb2 = this.innerHTML;
+    $('#emb2-button').text(emb2);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 // Functionality for the 'Run' button
-$('#seedword-form-submit').click(function () {
+$('#run-button').click(function () {
   try { // Perform cleanup
     svg_cleanup();
-    $('#weat-display').text('');
-    $('#weat-container').collapse('hide');
-    $('#base-neighbors > span').remove();
-    $('#debiased-neighbors > span').remove();
-    $('#knn').prop('hidden', true);
 
-    ANIMSTEP_COUNTER = 0;
-
-    $('#toggle-eval-chk').prop('checked', true);
-    $('#toggle-mean-chk').prop('checked', true);
-    $('#data-label-chk').prop('checked', true);
-    $('#toggle-scrshot-chk').prop('checked', false);
-    if ($('#remove-points-chk').prop('checked', true)) {
-      $('#remove-points-chk').click()
-    }
-
-    let seedwords1 = $('#seedword-text-1').val();
-    let seedwords2 = $('#seedword-text-2').val();
-    let evalwords = $('#evaluation-list').val();
-    let equalize = $('#equalize-list').val()
-    let orth_subspace = $('#oscar-seedword-text-1').val();
-    let algorithm = $('#algorithm-selection-button').text();
-    let subspace_method = $('#subspace-selection-button').text();
-    let concept1_name = $('#concept-label-1').val();
-    let concept2_name = $('#concept-label-2').val();
+    let emb1 = $('#emb1-button').text();
+    let emb2 = $('#emb2-button').text();
+    let wordlist = $('#wordlist').val();
 
     $.ajax({
       type: 'POST',
-      url: '/seedwords2',
+      url: '/align_embs',
       data: {
-        seedwords1: seedwords1,
-        seedwords2: seedwords2,
-        evalwords: evalwords,
-        equalize: equalize,
-        orth_subspace: orth_subspace,
-        algorithm: algorithm,
-        subspace_method: subspace_method,
-        concept1_name: concept1_name,
-        concept2_name: concept2_name
+        emb1: emb1,
+        emb2: emb2,
+        wordlist: wordlist
       },
-      beforeSend: function () {
-        $('.overlay').addClass('d-flex').show();
-        $('#spinner-holder').show();
-        $('#seedword-form-submit').attr('disabled', 'disabled');
-        $('#weat-display').text('')
-      },
+      // beforeSend: function () {
+      //   $('.overlay').addClass('d-flex').show();
+      //   $('#spinner-holder').show();
+      // },
       success: function (response) {
-        // let predebiased_svg = d3.select('#pre-debiased-svg');
-        // draw_scatter_static(predebiased_svg, response, 'Pre-debiasing', false,);
-
         let animation_svg = d3.select('#animation-svg');
-        // draw_svg_scatter(animation_svg, response, 'Pre-debiasing', true, true);
-        setup_animation(animation_svg, response, 'animation')
-
-        // let postdebiased_svg = d3.select('#post-debiased-svg');
-        // draw_scatter_static(postdebiased_svg, response, 'Post-debiasing', true,);
-
-        // $('#weat-predebiased').html('WEAT score = ' + response['weat_scores']['pre-weat'].toFixed(3));
-        // $('#weat-postdebiased').html('WEAT score = ' + response['weat_scores']['post-weat'].toFixed(3));
-        // console.log(response.weat_scores);
-
-        // enable toolbar buttons
-        d3.select('#toggle-labels-btn').attr('disabled', null);
-        d3.select('#remove-points-chk').attr('disabled', null);
-        d3.select('#toggle-mean-btn').attr('disabled', null);
-        d3.select('#toggle-eval-btn').attr('disabled', null);
-
-        if (LABEL_VISIBILITY === false) {
-          LABEL_VISIBILITY = true;
-          $('#toggle-labels-btn').click();
-        }
+        setup_drawing(animation_svg, response, 'animation')
       },
-      complete: function () {
-        $('.overlay').removeClass('d-flex').hide();
-        $('#spinner-holder').hide();
-        $('#seedword-form-submit').removeAttr('disabled');
-      },
+      // complete: function () {
+      //   $('.overlay').removeClass('d-flex').hide();
+      //   $('#spinner-holder').hide();
+      // },
       error: function (request, status, error) {
         alert(request.responseJSON.message);
       }
@@ -879,239 +488,13 @@ $('#unfreeze-embedding').click(function () {
   });
 });
 
-// Allow enter in text inputs to press Run button
-$('#seedword-text-1').on('keyup', captureEnter);
-$('#seedword-text-2').on('keyup', captureEnter);
-$('#evaluation-list').on('keyup', captureEnter);
-$('#equalize-list').on('keyup', captureEnter);
-$('#oscar-seedword-text-1').on('keyup', captureEnter);
-
-// Preloaded examples
-$('#example-selection-button').on('click', function () {
-  $("#example-dropdown").empty();
-
-  $.getJSON('static/assets/examples.json', {ts: new Date().getTime()})
-    .done(function (data) {
-      load_examples(data);
-
-      $.getJSON('static/assets/user_examples.json', {ts: new Date().getTime()})
-        .done(function (user_data) {
-          load_examples(user_data, true);
-        })
-        .fail(function (e) {
-          console.log(e);
-        });
-    })
-    .fail(function (e) {
-      console.log(e);
-    });
-
-  function load_examples(examples, user = false) {
-
-    if (user && examples.data.length !== 0) {
-      d3.select('#example-dropdown').append('div').classed('dropdown-divider', true)
-      d3.select('#example-dropdown').append('h6').classed('dropdown-header', true).text('User examples')
-      d3.select('#example-dropdown').append('div').classed('dropdown-divider', true);
-    }
-
-    examples.data.forEach(function (example, index) {
-      let dropdown = d3.select('#example-dropdown');
-
-      let dropdown_item = dropdown.append('a')
-        .classed('dropdown-item', true)
-        .classed(index === 0 ? 'active' : '', true)
-        .text((index + 1) + '. ' + example.name);
-
-      dropdown_item.on('click', function () {
-        $('#algorithm-dropdown').children()[ALGO_MAP[example.algorithm]].click();
-        $('#subspace-dropdown-items').children()[SUBSPACE_MAP[example.subspace]].click();
-
-        $('#example-selection-button').text('Chosen example: ' + (index + 1) + '. ' + example.name);
-
-        $('#concept-label-1').val('Concept1');
-        $('#concept-label-2').val('Concept2');
-
-        if (example.hasOwnProperty('seedwords-1')) {
-          $('#seedword-text-1').val(example["seedwords-1"]);
-        }
-        if (example.hasOwnProperty('seedwords-2')) {
-          $('#seedword-text-2').val(example["seedwords-2"]);
-        }
-        if (example.hasOwnProperty('equalize')) {
-          $('#equalize-list').val(example["equalize"]);
-        }
-        if (example.hasOwnProperty('evalset')) {
-          $('#evaluation-list').val(example["evalset"]);
-        }
-        if (example.hasOwnProperty('oscar-c2-seedwords')) {
-          $('#oscar-seedword-text-1').val(example["oscar-c2-seedwords"]);
-        }
-        if (example.hasOwnProperty('concept1')) {
-          $('#concept-label-1').val(example['concept1']);
-        }
-        if (example.hasOwnProperty('concept2')) {
-          $('#concept-label-2').val(example['concept2']);
-        }
-        $('#seedword-form-submit').click();
-      })
-    })
-  }
-})
-
-$('#control-collapser').on('click', function () {
-  console.log(this.innerHTML)
-  if (this.innerHTML === 'Hide controls') {
-    this.innerHTML = 'Show controls';
-  } else if (this.innerHTML === 'Show controls') {
-    this.innerHTML = 'Hide controls';
-  }
-})
-
-$('#import-btn').on('click', function () {
-  $('#import-input').click();
-})
-
-function display_weat() {
-  let occupation_a = $('#occupation-A').val();
-  let occupation_b = $('#occupation-B').val();
-  let gender_a = $('#gender-A').val();
-  let gender_b = $('#gender-B').val();
-
-  $.ajax({
-    type: 'POST',
-    url: '/weat',
-    data: {occupation_a, occupation_b, gender_a, gender_b},
-    'success': function (response) {
-      $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
-    },
-    'error': function (response) {
-      console.log(response);
-    }
-  })
-}
-
-function weat_update(e) {
-  if (e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 9) {
-    display_weat();
-  }
-}
-
-$('#weat-container').on('shown.bs.collapse', display_weat);
-$('#occupation-A, #occupation-B, #gender-A, #gender-B').on('keyup', weat_update);
-$('#occupation-A, #occupation-B, #gender-A, #gender-B').on('focusout', display_weat);
-
-function save_example() {
-  let example_name = $('#example-name').val();
-
-  if (example_name === "") {
-    alert('Example name cannot be empty');
-    return;
-  }
-
-  let algorithm = $('#algorithm-selection-button').text().replace('Algorithm: ', '');
-  let subspace = $('#subspace-selection-button').text().replace('Subspace method: ', '');
-  let seedwords1 = $('#seedword-text-1').val();
-  let seedwords2 = $('#seedword-text-2').val();
-  let concept1 = $('#concept-label-1').val();
-  let concept2 = $('#concept-label-2').val();
-  let oscar_seedwords = $('#oscar-seedword-text-1').val();
-  let equalize_set = $('#equalize-list').val();
-  let evalset = $('#evaluation-list').val();
-
-  let example = {
-    "name": example_name,
-    "algorithm": algorithm,
-    "subspace": subspace,
-    "seedwords-1": seedwords1,
-    "seedwords-2": seedwords2,
-    "concept1": concept1,
-    "concept2": concept2,
-    "evalset": evalset,
-    "equalize": equalize_set,
-    "oscar-c2-seedwords": oscar_seedwords
-  }
-
-  $.ajax({
-    type: 'POST',
-    url: 'save_example',
-    data: example,
-    success: function (response) {
-      console.log(response);
-      alert('Example saved!')
-    },
-    error: function (response) {
-      console.log(response);
-    }
-  })
-}
-
-$('#save-example-btn').on('click', save_example);
-
-function set_tour_data() {
-  let step_index = 1;
-
-  function set_step(selector, position='') {
-    $(selector).attr('data-step', step_index);
-    step_index += 1;
-    if (position !== '') {
-      $(selector).attr('data-position', position);
-    }
-  }
-
-  $('#control-panel').attr('data-intro', 'Control Panel');
-  set_step('#control-panel', 'right');
-
-  $('#visualization-panel').attr('data-intro', 'Embedding View');
-  set_step('#visualization-panel', 'left');
-
-  $('#algo-subspace').attr('data-intro', 'Select debiasing algorithm and subspace computation method');
-  set_step('#algo-subspace', 'right');
-
-  // $('#subspace-dropdown').attr('data-intro', 'Select subspace computation method');
-  // set_step('#subspace-dropdown');
-
-  $('#preloaded-examples').attr('data-intro', 'You can also explore any of the preloaded examples');
-  set_step('#preloaded-examples', 'right');
-
-
-  $('#seedset-container').attr('data-intro', 'Enter the seed sets depending on the chosen debiasing algorithm and subspace computation method');
-  set_step('#seedset-container', 'right');
-
-  $('#seedword-form-submit').attr('data-intro', 'Press \'Run\' to visualize the algorithms output for current configuration');
-  set_step('#seedword-form-submit', 'right');
-
-  $('#save-example').attr('data-intro', 'Save the current example. These will show up in the list of preloaded examples.');
-  set_step('#save-example', 'right');
-
-  // $('#visualization-panel').attr('data-intro', 'The visualization of the chosen algorithm on a 2D projection of the word vectors will be shown here');
-  // set_step('#visualization-panel');
-
-  $('#animation-btn-group').attr('data-intro', 'Controls to navigate the various steps of the algorithm\'s visualization');
-  set_step('#animation-btn-group', 'right');
-
-  $('#toolbar').attr('data-intro', 'Controls for various elements in the visualization panel')
-  set_step('#toolbar', 'right');
-
-  $('#export-misc').attr('data-intro', 'You can also export the debiased embedding and compute WEAT scores')
-  set_step('#export-misc', 'right');
-
-  $('#explanation').attr('data-intro', 'Provides a textual explanation of the currently visualized step in the visualization panel')
-  set_step('#explanation', 'right');
-}
-
-set_tour_data();
-
-$('#tour-question').on('click', function () {
-  console.log('test')
-  try {
-    introJs().start();
-  } catch (e) {
-    console.log(e)
-  }
-});
-
 if (TESTING) {
-  try { // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
+  try {
+    $('#wordlist').val('he, him, she, her')
+    $('#emb1-items').children()[0].click();
+    $('#emb2-items').children()[1].click();
+    $('#run-button').click();
+    // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
     // $('#seedword-text-2').val('lisa, emma, sophia, emily, chloe, hannah, lily, claire, anna');
     // $('#seedword-text-1').val('WATERDOGTAVERN1');
     // $('#seedword-text-2').val('LOSANGELESAIRPORT');
@@ -1127,10 +510,10 @@ if (TESTING) {
     // $('#algorithm-dropdown').children()[1].click();
     // $('#subspace-dropdown-items').children()[1].click();
     // $('#seedword-form-submit').click();
-    $('#example-selection-button').click();
-    setTimeout(() => {
-      $('#example-dropdown').children()[0].click();
-    }, 600)
+    // $('#example-selection-button').click();
+    // setTimeout(() => {
+    //   $('#example-dropdown').children()[0].click();
+    // }, 600)
   } catch (e) {
     console.log(e);
   }
