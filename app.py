@@ -28,6 +28,7 @@ app.female_words = ['woman', 'female', 'girl', 'brother', 'her', 'hers', 'daught
 
 # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
 
+
 ALGORITHMS = {
     'Algorithm: Linear projection': 'Linear',
     'Algorithm: Hard debiasing': 'Hard',
