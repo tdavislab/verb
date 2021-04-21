@@ -13,10 +13,10 @@ from weat import weat_score
 
 
 class WordVector:
-    def __init__(self, word, vector, group):
+    def __init__(self, index, word, vector):
+        self.index = index
         self.word = word
         self.vector = vector
-        self.group = group
 
     def __str__(self):
         return f'Group={self.group}, Word="{self.word}"'
@@ -28,13 +28,14 @@ class WordVector:
 # Embedding class
 # ----------------------------------------------------
 class Embedding:
-    def __init__(self, path, metadata, group, limit=20000):
+    def __init__(self, path, metadata=None, group=None, limit=20000):
         # either create an empty embedding (useful for creating debiased embeddings)
         if path is None:
             self.word_vectors = []
         # or read embeddings from disk
         else:
-            self.word_vectors = read_merchant_embedding(path, metadata, group, limit=limit)
+            self.word_vectors = read_embeddings(path, limit=limit)
+            # self.word_vectors = read_merchant_embedding(path, metadata, group, limit=limit)
 
     def get(self, word, color=''):
         """
@@ -962,7 +963,8 @@ def get_bias_direction(embedding, seedwords1, seedwords2, subspace_method):
 def read_embeddings(path, limit=100000):
     word_vectors = {}
 
-    with open(path, 'r') as vec_file:
+    with open(path, 'r', encoding='UTF-8') as vec_file:
+        # for idx, line in enumerate(vec_file):
         for idx, line in tqdm(enumerate(vec_file), total=limit, unit_scale=True):
             line = line.rstrip().split()
             word = line[0]
@@ -1120,16 +1122,20 @@ if __name__ == '__main__':
     # noinspection PyUnresolvedReferences
     from vectors import Embedding
 
-    datapath = './data/Embedding_Restaurant/bay_filter.emb'
-    metadata_path = './data/Embedding_Restaurant/bay_filter'
-    emb_bay = Embedding(datapath, metadata_path, 0)
+    # datapath = './data/Embedding_Restaurant/bay_filter.emb'
+    # metadata_path = './data/Embedding_Restaurant/bay_filter'
+    # emb_bay = Embedding(datapath, metadata_path, 0)
+    #
+    # datapath = './data/Embedding_Restaurant/la_filter.emb'
+    # metadata_path = './data/Embedding_Restaurant/la_filter'
+    # emb_la = Embedding(datapath, metadata_path, 1)
+    #
+    # emb_bay.merge(emb_la)
+    #
+    # save('data/bayarea_la.pkl', emb_bay)
 
-    datapath = './data/Embedding_Restaurant/la_filter.emb'
-    metadata_path = './data/Embedding_Restaurant/la_filter'
-    emb_la = Embedding(datapath, metadata_path, 1)
+    emb = Embedding('data/common_crawl/glove.42B.300d.txt', limit=100000)
+    save('data/common_crawl.pkl', emb)
 
-    emb_bay.merge(emb_la)
-
-    save('data/bayarea_la.pkl', emb_bay)
-    # emb = Embedding('data/glove.42B.300d.txt', limit=100000)
-    # save('data/glove.42B.300d.pkl', emb)
+    emb = Embedding('data/wiki_gigaword/glove.6B.300d.txt', limit=100000)
+    save('data/wiki_gigaword.pkl', emb)

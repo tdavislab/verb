@@ -16,10 +16,6 @@
 
 <body>
 
-<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="position:absolute;">-->
-<!--    <h1 class="navbar-brand">VERB - Visualization of Embedding Representations for deBiasing</h1>-->
-<!--</nav>-->
-
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
         <div id="control-panel" class="col-5 border-right">
@@ -134,7 +130,7 @@
                 </div>
             </div>
 
-            <div class="d-flex btn-group">
+            <div id='freeze-reset' class="d-flex btn-group">
                 <button id="freeze-embedding" class="btn btn-outline-primary w-50 vert-space" hidden>
                     Update debiased embedding as base embedding
                 </button>
@@ -205,15 +201,14 @@
                             </span>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <!--                            <button id="toggle-scrshot-chk">Screenshot mode</button>-->
-                            <span id='toggle-scrshot-btn' class="custom-switch custom-control toggles" disabled>
-                                <input type="checkbox" id="toggle-scrshot-chk" class="custom-control-input">
-                                <label for="toggle-scrshot-chk" class="custom-control-label">Screenshot mode</label>
-                            </span>
-                        </td>
-                    </tr>
+<!--                    <tr>-->
+<!--                        <td>-->
+<!--                            <span id='toggle-scrshot-btn' class="custom-switch custom-control toggles" disabled hidden>-->
+<!--                                <input type="checkbox" id="toggle-scrshot-chk" class="custom-control-input">-->
+<!--                                <label for="toggle-scrshot-chk" class="custom-control-label">Screenshot mode</label>-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                    </tr>-->
                     </tbody>
                 </table>
             </div>
@@ -281,6 +276,15 @@
             </div>
 
             <hr/>
+
+            <div id="Show diff" class="vert-space">
+                <div class="input-group">
+                    <div class="input-group-prepend w-25">
+                        <input type="text" class="w-100 input-group-text" id="diff-label" value="Show diff with..."/>
+                    </div>
+                    <input id="diff-dropdown" class="form-control input-group-text" type="text" placeholder="Add word set...">
+                </div>
+            </div>
 
             <div id="knn" class="vert-space" hidden>
                 <div id="base-neighbors">

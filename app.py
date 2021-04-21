@@ -11,9 +11,14 @@ import copy
 import csv
 
 app = Flask(__name__)
-app.embedding_path = 'data/embedding.pkl'
+app.embedding_path = 'data/wiki_gigaword.pkl'
+app.embedding_path_align = 'data/common_crawl.pkl'
+
 app.base_embedding = load(app.embedding_path)
 app.debiased_embedding = load(app.embedding_path)
+app.base_embedding_align = load(app.embedding_path_align)
+app.debiased_embedding_align = load(app.embedding_path_align)
+
 app.frozen = False
 app.base_knn = None
 app.debiased_knn = None
@@ -48,8 +53,9 @@ SUBSPACE_METHODS = {
 def reload_embeddings():
     print('Reloaded embedding')
     app.base_embedding = load(app.embedding_path)
-    app.debiased_embedding = load(app.embedding_path)  # Embedding(None)
-    # app.debiased_embedding.word_vectors = app.base_embedding.word_vectors.copy()
+    app.debiased_embedding = load(app.embedding_path)
+    app.base_embedding_align = load(app.embedding_path_align)
+    app.debiased_embedding_align = load(app.embedding_path_align)
 
 
 app.reload_embeddings = reload_embeddings
@@ -82,6 +88,10 @@ def neighbors(embedding, knn_obj, word_list):
 def index():
     return render_template('interface.html')
 
+
+@app.route('/alignment')
+def alignment():
+    return render_template('alignment.html')
 
 @app.route('/seedwords2', methods=['POST'])
 def get_seedwords2():
@@ -165,8 +175,8 @@ def get_seedwords2():
     except KeyError as e:
         print(e)
         raise InvalidUsage(f'Something went wrong! Could not find the word {str(e).strip()}', 404)
-    except Exception as e:
-        raise InvalidUsage(f'Something went wrong! Error message from the backend: \n{str(e).strip()}', 404)
+    # except Exception as e:
+    #     raise InvalidUsage(f'Something went wrong! Error message from the backend: \n{str(e).strip()}', 404)
 
 
 @app.route('/freeze', methods=['POST'])

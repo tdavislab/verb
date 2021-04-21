@@ -15,7 +15,7 @@ svg_setup()
 d3.select(window).on('resize', svg_setup);
 
 // Fill the textboxes while testing
-let TESTING = true;
+let TESTING = false;
 
 // Initialize global variables
 let LABEL_VISIBILITY = true;
@@ -35,21 +35,6 @@ if (TESTING) {
 
 let labelArray = [];
 let anchorArray = [];
-
-let ALGO_MAP = {
-  'Linear projection': 1,
-  'Hard debiasing': 2,
-  'OSCaR': 3,
-  'Iterative Null Space Projection': 4
-}
-
-let SUBSPACE_MAP = {
-  'Two means': 1,
-  'PCA': 2,
-  'PCA-paired': 3,
-  'Classification': 4,
-  'GSS': 5
-}
 
 // Set global color-scale
 let color = d3.scaleOrdinal(d3.schemeDark2);
