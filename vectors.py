@@ -121,6 +121,11 @@ class AlignmentProjector:
         self.wordlist = None
 
     def compute_2d(self, wordlist, align=True):
+        def get_aligned_vecs(vecs, corresponding_words, target_words):
+            # get the new aligned vectors for wordlist
+            aligned_vecs = [vecs[corresponding_words.index(target_word)] for target_word in target_words]
+            return np.array(aligned_vecs)
+
         # Fit PCA to words
         # Multiple strategies are possible
         # 1. PCA on space of emb1 or emb2
@@ -128,10 +133,12 @@ class AlignmentProjector:
 
         # wordlist = list(set(self.emb1.words()).intersection(set(self.emb2.words())))[:50]
         # wordlist = self.emb1.words()[:50]
-        # common_words = list(set(self.emb1.words()).intersection(set(self.emb2.words())))
+        common_words = list(set(self.emb1.words()).intersection(set(self.emb2.words())))
 
-        emb1_vecs = self.emb1.get_vecs(wordlist)
-        emb2_vecs = self.emb2.get_vecs(wordlist)
+        # emb1_vecs = self.emb1.get_vecs(wordlist)
+        # emb2_vecs = self.emb2.get_vecs(wordlist)
+        emb2_vecs = self.emb2.get_vecs(common_words)
+        emb1_vecs = self.emb1.get_vecs(common_words)
 
         # Perform closed-form alignment
         if align:
@@ -139,11 +146,11 @@ class AlignmentProjector:
 
         # Go with PCA on space of emb1 for now
         projector = PCA(n_components=2)
-        projector.fit(np.vstack([emb1_vecs, emb2_vecs]))
+        projector.fit(np.vstack([get_aligned_vecs(emb1_vecs, common_words, wordlist), get_aligned_vecs(emb2_vecs, common_words, wordlist)]))
         # projector.fit(emb1_vecs)
 
-        self.vecs1 = projector.transform(emb1_vecs)
-        self.vecs2 = projector.transform(emb2_vecs)
+        self.vecs1 = projector.transform(get_aligned_vecs(emb1_vecs, common_words, wordlist))
+        self.vecs2 = projector.transform(get_aligned_vecs(emb2_vecs, common_words, wordlist))
         self.wordlist = wordlist
 
         return self

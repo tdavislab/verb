@@ -120,8 +120,7 @@ svg {
     cursor: pointer;
 }
 
-.custom-control-input:focus ~
-.custom-control-label::before {
+.custom-control-input:focus ~ .custom-control-label::before {
     border-color: #28a745 !important;
     box-shadow: 0 0 0 0rem rgba(0, 0, 0, 0) !important;
 }
@@ -131,8 +130,7 @@ svg {
     background-color: #28a745 !important;
 }
 
-.custom-control-input:active ~
-.custom-control-label::before {
+.custom-control-input:active ~ .custom-control-label::before {
     background-color: #28a745 !important;
     border-color: #28a745 !important;
 }

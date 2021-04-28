@@ -191,8 +191,8 @@ function draw_alignment_lines(svg, response, x, y) {
     // .attr('stroke', 'url(#gradient)')
     .attr('stroke', 'black')
     .attr('stroke-width', '1px')
+    .classed('align-lines', true)
     // .attr('stroke-dasharray', '5, 5');
-
 }
 
 function draw_axes(svg, width, height, x, y) {
@@ -447,6 +447,28 @@ $('#emb2 a').click(function (e) {
   }
 });
 
+$('#emb1-chk').click(function (e) {
+  if (e.target.checked === true) {
+    d3.selectAll('.group-1').attr('visibility', 'visible');
+    d3.selectAll('.align-lines').attr('visibility', 'visible');
+  }
+  else {
+    d3.selectAll('.group-1').attr('visibility', 'hidden');
+    d3.selectAll('.align-lines').attr('visibility', 'hidden');
+  }
+})
+
+$('#emb2-chk').click(function (e) {
+  if (e.target.checked === true) {
+    d3.selectAll('.group-2').attr('visibility', 'visible');
+    d3.selectAll('.align-lines').attr('visibility', 'visible');
+  }
+  else {
+    d3.selectAll('.group-2').attr('visibility', 'hidden');
+    d3.selectAll('.align-lines').attr('visibility', 'hidden');
+  }
+})
+
 // Functionality for the 'Run' button
 $('#run-button').click(function () {
   try { // Perform cleanup
@@ -485,62 +507,12 @@ $('#run-button').click(function () {
   }
 });
 
-$('#freeze-embedding').click(function () {
-  $.ajax({
-    type: 'POST',
-    url: '/freeze',
-    success: function (response) {
-      // alert('Successfully set current debiased embedding as the new base embedding.');
-      $('#freeze-embedding').prop('disabled', true)
-      $('#unfreeze-embedding').prop('disabled', false)
-    },
-    error: function (response) {
-      alert('Something went wrong');
-    }
-  });
-});
-
-$('#unfreeze-embedding').click(function () {
-  $.ajax({
-    type: 'POST',
-    url: '/unfreeze',
-    success: function (response) {
-      // alert('Successfully set current debiased embedding as the new base embedding.');
-      $('#freeze-embedding').prop('disabled', false)
-      $('#unfreeze-embedding').prop('disabled', true)
-    },
-    error: function (response) {
-      alert('Something went wrong');
-    }
-  });
-});
-
 if (TESTING) {
   try {
     $('#wordlist').val('he, him, she, her, father, mother, doctor, banker, nurse, engineer')
     $('#emb1-items').children()[0].click();
     $('#emb2-items').children()[1].click();
     $('#run-button').click();
-    // $('#seedword-text-1').val('mike, lewis, noah, james, lucas, william, jacob, daniel, henry, matthew');
-    // $('#seedword-text-2').val('lisa, emma, sophia, emily, chloe, hannah, lily, claire, anna');
-    // $('#seedword-text-1').val('WATERDOGTAVERN1');
-    // $('#seedword-text-2').val('LOSANGELESAIRPORT');
-    // $('#evaluation-list').val('CSMCCAFETERIA, UNIVOFSOUTHERNCAL, SUNRICECAFE, EPICUREANATNOTREDAME');
-    // $('#equalize-list').val('monastery-convent, spokesman-spokeswoman, dad-mom, men-women, councilman-councilwoman,' +
-    //   ' grandpa-grandma, grandsons-granddaughters, testosterone-estrogen, uncle-aunt, wives-husbands, father-mother,' +
-    //   ' grandpa-grandma, he-she, boy-girl, boys-girls, brother-sister, brothers-sisters, businessman-businesswoman,' +
-    //   ' chairman-chairwoman, colt-filly, congressman-congresswoman, dads-moms, dudes-gals, father-mother, fatherhood-motherhood,' +
-    //   ' fathers-mothers, fella-granny, fraternity-sorority, gelding-mare, gentleman-lady, gentlemen-ladies,' +
-    //   ' grandfather-grandmother, grandson-granddaughter, he-she, himself-herself, his-her, king-queen, kings-queens,' +
-    //   ' male-female, males-females, man-woman, men-women, nephew-niece, prince-princess, schoolboy-schoolgirl, son-daughter, sons-daughters')
-    // $('#oscar-seedword-text-1').val('scientist, doctor, nurse, secretary, maid, dancer, cleaner, advocate, player, banker')
-    // $('#algorithm-dropdown').children()[1].click();
-    // $('#subspace-dropdown-items').children()[1].click();
-    // $('#seedword-form-submit').click();
-    // $('#example-selection-button').click();
-    // setTimeout(() => {
-    //   $('#example-dropdown').children()[0].click();
-    // }, 600)
   } catch (e) {
     console.log(e);
   }
