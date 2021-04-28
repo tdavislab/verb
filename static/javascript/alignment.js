@@ -59,8 +59,8 @@ function draw_scatter(svg, response, x, y, width, height, margin) {
   let point_data = response.emb1.concat(response.emb2);
 
   // Add the scatterplot
-  svg.append('defs')
-    .append('marker')
+  let defs = svg.append('defs');
+  defs.append('marker')
     .attr('id', 'arrow')
     .attr('viewBox', [0, 0, 10, 10])
     .attr('refX', '5')
@@ -71,6 +71,18 @@ function draw_scatter(svg, response, x, y, width, height, margin) {
     .attr('orient', 'auto-start-reverse')
     .append('path')
     .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+
+  let gradient = defs.append('linearGradient')
+    .attr('id', 'gradient');
+
+  gradient.append('stop')
+    .attr('offset', '0%')
+    .attr('stop-color', 'red');
+
+  gradient.append('stop')
+    .attr('offset', '100%')
+    .attr('stop-color', 'blue');
+
 
   labelArray = [];
   anchorArray = [];
@@ -138,10 +150,7 @@ function draw_scatter(svg, response, x, y, width, height, margin) {
     .attr('width', width)
     .attr('height', height)
     .attr('fill', 'none')
-    // .attr('stroke', 'black')
-    // .attr('rx', 15)
     .attr('pointer-events', 'all')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .lower();
 
   svg.call(zoom);
@@ -157,7 +166,33 @@ function draw_scatter(svg, response, x, y, width, height, margin) {
     datapoint_group.transition()
       .duration(0)
       .attr('transform', d => 'translate(' + newX(d.x) + ',' + newY(d.y) + ')');
+
+    d3.select('#alignment-lines').attr('transform', d3.event.transform);
   }
+
+
+}
+
+function draw_alignment_lines(svg, response, x, y) {
+  let line_data = Array();
+
+  for (let i = 0; i < response.emb1.length; i++) {
+    let start_point = [x(response.emb1[i].x), y(response.emb1[i].y)]
+    let end_point = [x(response.emb2[i].x), y(response.emb2[i].y)]
+    line_data.push([start_point, end_point])
+  }
+
+  svg.insert('g', 'defs')
+    .attr('id', 'alignment-lines')
+    .selectAll('path')
+    .data(line_data)
+    .join('path')
+    .attr('d', d => d3.line()(d))
+    // .attr('stroke', 'url(#gradient)')
+    .attr('stroke', 'black')
+    .attr('stroke-width', '1px')
+    // .attr('stroke-dasharray', '5, 5');
+
 }
 
 function draw_axes(svg, width, height, x, y) {
@@ -377,16 +412,8 @@ function setup_drawing(anim_svg, response, identifier) {
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     draw_scatter(svg, response, x_axis, y_axis, width, height, margin);
-    let axes = draw_axes(svg, width, height, x_axis, y_axis);
-
-    svg.append('path')
-      .attr('id', 'classification-line')
-      .attr('stroke', '#2751ac')
-      .attr('d', d3.line()([[x_axis(0), y_axis(0)], [x_axis(0), y_axis(0)]]))
-      .attr('stroke-width', '2px')
-      .attr('stroke-dasharray', '5, 5')
-
-    let x_axes_obj = axes[0], y_axes_obj = axes[1];
+    draw_alignment_lines(svg, response, x_axis, y_axis);
+    draw_axes(svg, width, height, x_axis, y_axis);
   } catch (e) {
     console.log(e);
   }
@@ -490,7 +517,7 @@ $('#unfreeze-embedding').click(function () {
 
 if (TESTING) {
   try {
-    $('#wordlist').val('he, him, she, her')
+    $('#wordlist').val('he, him, she, her, father, mother, doctor, banker, nurse, engineer')
     $('#emb1-items').children()[0].click();
     $('#emb2-items').children()[1].click();
     $('#run-button').click();

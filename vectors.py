@@ -82,6 +82,36 @@ class Embedding:
 
 
 # Alignment
+def closed_form_alignment(A, B):
+    # centering
+    Aprime = A - np.mean(A, 0)
+    Bprime = B - np.mean(B, 0)
+
+    # rotation
+    N = np.zeros((np.shape(A)[1], np.shape(A)[1]));
+    for i in range(A.shape[0]):
+        N = N + np.outer(Bprime[i], Aprime[i])
+
+    U, S, V = np.linalg.svd(N)
+    R = np.matmul(U, V)
+    newBprime = np.matmul(Bprime, R)
+
+    # scaling
+    s1 = 0.0
+    s2 = 0.0
+
+    for i in range(0, A.shape[0]):
+        s1 = s1 + np.dot(Aprime[i], newBprime[i])
+        s2 = s2 + np.dot(Bprime[i], Bprime[i])
+
+    s = s1 / s2
+
+    # output matrix : B oriented onto A
+    newB = s * newBprime + np.mean(A, 0)
+
+    return newB
+
+
 class AlignmentProjector:
     def __init__(self, emb1_obj: Embedding, emb2_obj: Embedding):
         self.emb1 = emb1_obj
@@ -90,21 +120,27 @@ class AlignmentProjector:
         self.vecs2 = None
         self.wordlist = None
 
-    def compute_2d(self, wordlist):
+    def compute_2d(self, wordlist, align=True):
         # Fit PCA to words
         # Multiple strategies are possible
         # 1. PCA on space of emb1 or emb2
         # 2. PCA on space of emb1 + emb2 (vstack vector)
+
+        # wordlist = list(set(self.emb1.words()).intersection(set(self.emb2.words())))[:50]
+        # wordlist = self.emb1.words()[:50]
+        # common_words = list(set(self.emb1.words()).intersection(set(self.emb2.words())))
+
         emb1_vecs = self.emb1.get_vecs(wordlist)
         emb2_vecs = self.emb2.get_vecs(wordlist)
 
-        print(emb1_vecs)
-
-        print(emb2_vecs)
+        # Perform closed-form alignment
+        if align:
+            emb2_vecs = closed_form_alignment(emb1_vecs, emb2_vecs)
 
         # Go with PCA on space of emb1 for now
         projector = PCA(n_components=2)
         projector.fit(np.vstack([emb1_vecs, emb2_vecs]))
+        # projector.fit(emb1_vecs)
 
         self.vecs1 = projector.transform(emb1_vecs)
         self.vecs2 = projector.transform(emb2_vecs)

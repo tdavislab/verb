@@ -184,13 +184,14 @@ def get_seedwords2():
 def alignment_data():
     emb1 = request.values['emb1']
     emb2 = request.values['emb2']
-    wordlist = request.values['wordlist']
+    wordlist = utils.process_seedwords(request.values['wordlist'])
 
     print(emb1, emb2, wordlist)
 
     emb1_obj = app.base_embedding
-    emb2_obj = app.debiased_embedding
-    wordlist = ['he', 'she', 'him', 'her']
+    emb2_obj = app.base_embedding_align
+    # wordlist = ['he', 'she', 'him', 'her']
+
     projector = AlignmentProjector(emb1_obj, emb2_obj)
     projector.compute_2d(wordlist)
 
