@@ -185,14 +185,14 @@ def alignment_data():
     emb1 = request.values['emb1']
     emb2 = request.values['emb2']
     wordlist = utils.process_seedwords(request.values['wordlist'])
-
-    print(emb1, emb2, wordlist)
+    x_words = utils.process_seedwords(request.values['xwords'])
+    y_words = utils.process_seedwords(request.values['ywords'])
 
     emb1_obj = app.base_embedding
     emb2_obj = app.base_embedding_align
     # wordlist = ['he', 'she', 'him', 'her']
 
-    projector = AlignmentProjector(emb1_obj, emb2_obj)
+    projector = EmbeddingAligner(emb1_obj, emb2_obj, x_words, y_words)
     projector.compute_2d(wordlist)
 
     return projector.convert_to_payload()

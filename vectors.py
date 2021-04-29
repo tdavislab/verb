@@ -10,6 +10,7 @@ from tqdm import tqdm
 from dynamicProj import generateFullDynamicProjPath
 from gss_subspace import f_weat, gss
 from weat import weat_score
+from nltk.corpus import wordnet
 
 
 class WordVector:
@@ -19,10 +20,10 @@ class WordVector:
         self.vector = vector
 
     def __str__(self):
-        return f'Group={self.group}, Word="{self.word}"'
+        return f'Word="{self.word}"'
 
     def __repr__(self):
-        return f'WordVector({self.word}, {self.vector}, {self.group})'
+        return f'WordVector({self.word}, {self.vector})'
 
 
 # Embedding class
@@ -82,43 +83,74 @@ class Embedding:
 
 
 # Alignment
-def closed_form_alignment(A, B):
+def closed_form_alignment(emb_a, emb_b):
     # centering
-    Aprime = A - np.mean(A, 0)
-    Bprime = B - np.mean(B, 0)
+    aprime = emb_a - np.mean(emb_a, 0)
+    bprime = emb_b - np.mean(emb_b, 0)
 
     # rotation
-    N = np.zeros((np.shape(A)[1], np.shape(A)[1]));
-    for i in range(A.shape[0]):
-        N = N + np.outer(Bprime[i], Aprime[i])
+    n = np.zeros((np.shape(emb_a)[1], np.shape(emb_a)[1]))
+    for i in range(emb_a.shape[0]):
+        n = n + np.outer(bprime[i], aprime[i])
 
-    U, S, V = np.linalg.svd(N)
-    R = np.matmul(U, V)
-    newBprime = np.matmul(Bprime, R)
+    u, s, v = np.linalg.svd(n)
+    r = np.matmul(u, v)
+    new_bprime = np.matmul(bprime, r)
 
     # scaling
     s1 = 0.0
     s2 = 0.0
 
-    for i in range(0, A.shape[0]):
-        s1 = s1 + np.dot(Aprime[i], newBprime[i])
-        s2 = s2 + np.dot(Bprime[i], Bprime[i])
+    for i in range(0, emb_a.shape[0]):
+        s1 = s1 + np.dot(aprime[i], new_bprime[i])
+        s2 = s2 + np.dot(bprime[i], bprime[i])
 
     s = s1 / s2
 
     # output matrix : B oriented onto A
-    newB = s * newBprime + np.mean(A, 0)
+    new_b = s * new_bprime + np.mean(emb_a, 0)
 
-    return newB
+    return new_b
 
 
-class AlignmentProjector:
-    def __init__(self, emb1_obj: Embedding, emb2_obj: Embedding):
+class OneBasisProjector:
+    def __init__(self, x_dir):
+        self.x_dir = x_dir
+        self.pca = PCA(n_components=2)
+
+    def fit(self, vecs):
+        self.pca.fit(vecs - vecs.dot(self.x_dir).reshape(-1, 1) * self.x_dir)
+
+    def transform(self, vecs):
+        x_coord = vecs.dot(self.x_dir)
+        depca_vecs = vecs - vecs.dot(self.x_dir).reshape(-1, 1) * self.x_dir
+        y_coord = self.pca.transform(depca_vecs)[:, 0]
+        return np.vstack([x_coord, y_coord]).T
+
+
+class TwoBasisProjector:
+    def __init__(self, x_dir, y_dir):
+        self.x_dir = x_dir
+        self.y_dir = y_dir
+
+    def fit(self, vecs):
+        return self
+
+    def transform(self, vecs):
+        x_coord = vecs.dot(self.x_dir)
+        y_coord = vecs.dot(self.y_dir)
+        return np.vstack([x_coord, y_coord]).T
+
+
+class EmbeddingAligner:
+    def __init__(self, emb1_obj: Embedding, emb2_obj: Embedding, x_words: list, y_words: list):
         self.emb1 = emb1_obj
         self.emb2 = emb2_obj
         self.vecs1 = None
         self.vecs2 = None
         self.wordlist = None
+        self.x_words = x_words
+        self.y_words = y_words
 
     def compute_2d(self, wordlist, align=True):
         def get_aligned_vecs(vecs, corresponding_words, target_words):
@@ -137,17 +169,29 @@ class AlignmentProjector:
 
         # emb1_vecs = self.emb1.get_vecs(wordlist)
         # emb2_vecs = self.emb2.get_vecs(wordlist)
-        emb2_vecs = self.emb2.get_vecs(common_words)
         emb1_vecs = self.emb1.get_vecs(common_words)
+        emb2_vecs = self.emb2.get_vecs(common_words)
 
         # Perform closed-form alignment
         if align:
             emb2_vecs = closed_form_alignment(emb1_vecs, emb2_vecs)
 
-        # Go with PCA on space of emb1 for now
-        projector = PCA(n_components=2)
-        projector.fit(np.vstack([get_aligned_vecs(emb1_vecs, common_words, wordlist), get_aligned_vecs(emb2_vecs, common_words, wordlist)]))
-        # projector.fit(emb1_vecs)
+        print(np.linalg.norm(emb2_vecs, axis=1))
+
+        if self.x_words == [''] and self.y_words == ['']:
+            # Go with PCA on space of emb1 for now
+            projector = PCA(n_components=2)
+            # projector.fit(np.vstack([get_aligned_vecs(emb1_vecs, common_words, wordlist), get_aligned_vecs(emb2_vecs, common_words, wordlist)]))
+            projector.fit(np.vstack([emb1_vecs, emb2_vecs]))
+        elif self.x_words != [''] and self.y_words == ['']:
+            x_dir = get_bias_direction(self.emb1, self.x_words, [], 'PCA')
+            projector = OneBasisProjector(x_dir)
+            projector.fit(emb1_vecs)
+        elif self.x_words != [''] and self.y_words != ['']:
+            x_dir = get_bias_direction(self.emb1, self.x_words, [], 'PCA')
+            y_dir = get_bias_direction(self.emb1, self.y_words, [], 'PCA')
+            projector = TwoBasisProjector(x_dir, y_dir)
+            projector.fit([])
 
         self.vecs1 = projector.transform(get_aligned_vecs(emb1_vecs, common_words, wordlist))
         self.vecs2 = projector.transform(get_aligned_vecs(emb2_vecs, common_words, wordlist))
