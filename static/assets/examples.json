@@ -78,7 +78,7 @@
       "algorithm": "Hard debiasing",
       "seedwords-1": "he, man",
       "seedwords-2": "she, woman",
-      "equalize": "boy-girl, brother-siste",
+      "equalize": "boy-girl, brother-sister",
       "subspace": "Two means",
       "evalset": "receptionist, banker, engineer, nurse",
       "concept1": "Gender"
