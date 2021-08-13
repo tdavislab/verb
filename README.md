@@ -44,7 +44,7 @@ cd verb
 python3 -m flask run
 ```
 
-Once the command above is running, open your web browser and navigate to: 
+Once the command above is running, open your web browser (Chrome and Firefox supported) and navigate to: 
 http://127.0.0.1:5000/ (or equivalently to: http://localhost:5000)
 
 ### Using larger word vector embeddings
