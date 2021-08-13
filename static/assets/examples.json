@@ -64,15 +64,6 @@
       "concept1": "Royalty"
     },
     {
-      "name": "Linear projection: Residual Bias",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "subspace": "Two means",
-      "evalset": "engineer, lawyer, receptionist, homemaker",
-      "concept1": "Gender"
-    },
-    {
       "name": "Hard debiasing: Residual Bias",
       "algorithm": "Hard debiasing",
       "seedwords-1": "he",
@@ -83,21 +74,12 @@
       "concept1": "Gender"
     },
     {
-      "name": "INLP: Residual Bias",
-      "algorithm": "Iterative Null Space Projection",
-      "seedwords-1": "he,engineer,banker",
-      "seedwords-2": "she,nurse, receptionist",
-      "subspace": "Classification",
-      "evalset": "doctor, maid",
-      "concept1": "Gender"
-    },
-    {
-      "name": "INLP: gender (Case 2)",
-      "algorithm": "Iterative Null Space Projection",
-      "seedwords-1": "man, he, his, him, guy, boy, grandpa, uncle, brother, son, nephew, mr",
-      "seedwords-2": "woman, she, her, hers, gal, girl, grandma, aunt, sister, daughter, niece, mrs",
-      "subspace": "Classification",
-      "evalset": "engineer, homemaker",
+      "name": "Linear projection: Residual Bias",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "subspace": "Two means",
+      "evalset": "engineer, lawyer, receptionist, homemaker",
       "concept1": "Gender"
     },
     {
@@ -119,16 +101,6 @@
       "concept1": "Nationality"
     },
     {
-      "name": "OSCaR: gender-occupations",
-      "algorithm": "OSCaR",
-      "seedwords-1": "he, man, him, his, she, woman, her, hers",
-      "subspace": "PCA",
-      "oscar-c2-seedwords": "engineer, scientist, nurse, receptionist, banker, maid, lawyer, homemaker",
-      "evalset": "programmer, grandpa, grandma",
-      "concept1": "Gender",
-      "concept2": "Occupations"
-    },
-    {
       "name": "Hard debiasing: gender-occupations",
       "algorithm": "Hard debiasing",
       "seedwords-1": "he, man",
@@ -147,23 +119,5 @@
       "evalset": "engineer, lawyer, receptionist, homemaker, man, woman, boy, girl",
       "concept1": "Gender"
     },
-    {
-      "name": "Linear Projection - GSS: Adjectives",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he, him",
-      "seedwords-2": "she, her",
-      "subspace": "GSS",
-      "evalset": "beautiful, shy,  important, strong, ugly",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Linear Projection: Royalty",
-      "algorithm": "Linear projection",
-      "seedwords-1": "king, queen",
-      "seedwords-2": "man, woman",
-      "subspace": "Two means",
-      "evalset": "obnoxious, attentive, considerate, plain, fancy, important, majestic",
-      "concept1": "Royalty"
-    }
   ]
 }
