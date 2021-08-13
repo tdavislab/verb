@@ -1,5 +1,10 @@
 # VERB - Visualizing Embedding Representation for deBiasing
 
+### References
+VERB: Visualizing and Interpreting Bias Mitigation Techniques for Word Representations
+Archit Rathore, Sunipa Dev, Jeff M. Phillips, Vivek Srikumar, Yan Zheng, Chin-Chia Michael Yeh, Junpeng Wang, Wei Zhang, Bei Wang.
+arXiv preprint arXiv:2104.02797, 2021.
+
 ### Requirements
 Python 3.6+, pip
 
