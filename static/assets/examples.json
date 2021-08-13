@@ -22,10 +22,20 @@
       "name": "INLP: gender",
       "algorithm": "Iterative Null Space Projection",
       "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
-      "seedwords-2": "woman, she, her, girl, grandma, aunt, jill",
+      "seedwords-2": "woman, she, her, hers, gal, girl, grandma, aunt, jill",
       "subspace": "Classification",
       "evalset": "engineer, homemaker",
       "concept1": "Gender"
+    },
+    {
+      "name": "OSCaR: gender-occupations",
+      "algorithm": "OSCaR",
+      "seedwords-1": "he, man, him, his, she, woman, her, hers",
+      "seedwords-2": "engineer, scientist, nurse, receptionist, banker, maid, lawyer, homemaker",
+      "subspace": "PCA",
+      "evalset": "programmer, grandpa, grandma",
+      "concept1": "Gender",
+      "concept2": "Occupations"
     },
     {
       "name": "Linear Projection: Nationality (Case1)",
