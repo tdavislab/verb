@@ -21,8 +21,8 @@
     {
       "name": "INLP: gender",
       "algorithm": "Iterative Null Space Projection",
-      "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
-      "seedwords-2": "woman, she, her, hers, gal, girl, grandma, aunt, jill",
+      "seedwords-1": "man, he, his, him, guy, boy, grandpa, uncle, brother, son, nephew, mr",
+      "seedwords-2": "woman, she, her, hers, gal, girl, grandma, aunt, sister, daughter, niece, mrs",
       "subspace": "Classification",
       "evalset": "engineer, homemaker",
       "concept1": "Gender"
