@@ -31,7 +31,7 @@
       "name": "OSCaR: gender-occupations",
       "algorithm": "OSCaR",
       "seedwords-1": "he, man, him, his, she, woman, her, hers",
-      "seedwords-2": "engineer, scientist, nurse, receptionist, banker, maid, lawyer, homemaker",
+      "oscar-c2-seedwords": "engineer, scientist, nurse, receptionist, banker, maid, lawyer, homemaker",
       "subspace": "PCA",
       "evalset": "programmer, grandpa, grandma",
       "concept1": "Gender",
