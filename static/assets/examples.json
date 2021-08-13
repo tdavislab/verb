@@ -10,12 +10,75 @@
       "concept1": "Gender"
     },
     {
-      "name": "INLP: gender (Case 1)",
+      "name": "Hard debiasing: gender-occupations",
+      "algorithm": "Hard debiasing",
+      "seedwords-1": "he, him",
+      "seedwords-2": "she, her",
+      "subspace": "Two means",
+      "evalset": "engineer, banker, nurse, receptionist",
+      "equalize": "himself-herself, boy-girl"
+    },
+    {
+      "name": "INLP: gender",
       "algorithm": "Iterative Null Space Projection",
       "seedwords-1": "man, he, his, boy, grandpa, uncle, jack",
       "seedwords-2": "woman, she, her, girl, grandma, aunt, jill",
       "subspace": "Classification",
       "evalset": "engineer, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Linear Projection: Nationality (Case1)",
+      "algorithm": "Linear projection",
+      "seedwords-1": "syrian, persian",
+      "seedwords-2": "american, canadian",
+      "subspace": "Two means",
+      "evalset": "good, bad, evil, smart, cunning, greedy, nice",
+      "concept1": "Nationality"
+    },
+    {
+      "name": "Linear Projection: Nationality (Case 2)",
+      "algorithm": "Linear projection",
+      "seedwords-1": "persian, american, canadian, chinese, indian, british, syrian",
+      "subspace": "PCA",
+      "evalset": "good, evil, smart,  greedy, nice",
+      "concept1": "Nationality"
+    },
+    {
+      "name": "Linear Projection: Royalty",
+      "algorithm": "Linear projection",
+      "seedwords-1": "king, queen, prince, princess",
+      "seedwords-2": "man, woman, boy, girl",
+      "subspace": "Two means",
+      "evalset": "obnoxious, attentive, considerate, plain, fancy, important, majestic",
+      "concept1": "Royalty"
+    },
+    {
+      "name": "Linear projection: Residual Bias",
+      "algorithm": "Linear projection",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "subspace": "Two means",
+      "evalset": "engineer, lawyer, receptionist, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "Hard debiasing: Residual Bias",
+      "algorithm": "Hard debiasing",
+      "seedwords-1": "he",
+      "seedwords-2": "she",
+      "equalize": "man-woman, boy-girl",
+      "subspace": "Two means",
+      "evalset": "engineer, lawyer, receptionist, homemaker",
+      "concept1": "Gender"
+    },
+    {
+      "name": "INLP: Residual Bias",
+      "algorithm": "Iterative Null Space Projection",
+      "seedwords-1": "he,engineer,banker",
+      "seedwords-2": "she,nurse, receptionist",
+      "subspace": "Classification",
+      "evalset": "doctor, maid",
       "concept1": "Gender"
     },
     {
@@ -37,23 +100,6 @@
       "concept1": "Gender"
     },
     {
-      "name": "Linear Projection: Nationality (Case1)",
-      "algorithm": "Linear projection",
-      "seedwords-1": "syrian, persian",
-      "seedwords-2": "american, canadian",
-      "subspace": "Two means",
-      "evalset": "good, bad, evil, smart, cunning, greedy, nice",
-      "concept1": "Nationality"
-    },
-    {
-      "name": "Linear Projection: Nationality (Case 2)",
-      "algorithm": "Linear projection",
-      "seedwords-1": "persian, american, canadian, chinese, indian, british, syrian",
-      "subspace": "PCA",
-      "evalset": "good, evil, smart,  greedy, nice",
-      "concept1": "Nationality"
-    },
-    {
       "name": "Linear Projection: Nationality (Case3)",
       "algorithm": "Linear projection",
       "seedwords-1": "american, canadian",
@@ -62,7 +108,6 @@
       "evalset": "good, evil, right, wrong",
       "concept1": "Nationality"
     },
-
     {
       "name": "OSCaR: gender-occupations",
       "algorithm": "OSCaR",
@@ -109,35 +154,6 @@
       "subspace": "Two means",
       "evalset": "obnoxious, attentive, considerate, plain, fancy, important, majestic",
       "concept1": "Royalty"
-    },
-    {
-      "name": "Linear projection: Lipstick on a Pig",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "subspace": "Two means",
-      "evalset": "engineer, lawyer, receptionist, homemaker",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Hard debiasing: Lipstick on a Pig",
-      "algorithm": "Hard debiasing",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "equalize": "man-woman, boy-girl",
-      "subspace": "Two means",
-      "evalset": "engineer, lawyer, receptionist, homemaker",
-      "concept1": "Gender"
-    },
-    {
-      "name": "INLP: Lipstick on a Pig",
-      "algorithm": "Iterative Null Space Projection",
-      "seedwords-1": "he,engineer,banker",
-      "seedwords-2": "she,nurse, receptionist",
-      "subspace": "Classification",
-      "evalset": "doctor, maid",
-      "concept1": "Gender"
     }
   ]
 }
-
