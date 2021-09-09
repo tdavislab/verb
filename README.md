@@ -21,17 +21,17 @@ tqdm
 
 To install these libraries using pip, use the following command in the terminal:
 ```
-pip3 install flask scikit-learn scipy numpy tqdm
+pip3 install flask scikit-learn scipy numpy pandas tqdm
 ```
 
 To install these packages only for current user (or if you do not write access to the python installation on the machine):
 ```
-pip3 install flask scikit-learn scipy numpy tqdm --user
+pip3 install flask scikit-learn scipy numpy pandas tqdm --user
 ```
 
 Alternately, you can also use conda to install the packages:
 ```
-conda install flask scikit-learn scipy numpy tqdm
+conda install flask scikit-learn scipy numpy pandas tqdm
 ```
 
 ### Installation
