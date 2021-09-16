@@ -1,5 +1,10 @@
 # VERB - Visualizing Embedding Representation for deBiasing
 
+### References
+VERB: Visualizing and Interpreting Bias Mitigation Techniques for Word Representations
+Archit Rathore, Sunipa Dev, Jeff M. Phillips, Vivek Srikumar, Yan Zheng, Chin-Chia Michael Yeh, Junpeng Wang, Wei Zhang, Bei Wang.
+arXiv preprint arXiv:2104.02797, 2021.
+
 ### Requirements
 Python 3.6+, pip
 
@@ -16,16 +21,17 @@ tqdm
 
 To install these libraries using pip, use the following command in the terminal:
 ```
-pip3 install flask scikit-learn scipy numpy tqdm
+pip3 install flask scikit-learn scipy numpy pandas tqdm
 ```
+
 To install these packages only for current user (or if you do not write access to the python installation on the machine):
 ```
-pip3 install flask scikit-learn scipy numpy tqdm --user
+pip3 install flask scikit-learn scipy numpy pandas tqdm --user
 ```
 
 Alternately, you can also use conda to install the packages:
 ```
-conda install flask scikit-learn scipy numpy tqdm
+conda install flask scikit-learn scipy numpy pandas tqdm
 ```
 
 ### Installation
@@ -34,9 +40,12 @@ Then navigate to the cloned repository and in the base directory, type the follo
 command in the terminal.
 ```shell script
 git clone https://github.com/tdavislab/verb.git
-cd <repo-location>
+cd verb
 python3 -m flask run
 ```
+
+Once the command above is running, open your web browser (Chrome and Firefox supported) and navigate to: 
+http://127.0.0.1:5000/ (or equivalently to: http://localhost:5000)
 
 ### Using larger word vector embeddings
 The project defaults to using GLoVe embeddings of 50 dimensions trained on the Wikipedia 2014 + Gigaword 5 corpus. 
