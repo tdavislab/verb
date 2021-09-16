@@ -137,6 +137,15 @@
       "subspace": "Classification",
       "evalset": "doctor, maid",
       "concept1": "Gender"
+    },
+    {
+      "name": "Linear projection - religions",
+      "algorithm": "Linear projection",
+      "subspace": "Two means",
+      "seedwords-1": "muslim, islam",
+      "seedwords-2": "christian, catholic",
+      "concept1": "Religion",
+      "evalset": "terrorist, evil, successful, generous"
     }
   ]
 }
