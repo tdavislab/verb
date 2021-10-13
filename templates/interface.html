@@ -23,7 +23,7 @@
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
         <div id="control-panel" class="col-5 border-right">
-            <h4 class="text-center bg-dark text-light p-3 rounded">VERB
+            <h4 class="text-center bg-dark text-light p-3 rounded">Removing Bias from Word Embeddings
                 <svg id="tour-question"
                      xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                      fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16" style="cursor: pointer">
@@ -37,7 +37,7 @@
                 <div id="algorithm-selection" class="dropdown vert-space d-inline w-50" style="padding-right: 0.3em;">
                     <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
                             data-toggle="dropdown">
-                        Select Algorithm
+                        Bias Removal Algorithm
                     </button>
                     <div id="algorithm-dropdown" class="dropdown-menu w-100">
                         <h6 class="dropdown-header">Select Algorithm</h6>
@@ -205,73 +205,73 @@
                             </span>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <!--                            <button id="toggle-scrshot-chk">Screenshot mode</button>-->
-                            <span id='toggle-scrshot-btn' class="custom-switch custom-control toggles" disabled>
-                                <input type="checkbox" id="toggle-scrshot-chk" class="custom-control-input">
-                                <label for="toggle-scrshot-chk" class="custom-control-label">Screenshot mode</label>
-                            </span>
-                        </td>
-                    </tr>
+                    {#<tr>#}
+                    {#    <td>#}
+                    {#        <!--                            <button id="toggle-scrshot-chk">Screenshot mode</button>-->#}
+                    {#        <span id='toggle-scrshot-btn' class="custom-switch custom-control toggles" disabled>#}
+                    {#            <input type="checkbox" id="toggle-scrshot-chk" class="custom-control-input">#}
+                    {#            <label for="toggle-scrshot-chk" class="custom-control-label">Screenshot mode</label>#}
+                    {#        </span>#}
+                    {#    </td>#}
+                    {#</tr>#}
                     </tbody>
                 </table>
             </div>
 
-            <div id="export-misc" class="d-flex" style="justify-content: space-evenly">
-                <div id="export-import" class="vert-space">
-                    <a href="/export">
-                        <button id="export-btn" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom"
-                                title="Export the debiased embedding as a CSV file">Export as
-                            CSV
-                        </button>
-                    </a>
-                    <form method="POST" enctype="multipart/form-data" action="/import">
-                        <button id="import-btn" class="btn btn-outline-primary" title="Import word embedding from a CSV file" hidden>Import
-                            CSV
-                        </button>
-                        <input id="import-input" type="file" hidden>
-                    </form>
-                </div>
-
-                <div id="weat-btn-div" class="vert-space">
-                    <button id="weat-btn" class="btn btn-outline-primary" data-toggle="collapse" data-target="#weat-container"
-                            title="Standard WEAT test to measure associations between gender vs. occupation">Compute WEAT
-                    </button>
-                </div>
-            </div>
-
-            <div id="weat-container" class="collapse vert-space">
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <input type="text" class="input-group-text" value="Test words A" disabled>
-                    </div>
-                    <input id="occupation-A" class="form-control input-group-text" type="text" placeholder="Test words A"
-                           value="doctor, engineer, lawyer, mathematician, banker">
-                </div>
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <input type="text" class="input-group-text" value="Test words B" disabled>
-                    </div>
-                    <input id="occupation-B" class="form-control input-group-text" type="text" placeholder="Test words B"
-                           value="receptionist, homemaker, nurse, dancer, maid">
-                </div>
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <input type="text" class="input-group-text" value="Subspace words X" disabled>
-                    </div>
-                    <input id="gender-A" class="form-control input-group-text" type="text" placeholder="Subspace words X"
-                           value="man, male, boy, brother, him, his, son">
-                </div>
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <input type="text" class="input-group-text" value="Subspace words Y" disabled>
-                    </div>
-                    <input id="gender-B" class="form-control input-group-text" type="text" placeholder="Subspace words Y"
-                           value="woman, female, girl, brother, her, hers, daughter">
-                </div>
-                <div id="weat-display" class="text-center"></div>
-            </div>
+            {#<div id="export-misc" class="d-flex" style="justify-content: space-evenly">#}
+            {#    <div id="export-import" class="vert-space">#}
+            {#        <a href="/export">#}
+            {#            <button id="export-btn" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom"#}
+            {#                    title="Export the debiased embedding as a CSV file">Export as#}
+            {#                CSV#}
+            {#            </button>#}
+            {#        </a>#}
+            {#        <form method="POST" enctype="multipart/form-data" action="/import">#}
+            {#            <button id="import-btn" class="btn btn-outline-primary" title="Import word embedding from a CSV file" hidden>Import#}
+            {#                CSV#}
+            {#            </button>#}
+            {#            <input id="import-input" type="file" hidden>#}
+            {#        </form>#}
+            {#    </div>#}
+            {##}
+            {#    <div id="weat-btn-div" class="vert-space">#}
+            {#        <button id="weat-btn" class="btn btn-outline-primary" data-toggle="collapse" data-target="#weat-container"#}
+            {#                title="Standard WEAT test to measure associations between gender vs. occupation">Compute WEAT#}
+            {#        </button>#}
+            {#    </div>#}
+            {#</div>#}
+            {##}
+            {#<div id="weat-container" class="collapse vert-space">#}
+            {#    <div class="input-group mb-1">#}
+            {#        <div class="input-group-prepend">#}
+            {#            <input type="text" class="input-group-text" value="Test words A" disabled>#}
+            {#        </div>#}
+            {#        <input id="occupation-A" class="form-control input-group-text" type="text" placeholder="Test words A"#}
+            {#               value="doctor, engineer, lawyer, mathematician, banker">#}
+            {#    </div>#}
+            {#    <div class="input-group mb-1">#}
+            {#        <div class="input-group-prepend">#}
+            {#            <input type="text" class="input-group-text" value="Test words B" disabled>#}
+            {#        </div>#}
+            {#        <input id="occupation-B" class="form-control input-group-text" type="text" placeholder="Test words B"#}
+            {#               value="receptionist, homemaker, nurse, dancer, maid">#}
+            {#    </div>#}
+            {#    <div class="input-group mb-1">#}
+            {#        <div class="input-group-prepend">#}
+            {#            <input type="text" class="input-group-text" value="Subspace words X" disabled>#}
+            {#        </div>#}
+            {#        <input id="gender-A" class="form-control input-group-text" type="text" placeholder="Subspace words X"#}
+            {#               value="man, male, boy, brother, him, his, son">#}
+            {#    </div>#}
+            {#    <div class="input-group mb-1">#}
+            {#        <div class="input-group-prepend">#}
+            {#            <input type="text" class="input-group-text" value="Subspace words Y" disabled>#}
+            {#        </div>#}
+            {#        <input id="gender-B" class="form-control input-group-text" type="text" placeholder="Subspace words Y"#}
+            {#               value="woman, female, girl, brother, her, hers, daughter">#}
+            {#    </div>#}
+            {#    <div id="weat-display" class="text-center"></div>#}
+            {#</div>#}
 
             <hr/>
 
