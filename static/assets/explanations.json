@@ -8,7 +8,7 @@
   "occupation": [
     "The standard layout shows inherent relationship between words based on data.  One may notice how this encodes a bias (or preferences) of jobs based on gender.  For example, many people still assume engineer = man, and nurse = woman.",
     "The visualization of the same (high-dimensional) representation has been rotated to highlight this encoded pattern.  The gender related words are grouped, and this leads to stereotypical sorting of jobs.  We can now start to remove this gender bias",
-    "In the previous view (click the LEFT arrow to see it again) everything biased towards the female gender was on the left, and everything biased towards male on the right.  This steps removes this gender component, and as a result REMOVES THE BIAS.  As a result, now the jobs-related words no longer have a (biased) association with gender.",
+    "In the previous view (click the LEFT arrow to see it again) everything biased towards the female gender was on the left, and everything biased towards male on the right.  This step removes this gender component, and as a result REMOVES THE BIAS.  As a result, now the jobs-related words no longer have a (biased) association with gender.",
     "The visualization of the (high-dimensional) representation have been reverted to a more standard view.  The gender-jobs bias from before has now been removed."
   ]
 }
