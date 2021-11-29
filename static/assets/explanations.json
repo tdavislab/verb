@@ -1,28 +1,14 @@
 {
-  "Linear": [
+  "royalty": [
     "The points show the PCA projection of the original word vector embeddings.",
     "Points reoriented to a new view where the concept direction is aligned with the x-axis.",
     "From each word's embedding vector, the component along the concept direction is removed.",
     "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
   ],
-  "Hard": [
-    "The points show the PCA projection of the original word vector embeddings.",
-    "Points reoriented to a new view where the concept direction is aligned with the x-axis.",
-    "The gender component is removed from all but a set of pre-specified, unpaired gender-specific words using linear projection.",
-    "Word pairs (e.g., 'man-woman', 'he-she') equalized such that they are equidistant from the origin along the concept axis.",
-    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
-  ],
-  "OSCaR": [
-    "The points show the PCA projection of the original word vector embeddings.",
-    "Points reoriented to a new view where the direction of concept 1 is aligned with the x-axis and concept 2 is aligned with the component of y-axis that is orthogonal to concept 1.",
-    "Orthogonalize the direction of concept 2 to that of concept 1 and move all points accordingly.",
-    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
-  ],
-  "INLP": [
-    "The points show the PCA projection of the original word vector embeddings.",
-    "Fit a classifier to the subspace defining words and show the normal to the classifier's hyperplane",
-    "Points are reoriented to a new view where the hyperplan's normal direction is aligned with the x-axis.",
-    "The gender component is removed from all but a set of pre-specified gender-specific words using nullspace projection.",
-    "Points reoriented using PCA projection of the debiased word vectors in the new debiased space."
+  "occupation": [
+    "The standard layout shows inherent relationship between words based on data.  One may notice how this encodes a bias (or preferences) of jobs based on gender.  For example, many people still assume engineer = man, and nurse = woman.",
+    "The visualization of the same (high-dimensional) representation has been rotated to highlight this encoded pattern.  The gender related words are grouped, and this leads to stereotypical sorting of jobs.  We can now start to remove this gender bias",
+    "In the previous view (click the LEFT arrow to see it again) everything biased towards the female gender was on the left, and everything biased towards male on the right.  This steps removes this gender component, and as a result REMOVES THE BIAS.  As a result, now the jobs-related words no longer have a (biased) association with gender.",
+    "The visualization of the (high-dimensional) representation have been reverted to a more standard view.  The gender-jobs bias from before has now been removed."
   ]
 }

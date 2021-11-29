@@ -881,7 +881,8 @@ $('#seedword-form-submit').click(function () {
         algorithm: algorithm,
         subspace_method: subspace_method,
         concept1_name: concept1_name,
-        concept2_name: concept2_name
+        concept2_name: concept2_name,
+        example: d3.select('#example-selection-button').html().endsWith('Occupations') ? 'occupations' : 'other'
       },
       beforeSend: function () {
         $('.overlay').addClass('d-flex').show();

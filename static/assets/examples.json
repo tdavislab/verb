@@ -10,51 +10,6 @@
       "concept1": "Gender"
     },
     {
-      "name": "Hard debiasing: gender-occupations",
-      "algorithm": "Hard debiasing",
-      "seedwords-1": "he, him",
-      "seedwords-2": "she, her",
-      "subspace": "Two means",
-      "evalset": "engineer, banker, nurse, receptionist",
-      "equalize": "himself-herself, boy-girl"
-    },
-    {
-      "name": "INLP: gender",
-      "algorithm": "Iterative Null Space Projection",
-      "seedwords-1": "man, he, his, him, guy, boy, grandpa, uncle, brother, son, nephew, mr",
-      "seedwords-2": "woman, she, her, hers, gal, girl, grandma, aunt, sister, daughter, niece, mrs",
-      "subspace": "Classification",
-      "evalset": "engineer, homemaker",
-      "concept1": "Gender"
-    },
-    {
-      "name": "OSCaR: gender-occupations",
-      "algorithm": "OSCaR",
-      "seedwords-1": "he, man, him, his, she, woman, her, hers",
-      "oscar-c2-seedwords": "engineer, scientist, nurse, receptionist, banker, maid, lawyer, homemaker",
-      "subspace": "PCA",
-      "evalset": "programmer, grandpa, grandma",
-      "concept1": "Gender",
-      "concept2": "Occupations"
-    },
-    {
-      "name": "Linear Projection: Nationality (Case1)",
-      "algorithm": "Linear projection",
-      "seedwords-1": "syrian, persian",
-      "seedwords-2": "american, canadian",
-      "subspace": "Two means",
-      "evalset": "good, bad, evil, smart, cunning, greedy, nice",
-      "concept1": "Nationality"
-    },
-    {
-      "name": "Linear Projection: Nationality (Case 2)",
-      "algorithm": "Linear projection",
-      "seedwords-1": "persian, american, canadian, chinese, indian, british, syrian",
-      "subspace": "PCA",
-      "evalset": "good, evil, smart,  greedy, nice",
-      "concept1": "Nationality"
-    },
-    {
       "name": "Linear Projection: Royalty",
       "algorithm": "Linear projection",
       "seedwords-1": "king, queen, prince, princess",
@@ -62,71 +17,6 @@
       "subspace": "Two means",
       "evalset": "obnoxious, attentive, considerate, plain, fancy, important, majestic",
       "concept1": "Royalty"
-    },
-    {
-      "name": "Hard debiasing: Residual Bias",
-      "algorithm": "Hard debiasing",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "equalize": "man-woman, boy-girl",
-      "subspace": "Two means",
-      "evalset": "engineer, lawyer, receptionist, homemaker",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Linear projection: Residual Bias",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "subspace": "Two means",
-      "evalset": "engineer, lawyer, receptionist, homemaker",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Linear Projection: Adjectives",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he, him",
-      "seedwords-2": "she, her",
-      "subspace": "Two means",
-      "evalset": "beautiful, shy,  important, strong, ugly",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Linear Projection: Nationality (Case3)",
-      "algorithm": "Linear projection",
-      "seedwords-1": "american, canadian",
-      "seedwords-2": "iran, iraq",
-      "subspace": "Two means",
-      "evalset": "good, evil, right, wrong",
-      "concept1": "Nationality"
-    },
-    {
-      "name": "Hard debiasing: gender-occupations",
-      "algorithm": "Hard debiasing",
-      "seedwords-1": "he, man",
-      "seedwords-2": "she, woman",
-      "equalize": "boy-girl, brother-sister",
-      "subspace": "Two means",
-      "evalset": "receptionist, banker, engineer, nurse",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Linear projection: gender-occupations",
-      "algorithm": "Linear projection",
-      "seedwords-1": "he",
-      "seedwords-2": "she",
-      "subspace": "Two means",
-      "evalset": "engineer, lawyer, receptionist, homemaker, man, woman, boy, girl",
-      "concept1": "Gender"
-    },
-    {
-      "name": "Linear projection - religions",
-      "algorithm": "Linear projection",
-      "subspace": "Two means",
-      "seedwords-1": "muslim, islam",
-      "seedwords-2": "christian, catholic",
-      "concept1": "Religion",
-      "evalset": "terrorist, evil, successful, generous"
     }
   ]
 }

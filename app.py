@@ -113,7 +113,11 @@ def get_seedwords2():
         # Perform debiasing according to algorithm and subspace direction method
         bias_direction = get_bias_direction(app.base_embedding, seedwords1, seedwords2, subspace_method)
 
-        explanations = app.explanations
+        if request.values['example'] == 'occupation':
+            explanations = app.explanations['occupation']
+        else:
+            explanations = app.explanations['royalty']
+
         # weatscore_predebiased = utils.get_weat_score(app.base_embedding, app.weat_A, app.weat_B)
         # weatscore_postdebiased = utils.get_weat_score(app.debiased_embedding, app.weat_A, app.weat_B)
 
@@ -156,7 +160,7 @@ def get_seedwords2():
                         'anim_steps': anim_steps,
                         'transitions': transitions,
                         'bounds': debiaser.animator.get_bounds(),
-                        'explanations': explanations[algorithm],
+                        'explanations': explanations,
                         'camera_steps': debiaser.animator.get_camera_steps(),
                         'knn': {'base': base_neighbors, 'debiased': debiased_neighbors}
                         }
