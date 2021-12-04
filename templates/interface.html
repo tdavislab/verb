@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
-    <title>VERB - Visualization of Embedding Representations for deBiasing</title>
+    <title>Visualizing and Interpreting the bias of word embeddings</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
@@ -23,6 +23,8 @@
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
         <div id="control-panel" class="col-5 border-right">
+            <!--
+            
             <h4 class="text-center bg-dark text-light p-3 rounded">VERB
                 <svg id="tour-question"
                      xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -32,38 +34,9 @@
                         d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
                 </svg>
             </h4>
+                -->
 
-            <div id="algo-subspace" class="d-flex">
-                <div id="algorithm-selection" class="dropdown vert-space d-inline w-50" style="padding-right: 0.3em;">
-                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
-                            data-toggle="dropdown">
-                        Select Algorithm
-                    </button>
-                    <div id="algorithm-dropdown" class="dropdown-menu w-100">
-                        <h6 class="dropdown-header">Select Algorithm</h6>
-                        <a class="dropdown-item active">Linear projection</a>
-                        <a class="dropdown-item">Hard debiasing</a>
-                        <a class="dropdown-item">OSCaR</a>
-                        <a class="dropdown-item">Iterative Null Space Projection</a>
-                    </div>
-                </div>
-
-                <div id="subspace-dropdown" class="dropdown vert-space d-inline w-50">
-                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button"
-                            data-toggle="dropdown">
-                        Select subspace method
-                    </button>
-                    <div id="subspace-dropdown-items" class="w-100 dropdown-menu">
-                        <h6 class="dropdown-header">Select subspace method</h6>
-                        <a class="dropdown-item active">Two means</a>
-                        <a class="dropdown-item">PCA</a>
-                        <a class="dropdown-item">PCA-paired</a>
-                        <a class="dropdown-item">Classification</a>
-                        <a class="dropdown-item">GSS</a>
-                    </div>
-                </div>
-            </div>
-
+            <!--
             <div id="preloaded-examples" class="dropdown vert-space">
                 <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="example-selection-button"
                         data-toggle="dropdown">
@@ -71,6 +44,8 @@
                 </button>
                 <div id="example-dropdown" class="dropdown-menu w-100"></div>
             </div>
+            -->
+
 
             <div id="seedset-container">
                 <div id="input-two-col" class="input-group w-100 vert-space">
@@ -120,6 +95,37 @@
                 </div>
             </div>
 
+            <div id="algo-subspace" class="d-flex">
+                <div id="algorithm-selection" class="dropdown vert-space d-inline w-50" style="padding-right: 0.3em;">
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="algorithm-selection-button"
+                            data-toggle="dropdown">
+                        Select Algorithm
+                    </button>
+                    <div id="algorithm-dropdown" class="dropdown-menu w-100">
+                        <h6 class="dropdown-header">Select Algorithm</h6>
+                        <a class="dropdown-item active">Linear projection</a>
+                        <a class="dropdown-item">Hard debiasing</a>
+                        <a class="dropdown-item">OSCaR</a>
+                        <a class="dropdown-item">Iterative Null Space Projection</a>
+                    </div>
+                </div>
+
+                <div id="subspace-dropdown" class="dropdown vert-space d-inline w-50">
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="subspace-selection-button"
+                            data-toggle="dropdown">
+                        Select subspace method
+                    </button>
+                    <div id="subspace-dropdown-items" class="w-100 dropdown-menu">
+                        <h6 class="dropdown-header">Select subspace method</h6>
+                        <a class="dropdown-item active">Two means</a>
+                        <a class="dropdown-item">PCA</a>
+                        <a class="dropdown-item">PCA-paired</a>
+                        <a class="dropdown-item">Classification</a>
+                        <a class="dropdown-item">GSS</a>
+                    </div>
+                </div>
+            </div>
+
             <button id="seedword-form-submit" class="btn btn-outline-primary w-100 vert-space">Run</button>
 
             <!-- <div id="save-example">
@@ -142,6 +148,7 @@
                 <button id="unfreeze-embedding" class="btn btn-outline-primary w-50 vert-space" disabled hidden>Reset embedding</button>
             </div>
 
+            <!--
             <div id="animation-controls" class="row vert-space justify-content-center">
                 <div id="animation-btn-group" class="btn-group">
                     <button id='play-control-fb' class="btn btn-success" title="Go to the start of animation">
@@ -168,12 +175,14 @@
                     </button>
                 </div>
             </div>
+            -->
 
             <div id="weat-score" class="row center-block" hidden>
                 <h5 id="weat-predebiased" style="margin: auto"></h5>
                 <h5 id="weat-postdebiased" style="margin: auto"></h5>
             </div>
 
+            <!--
             <div id="toolbar" class="mt-3 p-3 vert-space border rounded">
                 <table class="w-100">
                     <tbody>
@@ -207,7 +216,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <!--                            <button id="toggle-scrshot-chk">Screenshot mode</button>-->
+                                                      <button id="toggle-scrshot-chk">Screenshot mode</button>
                             <span id='toggle-scrshot-btn' class="custom-switch custom-control toggles" disabled>
                                 <input type="checkbox" id="toggle-scrshot-chk" class="custom-control-input">
                                 <label for="toggle-scrshot-chk" class="custom-control-label">Screenshot mode</label>
@@ -217,7 +226,9 @@
                     </tbody>
                 </table>
             </div>
+            -->
 
+            <!--
             <div id="export-misc" class="d-flex" style="justify-content: space-evenly">
                 <div id="export-import" class="vert-space">
                     <a href="/export">
@@ -240,6 +251,7 @@
                     </button>
                 </div>
             </div>
+            -->
 
             <div id="weat-container" class="collapse vert-space">
                 <div class="input-group mb-1">
