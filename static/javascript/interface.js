@@ -52,12 +52,12 @@ let SUBSPACE_MAP = {
 }
 
 // Set global color-scale
-let color = d3.scaleOrdinal(d3.schemeDark2);
-let shape = d3.scaleOrdinal([0, 1, 2, 3, 4, 5, 6],
+let color = d3.scale.ordinal(d3.schemeDark2);
+let shape = d3.scale.ordinal([0, 1, 2, 3, 4, 5, 6],
   [d3.symbolCircle, d3.symbolCircle, d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle, d3.symbolCross].map(d => symbolGenerator(d)));
 
 function symbolGenerator(symbolObj) {
-  return d3.symbol().type(symbolObj).size(125)();
+  return d3.svg.symbol().type(symbolObj).size(125)();
 }
 
 function getRandomInt(min, max) {
