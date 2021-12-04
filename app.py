@@ -1,5 +1,5 @@
 import os
-
+from os.path import isfile, join
 from flask import Flask, render_template, request, jsonify, send_file
 from sklearn.neighbors import NearestNeighbors
 
@@ -17,6 +17,10 @@ app.debiased_embedding = load(app.embedding_path)
 app.frozen = False
 app.base_knn = None
 app.debiased_knn = None
+
+# for parallel coordinates
+language = "en"
+df, model = None, None
 
 with open('static/assets/explanations.json', 'r') as explanation_json:
     app.explanations = json.load(explanation_json)
@@ -241,6 +245,140 @@ class InvalidUsage(Exception):
         rv['message'] = self.message
         return rv
 
+
+# Adding code for Parallel axis
+
+
+@app.route('/set_model')
+def set_model():
+    name = request.args.get("embedding")
+    load_embedding(name)
+    return "success"
+
+
+def load_embedding(name):
+    global model, language
+    if model is None:
+        name = "Word2Vec"
+        #name = "Glove (wiki 300d)" 
+    print("Embedding name: ", name)
+    if name=="Word2Vec":
+        language = 'en'
+        model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
+    elif name=="Glove (wiki 300d)":
+        # print("Glove word embedding backend")
+        language = 'en'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove_50k.bin', binary=True) #   
+    elif name=="Word2Vec debiased":
+        # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
+        language = 'en'
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin', binary=True, limit=50000) 
+    return
+
+@app.route('/get_csv/')
+def get_csv():
+    global df
+    scaling = request.args.get("scaling")
+    embedding = request.args.get("embedding")
+    if embedding is None:
+        embedding = "Word2Vec"
+
+    print("/get_csv/")
+    print("Scaling: ", scaling)
+    print("Embedding: ", embedding)
+    
+    if embedding=="Word2Vec":
+        if scaling=="Normalization":
+            df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
+        elif scaling=="Percentile":
+            df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
+        else:
+            df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
+    elif embedding=="Glove (wiki 300d)":
+        if scaling=="Normalization":
+            df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False)
+        elif scaling=="Percentile":
+            df = pd.read_csv("./data/glove_50k_percentile.csv",header=0, keep_default_na=False)
+    out = df.to_json(orient='records')
+    #print("out", out)
+    return out
+
+@app.route('/get_all_words')
+def get_all_words():
+    if not model:
+        setModel()
+    return jsonify(list(model.vocab.keys()))
+
+
+@app.route('/fetch_data',methods=['POST'])
+def fetch_data():
+    json_data = request.get_json(force=True);       
+    slider_sel = json_data['slider_sel']
+    hist_type = json_data["hist_type"]
+    #print("fetch_data: ", json_data["data"])
+    df = pd.json_normalize(json_data['data'])
+    #col_list = list(bias_words.keys())
+    col_list = [c for c in df.columns if c!="word"]
+    # histogram type - ALL, gender, race, eco
+    filter_column = None
+    if hist_type=="ALL":
+        filter_column = df[col_list].abs().mean(axis=1)
+    else:
+        filter_column = df[hist_type]
+
+    # print("Slider selection: ", slider_sel)
+    # list of selected index based on selection
+    ind = pd.Series([False]*df.shape[0])
+    for slider in slider_sel:
+        minV = slider[0]
+        maxV = slider[1]
+        if (minV != maxV):
+            ind = ind | ((filter_column >= minV) & (filter_column <= maxV))
+
+    # print("selected dataframe: ")
+    col_list = ["word"] + col_list
+    out = df.loc[ind, col_list].to_json(orient='records')
+    return jsonify(out)
+
+@app.route('/getFileNames/')
+def getFileNames():
+    #gp_path, tar_path, word_sim, word_ana = None, None, None, None
+    gp_path, tar_path = None, None
+    if language=='hi':
+        gp_path = './data/wordList/groups/hi/'
+        tar_path = './data/wordList/target/hi/'
+        #word_sim = './data/benchmark/word_similarity/hi/'
+        #word_ana = './data/benchmark/word_analogy/hi/'
+    elif language=='fr':
+        gp_path = './data/wordList/groups/fr/'
+        tar_path = './data/wordList/target/fr/'
+        #word_sim = './data/benchmark/word_similarity/fr/'
+        #word_ana = './data/benchmark/word_analogy/fr/'
+    else:
+        gp_path = './data/wordList/groups/en/'
+        tar_path = './data/wordList/target/en/'
+        #word_sim = './data/benchmark/word_similarity/en/'
+        #word_ana = './data/benchmark/word_analogy/en/'
+    #target = os.listdir(tar_path)
+    target_files = [f for f in os.listdir(tar_path) if isfile(join(tar_path, f))]
+    #group = os.listdir(gp_path)
+    group_files = [f for f in os.listdir(gp_path) if isfile(join(gp_path, f))]
+    #sim_files = os.listdir(word_sim)
+    #ana_files = os.listdir(word_ana)
+    #return jsonify([group,target,sim_files,ana_files])
+    return jsonify([group_files,target_files])
+
+# populate default set of target words
+@app.route('/getWords/')
+def getWords():
+    path = request.args.get("path")
+    words = []
+    f = open(path, "r", encoding="utf8")
+    for x in f:
+        if len(x)>0:
+            x = x.strip().lower()
+            words.append(x)
+    return jsonify({"target":words})
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

@@ -4,7 +4,7 @@
 
 // Set the SVG height and width
 function svg_setup() {
-  let container_dims = document.getElementById('scatter-holder').getBoundingClientRect();
+  let container_dims = document.getElementById('parallel_coord').getBoundingClientRect();
   let svg = d3.select('#animation-svg');
   let svg_dim = Math.min(container_dims.width, container_dims.height);
   svg.attr('width', svg_dim)
