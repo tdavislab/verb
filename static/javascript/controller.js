@@ -104,13 +104,13 @@ function initialize(res) {
   words = data.map(function (d) {
     return { title: d.word };
   });
-  // $(".ui.search").search("refresh");
-  // $(".ui.search").search({
-  //   source: words,
-  //   onSelect: function (d) {
-  //     onClick(d.title);
-  //   },
-  // });
+  $(".ui.search").search("refresh");
+  $(".ui.search").search({
+    source: words,
+    onSelect: function (d) {
+      onClick(d.title);
+    },
+  });
 
   // populate histogram bias types
   populate_histogram_bias_type(data[0]);

@@ -12,6 +12,7 @@
     <link href="https://unpkg.com/intro.js/minified/introjs.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="../static/css/d3.parcoords.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/semantic.min.css">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 
@@ -23,7 +24,7 @@
 
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
-        <div id="control-panel" class="col-5 border-right">
+        <div id="control-panel" class="col-4 border-right">
             <!--
             
             <h4 class="text-center bg-dark text-light p-3 rounded">VERB
@@ -316,8 +317,8 @@
             </div>
         </div>
 
-        <div id="visualization-panel" class="col-7">
-            <div id="parallel_coord" class="parcoords" style="width: 100%; height: 100%">
+        <div id="visualization-panel" class="col-6">
+            <div id="parallel_coord" class="parcoords" style="width: 90%; height: 100%">
                 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                 <svg id="animation-svg">
                     <defs>
@@ -328,6 +329,25 @@
                 </svg>
             </div>
         </div>
+
+        <div class="col-lg-2 greyed border-left" >
+            <div
+              class="ui search feature"
+              style="padding-bottom: 5px !important; height: 5%"
+            >
+              <div class="ui icon input" style="width: 100%">
+                <input class="prompt" type="text" placeholder="Search words..." />
+                <i class="search icon"></i>
+              </div>
+            </div>
+  
+            <div
+              id="neighbors_list"
+              class="list-group list-group-flush"
+              style="height: 95vh; max-height: 95vh; overflow: scroll"
+            ></div>
+        </div>
+
     </div>
 </div>
 
@@ -354,6 +374,8 @@
 <script src="../static/javascript/interface.js"></script>
 <script src="../static/javascript/labeler.js"></script>
 <script src="../static/javascript/utility.js"></script>
+<script src="../static/javascript/semantic.js"></script>
+<script src="../static/javascript/semantic.min.js"></script>
 <script>
   $('#weat-btn').tooltip();
   $('#export-btn').tooltip();
