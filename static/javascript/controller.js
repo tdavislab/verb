@@ -54,17 +54,19 @@ var current_embedding = null;
 called when the application is first loaded 
 */
 $(document).ready(function () {
+  
   // Spinner start
   // loading icon starts here
   //$('.container-fluid').hide();     // hide everything
-  $("#spinner").addClass("lds-hourglass");
+  // $("#spinner").addClass("lds-hourglass");
 
   $.get("/getFileNames/", function (res) {
+    console.log("HEREEEEEEE0");
     var target = res[1]; // List of file names for target
-
+    console.log(target);
     //$('#gp1_dropdown').append(populateDropDownList(group));
     //$('#gp2_dropdown').append(populateDropDownList(group));
-    // $("#dropdown_target").append(populateDropDownList(target));
+    $("#dropdown_target").append(populateDropDownList(target));
     //$('#word_sim_dropdown').append(populateDropDownList(sim_files));
     //$('#word_ana_dropdown').append(populateDropDownList(ana_files));
 
@@ -72,8 +74,8 @@ $(document).ready(function () {
     current_embedding = $("#dropdown_embedding").val();
 
     // Choose default target : Profession
-    // $('#dropdown_target option[value="Profession"]').attr("selected", true);
-    // changeTarget("Profession");
+    $('#dropdown_target option[value="Profession"]').attr("selected", true);
+    changeTarget("Profession");
 
     // Choose default groups
     //$('#gp1_dropdown option[value="Gender - Female"]').attr("selected",true);
@@ -122,7 +124,7 @@ function initialize(res) {
   pc = createParallelCoord(data); // important to load the PC with the whole dataset
   pc.on("brushend", function (d) {
     populate_neighbors(d);
-    updateProgressBar(d);
+    // updateProgressBar(d);
     if (inSearch) {
       d3.selectAll([pc.canvas["highlight"]]).classed("faded", true);
       d3.selectAll([pc.canvas["brushed"]]).classed("faded", false);

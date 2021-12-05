@@ -22,6 +22,64 @@ function createParallelCoord(data) {
   return pc;
 }
 
+//________________________________________________________FROM HERE_________//
+// This code was originally in  left_pane.js
+// Given a list as input, populate drop down menu with each element as an option
+function populateDropDownList(data) {
+  var option = "";
+  for (var i = 0; i < data.length; i++) {
+    if (data[i] != "word")
+      option += '<option value="' + data[i] + '">' + data[i] + "</option>";
+  }
+  return option;
+}
+function changeTarget(selVal) {
+  // path = './data/wordList/target/'+selVal
+  if (current_embedding == "Hindi fastText") {
+    path = "./data/wordList/target/hi/" + selVal;
+  } else if (current_embedding == "French fastText") {
+    path = "./data/wordList/target/fr/" + selVal;
+  } else {
+    path = "./data/wordList/target/en/" + selVal;
+  }
+  console.log("selval is: ", selVal);
+  if (selVal == "Custom") {
+    $("#target").val("");
+    return;
+  }
+  $.get(
+    "/getWords",
+    {
+      path: path,
+    },
+    (res) => {
+      console.log(res);
+      $("#target").val(res["target"].join());
+    }
+  );
+}
+
+$("#highlight_words").click(function () {
+  console.log("Highlight button clicked");
+  // afterHighlight =  true
+  inSearch = true;
+  filter_words = [];
+  text = $("#target").val().toLowerCase();
+  // Regex expression to split by newline and comma
+  // https://stackoverflow.com/questions/34316090/split-string-on-newline-and-comma
+  // https://stackoverflow.com/questions/10346722/how-can-i-split-a-javascript-string-by-white-space-or-comma
+  text = text.split(/[\n, ]+/);
+  for (i = 0; i < text.length; i++) {
+    if (text[i].length > 0) {
+      filter_words.push(text[i]);
+    }
+  }
+  // updateProgressBar(filter_words);
+  highlightWords(null, (neighbors = filter_words));
+});
+
+//________________________________________________________UPTIL HERE_________//
+
 /*
 Top pane events
 Parallel coordinates properties
@@ -67,7 +125,7 @@ function brush_reset() {
     d3.selectAll([pc.canvas["brushed"]]).classed("full", false);
     d3.selectAll([pc.canvas["brushed"]]).classed("faded", true);
   } else {
-    updateProgressBar(active_data);
+    // updateProgressBar(active_data);
     $("#neighbors_list").empty();
   }
 }

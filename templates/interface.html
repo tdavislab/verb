@@ -292,6 +292,37 @@
             <div id="explanation" class="vert-space">
                 <h5> Explanation </h5>
                 <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
+                <hr />
+          <div class="feature">
+            <p style="text-align: center; margin-bottom: 10px">
+              Highlight Neutral Words
+            </p>
+            <div style="text-align: center">
+              <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> -->
+              <select
+                id="dropdown_target"
+                onchange="changeTarget(this.value)"
+                class="custom-select greyed"
+                style="width: 50%"
+              ></select>
+              <button id="highlight_words" class="greyed_border">
+                <i class="play icon"></i>
+              </button>
+              <!-- <i class="play icon"></i> -->
+            </div>
+            <textarea
+              class="form-control"
+              rows="5"
+              id="target"
+              style="border-radius: 5px; margin-bottom: 5px"
+            ></textarea>
+            <!--
+                    <div style="text-align: center;">
+                        <button id="cancel_highlight_words" class="greyed_border"><i class="pause icon"></i></button>
+                        <button id="highlight_words" class="greyed_border"><i class="play icon"></i></button>
+                    </div>
+                    -->
+          </div>
             </div>
 
             <hr/>
@@ -376,6 +407,7 @@
 <script src="../static/javascript/utility.js"></script>
 <script src="../static/javascript/semantic.js"></script>
 <script src="../static/javascript/semantic.min.js"></script>
+<script src="../static/javascript/d3.svg.multibrush.js"></script>
 <script>
   $('#weat-btn').tooltip();
   $('#export-btn').tooltip();

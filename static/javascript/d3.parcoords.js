@@ -1479,9 +1479,9 @@ d3.parcoords = function (config) {
       return brush.mode;
     }
 
-    // if (pc.brushModes().indexOf(mode) === -1) {
-    //   throw "pc.brushmode: Unsupported brush mode: " + mode;
-    // }
+    if (pc.brushModes().indexOf(mode) === -1) {
+      throw "pc.brushmode: Unsupported brush mode: " + mode;
+    }
 
     // Make sure that we don't trigger unnecessary events by checking if the mode
     // actually changes.
@@ -1496,7 +1496,7 @@ d3.parcoords = function (config) {
       brush.modes[brush.mode].uninstall(pc);
       // Finally, we can install the requested one.
       brush.mode = mode;
-      // brush.modes[brush.mode].install();
+      brush.modes[brush.mode].install();
       if (mode === "None") {
         delete pc.brushPredicate;
       } else {
