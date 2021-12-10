@@ -882,7 +882,7 @@ $('#seedword-form-submit').click(function () {
         subspace_method: subspace_method,
         concept1_name: concept1_name,
         concept2_name: concept2_name,
-        example: d3.select('#example-selection-button').html().endsWith('Occupations') ? 'occupations' : 'other'
+        example: d3.select('#example-selection-button').html().endsWith('Occupations') ? 'occupation' : 'other'
       },
       beforeSend: function () {
         $('.overlay').addClass('d-flex').show();

@@ -169,6 +169,7 @@ def get_seedwords2():
         print(e)
         raise InvalidUsage(f'Something went wrong! Could not find the word {str(e).strip()}', 404)
     except Exception as e:
+        print(e)
         raise InvalidUsage(f'Something went wrong! Error message from the backend: \n{str(e).strip()}', 404)
 
 
