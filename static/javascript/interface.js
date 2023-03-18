@@ -210,11 +210,6 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       });
     })
 
-  function pre_post_scores(label) {
-    pre_bias_score = parseFloat(score_lookup[label].pre).toFixed(4)
-    post_bias_score = parseFloat(score_lookup[label].post).toFixed(4)
-    return { pre: pre_bias_score, post: post_bias_score }
-  }
   // Add tooltip as a div element using foreignObject
   let tooltip = datapoint_group.append('foreignObject')
     .attr('width', 250)
@@ -239,7 +234,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
           post_bias_score = '0.0000'
         }
 
-        let formatted_html = `Word association with bias direction <p>Before: ${pre_bias_score}</p> <p>After: ${post_bias_score}</p>`
+        let formatted_html = `Word association with \`${d3.select('#concept-label-1').property('value')}\` <p>Before: ${pre_bias_score}</p> <p>After: ${post_bias_score}</p>`
         return formatted_html
       } catch (error) {
         return ''
