@@ -147,12 +147,14 @@ def get_seedwords2():
         word_list = list(set([w for w in word_list if not (w == '' or w == [''])]))
         base_neighbors = neighbors(app.base_embedding, app.base_knn, word_list)
         debiased_neighbors = neighbors(app.debiased_embedding, app.debiased_knn, word_list)
+        pre_post_bias_scores = debiaser.bias_scores(word_list, bias_direction)
 
         # base_neighbors = {word: ['t'] for word in word_list}
         # debiased_neighbors = {word: ['t'] for word in word_list}
 
         data_payload = {'base': anim_steps[0],
                         'debiased': anim_steps[-1],
+                        'pre_post_bias_scores': pre_post_bias_scores,
                         'anim_steps': anim_steps,
                         'transitions': transitions,
                         'bounds': debiaser.animator.get_bounds(),

@@ -77,16 +77,16 @@ function process_response(response, eval = false, debiased = false) {
   let debiased_veckey = debiased ? 'debiased_evalvecs' : 'evalvecs'
 
   for (let i = 0; i < response[vec1key].length; i++) {
-    data.push({'position': response[vec1key][i], 'label': response['words1'][i], 'group': 1});
+    data.push({ 'position': response[vec1key][i], 'label': response['words1'][i], 'group': 1 });
   }
 
   for (let i = 0; i < response[vec2key].length; i++) {
-    data.push({'position': response[vec2key][i], 'label': response['words2'][i], 'group': 2});
+    data.push({ 'position': response[vec2key][i], 'label': response['words2'][i], 'group': 2 });
   }
 
   if (eval) {
     for (let i = 0; i < response[debiased_veckey].length; i++) {
-      data.push({'position': response[debiased_veckey][i], 'label': response.evalwords[i], 'group': 3});
+      data.push({ 'position': response[debiased_veckey][i], 'label': response.evalwords[i], 'group': 3 });
     }
   }
 
@@ -171,13 +171,17 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     .attr('class', d => 'datapoint-group group-' + d.group)
     .attr('transform', d => {
       let x_coord = x(d.x), y_coord = y(d.y)
-      labelArray.push({x: x_coord, y: y_coord, name: d.label, group: d.group})
-      anchorArray.push({x: x_coord, y: y_coord, r: 10})
+      labelArray.push({ x: x_coord, y: y_coord, name: d.label, group: d.group })
+      anchorArray.push({ x: x_coord, y: y_coord, r: 10 })
       return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
     })
-    .on('mouseover', function () {
+    .on('mouseover', function (d, i, nodes) {
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
+      // show tooltip div, animated
+      d3.select(this).select('foreignObject').style('opacity', 0).transition().duration(200).style('opacity', 1).on('start', function () {
+        d3.select(this).attr('visibility', 'visible');
+      });
     })
     .on('click', function (d) {
       $('#knn').prop('hidden', false);
@@ -200,7 +204,48 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     })
     .on('mouseout', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
+      // transition opacity to 0, then hide
+      d3.select(this).select('foreignObject').transition().duration(200).style('opacity', 0).on('end', function () {
+        d3.select(this).attr('visibility', 'hidden')
+      });
     })
+
+  function pre_post_scores(label) {
+    pre_bias_score = parseFloat(score_lookup[label].pre).toFixed(4)
+    post_bias_score = parseFloat(score_lookup[label].post).toFixed(4)
+    return { pre: pre_bias_score, post: post_bias_score }
+  }
+  // Add tooltip as a div element using foreignObject
+  let tooltip = datapoint_group.append('foreignObject')
+    .attr('width', 250)
+    .attr('height', 150)
+    .attr('x', 10)
+    .attr('y', 10)
+    .attr('visibility', 'hidden')
+    .append('xhtml:div')
+    .attr('class', 'label-tooltip')
+    .html(function (d) {
+      try {
+        pre_bias_score = score_lookup[d.label].pre
+        post_bias_score = score_lookup[d.label].post
+        // round to 3 decimal places
+        pre_bias_score = parseFloat(pre_bias_score).toFixed(4)
+        post_bias_score = parseFloat(post_bias_score).toFixed(4)
+        // prevent negative 0
+        if (pre_bias_score === '-0.0000') {
+          pre_bias_score = '0.0000'
+        }
+        if (post_bias_score === '-0.0000') {
+          post_bias_score = '0.0000'
+        }
+
+        let formatted_html = `Word association with bias direction <p>Before: ${pre_bias_score}</p> <p>After: ${post_bias_score}</p>`
+        return formatted_html
+      } catch (error) {
+        return ''
+      }
+    }
+    )
 
   // Draw labels
   let labels = datapoint_group.append('text')
@@ -345,15 +390,15 @@ function add_groups(data) {
   let grouped_data = [];
 
   for (let i = 0; i < data['vectors1'].length; i++) {
-    grouped_data.push({'position': data['vectors1'][i], 'label': data['words1'][i], 'group': 1});
+    grouped_data.push({ 'position': data['vectors1'][i], 'label': data['words1'][i], 'group': 1 });
   }
 
   for (let i = 0; i < data['vectors2'].length; i++) {
-    grouped_data.push({'position': data['vectors2'][i], 'label': data['words2'][i], 'group': 2});
+    grouped_data.push({ 'position': data['vectors2'][i], 'label': data['words2'][i], 'group': 2 });
   }
 
   for (let i = 0; i < data['evalvecs'].length; i++) {
-    grouped_data.push({'position': data['evalvecs'][i], 'label': data['evalwords'][i], 'group': 3});
+    grouped_data.push({ 'position': data['evalvecs'][i], 'label': data['evalwords'][i], 'group': 3 });
   }
 
   return grouped_data;
@@ -397,6 +442,7 @@ function compute_perpendicular(line) {
 function setup_animation(anim_svg, response, identifier) {
   try {
     console.log(response);
+    score_lookup = response.pre_post_bias_scores;
 
     function update_anim_svg(svg, x_axis, y_axis, step, transition_info, camera_step = false) {
       let explanation_text = step <= response.explanations.length ? response.explanations[step] : 'No explanation found.';
@@ -432,8 +478,8 @@ function setup_animation(anim_svg, response, identifier) {
       for (let i = 0; i < response.anim_steps[step].length; i++) {
         let d = response.anim_steps[step][i];
         let x_coord = x_axis(d.x), y_coord = y_axis(d.y)
-        labelArray.push({x: x_coord, y: y_coord, name: d.label})
-        anchorArray.push({x: x_coord, y: y_coord, name: d.label, r: 10})
+        labelArray.push({ x: x_coord, y: y_coord, name: d.label })
+        anchorArray.push({ x: x_coord, y: y_coord, name: d.label, r: 10 })
       }
 
       if (DYNAMIC_PROJ && transition_info.index !== -1) {
@@ -543,7 +589,7 @@ function setup_animation(anim_svg, response, identifier) {
       }
     }
 
-    let margin = {top: 20, right: 20, bottom: 20, left: 40};
+    let margin = { top: 20, right: 20, bottom: 20, left: 40 };
     let width = anim_svg.node().width.baseVal.value - margin.left - margin.right;
     let height = anim_svg.node().height.baseVal.value - margin.top - margin.bottom;
 
@@ -629,7 +675,7 @@ function setup_animation(anim_svg, response, identifier) {
         btn_active(step_forward_btn, true);
         btn_active(fast_forward_btn, true);
 
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: -1, forward: false}, true);
+        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, { index: -1, forward: false }, true);
 
         if (ANIMSTEP_COUNTER === 0) {
           btn_active(step_backward_btn, false);
@@ -649,7 +695,7 @@ function setup_animation(anim_svg, response, identifier) {
         btn_active(step_backward_btn, true);
         btn_active(fast_backward_btn, true);
 
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: ANIMSTEP_COUNTER - 1, forward: true}, response.camera_steps[ANIMSTEP_COUNTER]);
+        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, { index: ANIMSTEP_COUNTER - 1, forward: true }, response.camera_steps[ANIMSTEP_COUNTER]);
 
         if (ANIMSTEP_COUNTER === response.anim_steps.length - 1) {
           btn_active(step_forward_btn, false);
@@ -668,7 +714,7 @@ function setup_animation(anim_svg, response, identifier) {
         btn_active(step_backward_btn, true);
         btn_active(fast_backward_btn, true);
 
-        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, {index: -1, forward: true}, true);
+        update_anim_svg(svg, x_axis, y_axis, ANIMSTEP_COUNTER, { index: -1, forward: true }, true);
 
         if (ANIMSTEP_COUNTER === response.anim_steps.length - 1) {
           btn_active(step_forward_btn, false);
@@ -970,11 +1016,11 @@ $('#oscar-seedword-text-1').on('keyup', captureEnter);
 $('#example-selection-button').on('click', function () {
   $("#example-dropdown").empty();
 
-  $.getJSON('static/assets/examples.json', {ts: new Date().getTime()})
+  $.getJSON('static/assets/examples.json', { ts: new Date().getTime() })
     .done(function (data) {
       load_examples(data);
 
-      $.getJSON('static/assets/user_examples.json', {ts: new Date().getTime()})
+      $.getJSON('static/assets/user_examples.json', { ts: new Date().getTime() })
         .done(function (user_data) {
           load_examples(user_data, true);
         })
@@ -1060,7 +1106,7 @@ function display_weat() {
   $.ajax({
     type: 'POST',
     url: '/weat',
-    data: {occupation_a, occupation_b, gender_a, gender_b},
+    data: { occupation_a, occupation_b, gender_a, gender_b },
     'success': function (response) {
       $('#weat-display').text(`WEAT: ${response.weat_scores['pre-weat'].toFixed(3)} \u21E8 ${response.weat_scores['post-weat'].toFixed(3)}`)
     },
@@ -1130,7 +1176,7 @@ $('#save-example-btn').on('click', save_example);
 function set_tour_data() {
   let step_index = 1;
 
-  function set_step(selector, position='') {
+  function set_step(selector, position = '') {
     $(selector).attr('data-step', step_index);
     step_index += 1;
     if (position !== '') {

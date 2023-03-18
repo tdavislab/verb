@@ -93,6 +93,14 @@ class Debiaser:
         # Compute debiased embedding and create animation steps here
         raise NotImplementedError('This method should not be called from Debiaser object.')
 
+    def bias_scores(self, word_list, bias_direction):
+        # Compute pre and post debiasing bias scores (dot product with bias direction)
+        # for a given list of words
+        pre_bias_scores = np.dot(self.base_emb.get_vecs(word_list), bias_direction)
+        post_bias_scores = np.dot(self.debiased_emb.get_vecs(word_list), bias_direction)
+        # convert to dict object with word as key and dict of pre and post debiasing scores as value
+        return {word: {'pre': pre_bias_scores[i], 'post': post_bias_scores[i]} for i, word in enumerate(word_list)}
+
 
 class LinearDebiaser(Debiaser):
     def debias(self, bias_direction, seedwords1, seedwords2, evalwords):
