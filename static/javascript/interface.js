@@ -212,8 +212,8 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
 
   // Add tooltip as a div element using foreignObject
   let tooltip = datapoint_group.append('foreignObject')
-    .attr('width', 250)
-    .attr('height', 150)
+    .attr('width', 300)
+    .attr('height', 175)
     .attr('x', 10)
     .attr('y', 10)
     .attr('visibility', 'hidden')
@@ -234,7 +234,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
           post_bias_score = '0.0000'
         }
 
-        let formatted_html = `Word association with \`${d3.select('#concept-label-1').property('value')}\` <p>Before: ${pre_bias_score}</p> <p>After: ${post_bias_score}</p>`
+        let formatted_html = `Word association with \`${d3.select('#concept-label-1').property('value')}\` subspace <p>Before: ${pre_bias_score}</p> <p>After: ${post_bias_score}</p>`
         return formatted_html
       } catch (error) {
         return ''
