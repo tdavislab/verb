@@ -293,6 +293,8 @@ class OscarDebiaser(Debiaser):
             orth_direction_prime = np.array([v2_prime.dot(v1), v2_prime.dot(v2_prime)])
             orth_direction_prime = orth_direction_prime / np.linalg.norm(orth_direction_prime)
 
+            self.bias_direction = bias_direction
+
             # ---------------------------------------------------------
             # Step 1 - Project points such that bias direction is aligned with the x-axis
             # ----------------------------------------------------------
@@ -420,6 +422,18 @@ class OscarDebiaser(Debiaser):
             step3.add_points(debiased_projector.project(self.debiased_emb, orth_subspace_words, group=4))
             step3.add_points(debiased_projector.project(self.debiased_emb, [], group=0, direction=bias_direction))
             step3.add_points(debiased_projector.project(self.debiased_emb, [], group=0, direction=orth_direction_prime, concept_idx=2))
+
+    def bias_scores(self, word_list, bias_direction):
+        bias_direction = self.bias_direction
+        print({
+            'bias_direction_shape': bias_direction.shape,
+            'base_emb_shape': self.base_emb.word_vectors['the'].vector.shape,
+            'debiased_emb_shape': self.debiased_emb.word_vectors['the'].vector.shape
+        })
+        pre_bias_scores = np.dot(self.base_emb.get_vecs(word_list), bias_direction)
+        post_bias_scores = np.dot(self.debiased_emb.get_vecs(word_list), bias_direction)
+        # convert to dict object with word as key and dict of pre and post debiasing scores as value
+        return {word: {'pre': pre_bias_scores[i], 'post': post_bias_scores[i]} for i, word in enumerate(word_list)}
 
     @staticmethod
     def correction(rotation_matrix, v1, v2, x):
